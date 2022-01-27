@@ -14,7 +14,7 @@ The goal of this exercise was for me to get better at reverse engineering using 
 
 ## The Proof of Concept
 
-I started with a similar Proof of Concept, but I reduced the size of the payload to test against the username field. 
+I started with a similar Proof of Concept, but I reduced the size of the payload to test against the username field. The exploit willbe written in `Python` because that's what all exploits are written in duh!
 
 ```python
 #!/usr/bin/python
@@ -48,3 +48,7 @@ try:
 except socket.error:
     print("Unable to connect!")
 ```
+
+## Hooking the RECV function
+
+
