@@ -4,7 +4,7 @@ At the time of writing I am studying Offensive Security Windows User Mode Exploi
 
 I have started studying the reverse engineering section in the course and I am finding it very interesting if hard going. Firstly, `Ghidra` is not permitted on the exam, which means I have to learn how to use `IDA Free` and reverse engineering is a slow process to me anyway. Whilst the course content is good I felt I needed a bit more practice reversing Windows PE files.
 
-A quick Google led me to this great blog page: [Vulnserver Redux 1: Reverse Engineering TRUN](https://www.purpl3f0xsecur1ty.tech/2021/05/26/trun_re.html), I used this as a starting point and attempted to reverse engineer the PE file, using the blog when I got lost, which thankfully wasn't too often.
+A quick Google led me to this great blog page: [Vulnserver Redux 1: Reverse Engineering TRUN](https://www.purpl3f0xsecur1ty.tech/2021/05/26/trun_re.html) by Purpl3 F0x Secur1ty, I used this as a starting point and attempted to reverse engineer the PE file, using the blog when I got lost, which thankfully wasn't too often.
 
 I decided that I would revisit the Sync-Breeze buffer overflow vulnerability introduced in the first chapter of the course, but this time I would attempt to reverse engineer it, rather than fuzz it. The public vulnerability is [here](https://www.exploit-db.com/exploits/42928).
 
@@ -14,10 +14,9 @@ The goal of this exercise was for me to get better at reverse engineering using 
 
 ## The Proof of Concept
 
-I started with a similar Proof of Concept, but I reduced the size of the payload to test against the username field. The exploit willbe written in `Python` because that's what all exploits are written in duh!
+I started with a similar Proof of Concept, but I reduced the size of the payload to test against the username field. The exploit will be written in `Python` because that's what all exploits are written in duh!
 
 ```python
-#!/usr/bin/python
 import socket, sys
 
 server = sys.argv[1]
@@ -51,4 +50,19 @@ except socket.error:
 
 ## Hooking the RECV function
 
+I attached `WinDbg` to the `syncbrs.exe` process and issued the `lm` command to view the loaded modules:
 
+```
+0:007> lm
+start    end        module name
+...       
+772f0000 77353000   WS2_32     (deferred)    
+```
+
+I configured a breakpoint on the `ws2_32!recv` function:
+
+```
+0:007> bp ws2_32!recv
+```
+
+I ran the PoC, and the breakpoint was hit. This is the starting point for reversing the username field. At this point I have no idea how long or difficult this is going to be... Eyes down for a full house!
