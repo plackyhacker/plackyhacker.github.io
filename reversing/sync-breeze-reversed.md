@@ -110,7 +110,7 @@ The dwords are as follows (remember this relates to the call made to `ws2_32!rec
 
 Once the function has completed and returned back to `0x00952181` (we do not know what this is yet), the return value will be moved in to `eax`.
 
-I often find myself reading the Microsoft documents and examining the stack to see how it aligns to the `C` syntax.
+I often find myself reading the Microsoft documents and examining the stack to see how it aligns to the `C` syntax. If you want to understand the function being called this is a great resource.
 
 ## Examining the Receive Buffer
 
