@@ -1,4 +1,4 @@
-# Sync Breeze Revisited
+# Sync Breeze Revisited Part 1
 
 At the time of writing I am studying Offensive Security Windows User Mode Exploit Development (EXP-301). I completed the Offensive Security Certified Expert (OSCE) a few years ago and really enjoyed it. However, I am finding that EXP-301 goes in to much more depth than the OSCE. That is probably because the new OSCE<sup>3</sup> is split into three areas that were covered in the single Cracking the Perimeter course of old.
 
@@ -184,3 +184,43 @@ In order to start reverse engineering the PE and trying to find the vulnerabilit
 
 The first step was to find out which function in the `Sync Breeze` application called `ws2_32!recv`, this is straighforward as the application returns to the saved return address before the call to `recv` (`0x007e2181`).
 
+I looked at the loaded modules again and found that the return address is in `libpal.dll`:
+
+```
+0:011> lm
+start    end        module name
+...           
+00790000 00864000   libpal   C (export symbols)       C:\Program Files\Sync Breeze Enterprise\bin\libpal.dll
+```
+
+I loaded the DLL into `IDA` and rebased the module using `Edit > Segments > Rebase Program...` to `0x790000`. I then went to the return address, by pressing `g` in `IDA` and entering the address (`0x007e2181`), this presented me with the instruction block:
+
+```
+.text:007E2160
+.text:007E2160
+.text:007E2160
+.text:007E2160 sub_7E2160 proc near
+.text:007E2160
+.text:007E2160 arg_0= dword ptr  4
+.text:007E2160 arg_4= dword ptr  8
+.text:007E2160 arg_8= dword ptr  0Ch
+.text:007E2160 arg_C= dword ptr  10h
+.text:007E2160
+.text:007E2160 mov     eax, [esp+arg_4]
+.text:007E2164 mov     edx, [esp+arg_0]
+.text:007E2168 push    esi
+.text:007E2169 mov     esi, [esp+4+arg_8]
+.text:007E216D push    0
+.text:007E216F push    eax
+.text:007E2170 mov     dword ptr [esi], 0
+.text:007E2176 mov     eax, [ecx+8]
+.text:007E2179 push    edx
+.text:007E217A push    eax
+.text:007E217B call    ds:WS2_32_16
+.text:007E2181 test    eax, eax
+.text:007E2183 jnz     short loc_7E2193
+```
+
+This shows the call to `recv` at address `0x007E217B`.
+
+In the next part I will start looking at how I can trace the instructions using dynamic and static analysis.
