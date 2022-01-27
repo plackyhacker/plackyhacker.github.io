@@ -66,3 +66,13 @@ I configured a breakpoint on the `ws2_32!recv` function:
 ```
 
 I ran the PoC, and the breakpoint was hit. This is the starting point for reversing the username field. At this point I have no idea how long or difficult this is going to be... Eyes down for a full house!
+
+```
+Breakpoint 0 hit
+*** WARNING: Unable to verify checksum for C:\Program Files\Sync Breeze Enterprise\bin\libpal.dll
+eax=00000448 ebx=00fceee8 ecx=011745d8 edx=0063d744 esi=0063cf5c edi=00002800
+eip=773023a0 esp=0063cf20 ebp=0063d744 iopl=0         nv up ei pl nz na pe nc
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000206
+WS2_32!recv:
+773023a0 8bff            mov     edi,edi
+```
