@@ -8,11 +8,9 @@ A quick Google led me to this great blog page: [Vulnserver Redux 1: Reverse Engi
 
 I decided that I would revisit the Sync-Breeze buffer overflow vulnerability introduced in the first chapter of the course, but this time I would attempt to reverse engineer it, rather than fuzz it. The public vulnerability is [here](https://www.exploit-db.com/exploits/42928).
 
-
 ## Goal
 
 The goal of this exercise was for me to get better at reverse engineering using `IDA Free` and `WinDbg` and hopefully it will help anybody reading this too, and it may even help people understand stack based buffer overflow vulnerabilities at a lower level.
-
 
 ## The Proof of Concept
 
@@ -50,7 +48,6 @@ except socket.error:
     print("Unable to connect!")
 ```
 
-
 ## Hooking the RECV function
 
 I attached `WinDbg` to the `syncbrs.exe` process and issued the `lm` command to view the loaded modules:
@@ -80,7 +77,6 @@ WS2_32!recv:
 773023a0 8bff            mov     edi,edi
 ```
 
-
 ## Examining the Stack
 
 If you understand calling conventions you will know that Win32 APIs use the `__stdcall` calling convention. In simple terms this means all parameters will be pushed on to the stack, in reverse order, before the function is called. When the function returns, the return value will have been moved into the `eax` register (this can be an integer, pointer to a memory address etc.)
@@ -95,3 +91,53 @@ int recv(
   [in]  int    flags
 );
 ```
+
+I examined the stack (`esp`), I wanted to see the next 5 dwords:
+
+```
+0:009> dd esp L5
+0180cf20  00952181 000003d0 0180d744 00002800
+0180cf30  00000000
+```
+
+The dwords are as follows (remember this relates to the call made to `ws2_32!recv`):
+
+- `0x00952181` is the saved return address, when the `recv` function is complete `eip` will be loaded with this address to return to.
+- `0x000003d0` is a pointer to the `SOCKET` object.
+- `0x0180d744` is a pointer to the memory location where our network buffer (the one we sent using python) will be copied to.
+- `0x00002800` is the length of the buffer pointed to.
+- `0x00000000` is a aset of flags that influences the behaviour of the function.
+
+Once the function has completed and returned back to `0x00952181` (we do not know what this is yet), the return value will be moved in to `eax`.
+
+I often find myself reading the Microsoft documents and examining the stack to see how it aligns to the `C` syntax.
+
+## Examining the Receive Buffer
+
+Next I allowed execution of the `recv` function to complete and return back to the calling function, using the `pt` and `p` commands:
+
+```
+0:009> pt
+eax=000001df ebx=00b2efb0 ecx=00000002 edx=0180cf08 esi=0180cf5c edi=00002800
+eip=773024c9 esp=0180cf20 ebp=0180d744 iopl=0         nv up ei pl zr na pe nc
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246
+WS2_32!recv+0x129:
+773024c9 c21000          ret     10h
+0:009> p
+eax=000001df ebx=00b2efb0 ecx=00000002 edx=0180cf08 esi=0180cf5c edi=00002800
+eip=00952181 esp=0180cf34 ebp=0180d744 iopl=0         nv up ei pl zr na pe nc
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246
+libpal!SCA_Base64::Destroy+0x7db1:
+00952181 85c0            test    eax,eax
+```
+
+I can see that the `eax` register contains `0x000001df`, this is the return value from `recv`. I evaluated the expression:
+
+```
+0:009> ? 1df
+Evaluate expression: 479 = 000001df
+```
+
+This evaluates to `479` in decimal, which just happens to be the length of the buffer we sent in our `Python` PoC. The Microsoft documentation states:
+
+[comment]:If no error occurs, recv returns the number of bytes received and the buffer pointed to by the buf parameter will contain this data received.
