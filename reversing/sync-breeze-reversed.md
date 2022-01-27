@@ -8,9 +8,13 @@ A quick Google led me to this great blog page: [Vulnserver Redux 1: Reverse Engi
 
 I decided that I would revisit the Sync-Breeze buffer overflow vulnerability introduced in the first chapter of the course, but this time I would attempt to reverse engineer it, rather than fuzz it. The public vulnerability is [here](https://www.exploit-db.com/exploits/42928).
 
+## Goal
+
+The goal of this exercise was for me to get better at reverse engineering using `IDA Free` and `WinDbg` and hopefully it will help anybody reading this too, and it may even help people understand stack based buffer overflow vulnerabilities at a lower level.
+
 ## The Proof of Concept
 
-I started with a similar Proof of Concept, but I reduced the 
+I started with a similar Proof of Concept, but I reduced the size of the payload to test against the username field. 
 
 ```python
 #!/usr/bin/python
