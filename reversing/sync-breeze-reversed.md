@@ -6,7 +6,7 @@ I have started studying the reverse engineering section in the course and I am f
 
 A quick Google led me to this great blog page: [Vulnserver Redux 1: Reverse Engineering TRUN](https://www.purpl3f0xsecur1ty.tech/2021/05/26/trun_re.html) by Purpl3 F0x Secur1ty, I used this as a starting point and attempted to reverse engineer the PE file, using the blog when I got lost, which thankfully wasn't too often.
 
-I decided that I would revisit the Sync-Breeze buffer overflow vulnerability introduced in the first chapter of the course, but this time I would attempt to reverse engineer it, rather than fuzz it. The public vulnerability is [here](https://www.exploit-db.com/exploits/42928).
+I decided that I would revisit the `Sync Breeze` buffer overflow vulnerability introduced in the first chapter of the course, but this time I would attempt to reverse engineer it, rather than fuzz it. The public vulnerability is [here](https://www.exploit-db.com/exploits/42928).
 
 ## Goal
 
@@ -59,7 +59,7 @@ start    end        module name
 772f0000 77353000   WS2_32     (deferred)    
 ```
 
-I found that Sync Breeze was using `ws2_32` for it's network operations. I configured a breakpoint on the `ws2_32!recv` function:
+I found that `Sync Breeze` was using `ws2_32` for it's network operations. I configured a breakpoint on the `ws2_32!recv` function:
 
 ```
 0:007> bp ws2_32!recv
