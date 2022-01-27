@@ -96,13 +96,13 @@ I examined the stack (`esp`), I wanted to see the next 5 dwords:
 
 ```
 0:009> dd esp L5
-0180cf20  00952181 000003d0 0180d744 00002800
+0180cf20  007e2181 000003d0 0180d744 00002800
 0180cf30  00000000
 ```
 
 The dwords are as follows (remember this relates to the call made to `ws2_32!recv`):
 
-- `0x00952181` is the saved return address, when the `recv` function is complete `eip` will be loaded with this address to return to.
+- `0x007e2181` is the saved return address, when the `recv` function is complete `eip` will be loaded with this address to return to.
 - `0x000003d0` is a pointer to the `SOCKET` object.
 - `0x0180d744` is a pointer to the memory location where our network buffer (the one we sent using python) will be copied to.
 - `0x00002800` is the length of the buffer pointed to.
@@ -128,7 +128,7 @@ eax=000001df ebx=00b2efb0 ecx=00000002 edx=0180cf08 esi=0180cf5c edi=00002800
 eip=00952181 esp=0180cf34 ebp=0180d744 iopl=0         nv up ei pl zr na pe nc
 cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246
 libpal!SCA_Base64::Destroy+0x7db1:
-00952181 85c0            test    eax,eax
+007e2181 85c0            test    eax,eax
 ```
 
 I observed that the `eax` register contains `0x000001df`, this is the return value from `recv`. I evaluated the expression:
@@ -138,7 +138,11 @@ I observed that the `eax` register contains `0x000001df`, this is the return val
 Evaluate expression: 479 = 000001df
 ```
 
-This evaluates to `479` in decimal, which just happens to be the length of the buffer we sent in our `Python` PoC. The Microsoft documentation states: *"If no error occurs, recv returns the number of bytes received and the buffer pointed to by the buf parameter will contain this data received."* It looked like my buffer was saved to the memory location successfully. I confirmed that:
+This evaluates to `479` in decimal, which just happens to be the length of the buffer I sent in the `Python` PoC.
+
+The Microsoft documentation states: *"If no error occurs, recv returns the number of bytes received and the buffer pointed to by the buf parameter will contain this data received."* 
+
+It looked like my buffer was saved to the memory location successfully. I confirmed that by examining the buffer at `0x0180d744`:
 
 ```
 0:009> dc 0x0180d744 L78
@@ -173,3 +177,10 @@ This evaluates to `479` in decimal, which just happens to be the length of the b
 0180d904  41414141 41414141 41414141 41414141  AAAAAAAAAAAAAAAA
 0180d914  41414141 73617026 726f7773 00413d64  AAAA&password=A.
 ```
+
+## Aligning IDA with WinDbg
+
+In order to start reverse engineering the PE and trying to find the vulnerability I needed to align `IDA` with `WinDbg`. Luckily the binary files that ship with `Sync Breeze` do not have any ASLR mitigations so the memory addresses remain the same. This makes using dynamic and static analysis much easier.
+
+The first step was to find out which function in the `Sync Breeze` application called `ws2_32!recv`, this is straighforward as the application returns to the saved return address before the call to `recv` (`0x007e2181`).
+
