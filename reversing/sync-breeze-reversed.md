@@ -131,7 +131,7 @@ libpal!SCA_Base64::Destroy+0x7db1:
 00952181 85c0            test    eax,eax
 ```
 
-I can see that the `eax` register contains `0x000001df`, this is the return value from `recv`. I evaluated the expression:
+I observed that the `eax` register contains `0x000001df`, this is the return value from `recv`. I evaluated the expression:
 
 ```
 0:009> ? 1df
