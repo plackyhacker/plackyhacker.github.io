@@ -8,9 +8,11 @@ A quick Google led me to this great blog page: [Vulnserver Redux 1: Reverse Engi
 
 I decided that I would revisit the Sync-Breeze buffer overflow vulnerability introduced in the first chapter of the course, but this time I would attempt to reverse engineer it, rather than fuzz it. The public vulnerability is [here](https://www.exploit-db.com/exploits/42928).
 
+
 ## Goal
 
 The goal of this exercise was for me to get better at reverse engineering using `IDA Free` and `WinDbg` and hopefully it will help anybody reading this too, and it may even help people understand stack based buffer overflow vulnerabilities at a lower level.
+
 
 ## The Proof of Concept
 
@@ -48,6 +50,7 @@ except socket.error:
     print("Unable to connect!")
 ```
 
+
 ## Hooking the RECV function
 
 I attached `WinDbg` to the `syncbrs.exe` process and issued the `lm` command to view the loaded modules:
@@ -59,7 +62,7 @@ start    end        module name
 772f0000 77353000   WS2_32     (deferred)    
 ```
 
-I configured a breakpoint on the `ws2_32!recv` function:
+I found that Sync Breeze was using `ws2_32` for it's network operations. I configured a breakpoint on the `ws2_32!recv` function:
 
 ```
 0:007> bp ws2_32!recv
@@ -75,4 +78,20 @@ eip=773023a0 esp=0063cf20 ebp=0063d744 iopl=0         nv up ei pl nz na pe nc
 cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000206
 WS2_32!recv:
 773023a0 8bff            mov     edi,edi
+```
+
+
+## Examining the Stack
+
+If you understand calling conventions you will know that Win32 APIs use the `__stdcall` calling convention. In simple terms this means all parameters will be pushed on to the stack, in reverse order, before the function is called. When the function returns, the return value will have been moved into the `eax` register (this can be an integer, pointer to a memory address etc.)
+
+The syntax for a call to [recv](https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv) is shown below:
+
+```c
+int recv(
+  [in]  SOCKET s,
+  [out] char   *buf,
+  [in]  int    len,
+  [in]  int    flags
+);
 ```
