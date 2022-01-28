@@ -178,6 +178,17 @@ It looked like my buffer was saved to the memory location successfully. I confir
 0180d914  41414141 73617026 726f7773 00413d64  AAAA&password=A.
 ```
 
+I also looked where the memory had been allocated to store the buffer:
+
+```
+0:011> !address 0x0180d744
+
+Usage:                  Stack
+...
+```
+
+The buffer had been allocated in stack memory.
+
 ## Aligning IDA with WinDbg
 
 In order to start reverse engineering the PE and trying to find the vulnerability I needed to align `IDA` with `WinDbg`. Luckily the binary files that ship with `Sync Breeze` do not have any ASLR mitigations so the memory addresses remain the same. This makes using dynamic and static analysis much easier.
@@ -221,6 +232,6 @@ I loaded the DLL into `IDA` and rebased the module using `Edit > Segments > Reba
 .text:007E2183 jnz     short loc_7E2193
 ```
 
-This shows the call to `recv` at address `0x007E217B`.
+This shows the call to `WS2_32_16` at address `0x007E217B`: this is the call to `recv`.
 
 In the next part I will start looking at how I can trace the instructions using dynamic and static analysis.
