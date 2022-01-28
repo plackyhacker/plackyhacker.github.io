@@ -38,6 +38,8 @@ buffer += b"Content-Length: " + str(len(content)).encode() + b"\r\n"
 buffer += b"\r\n"
 buffer += content
 
+print("Sending: " + str(len(buffer)) + " bytes...")
+
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((server, port))
