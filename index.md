@@ -1,6 +1,6 @@
 # Welcome to my GitHub Pages.
 
-I am me... just an amateur malware developer. If you use my code, don't be naughty, keep it legal!!!
+I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear Industry. I am interested in malicious codez!
 
 ## Articles
 
