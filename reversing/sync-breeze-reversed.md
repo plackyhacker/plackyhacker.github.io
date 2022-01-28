@@ -193,7 +193,7 @@ Usage:                  Stack
 ...
 ```
 
-The buffer had been allocated in stack memory.
+The buffer had been allocated in stack memory. Some readers might be thinking, here's our opportunity to overflow the stack. As far as I am aware there aren't any stack overflow vulnerabilities in `recv` so don't be tempted to overflow every variable that is written to the stack! It will be far more fruitful if we can find a buffer that has been under-allocated and over-committed.
 
 ## Aligning IDA with WinDbg
 
