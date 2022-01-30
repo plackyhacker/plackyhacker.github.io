@@ -114,7 +114,7 @@ The dwords are as follows (remember this relates to the call made to `ws2_32!rec
 - `0x000003d0` is a pointer to the `SOCKET` object.
 - `0x0180d744` is a pointer to the memory location where our network buffer (the one we sent using python) will be copied to.
 - `0x00002800` is the length of the buffer pointed to.
-- `0x00000000` is a aset of flags that influences the behaviour of the function.
+- `0x00000000` is a set of flags that influences the behaviour of the function.
 
 Once the function has completed and returned back to `0x00952181` (we do not know what this is yet), the return value will be moved in to `eax`.
 
