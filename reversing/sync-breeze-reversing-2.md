@@ -109,7 +109,7 @@ It isn't always necessary, but it is sometimes helpful to write psuedo-code base
 
 The second block I encountered in the `libspp` binary following our return from `libpal` binary finds the length of the buffer sent in the PoC. At this point I wasn't sure if this was important to finding the vulnerability but it is probably used to seperate the headers from the POST variables.
 
-I commented the block quite heaviy:
+I commented the block quite heavily, to explain what my thought process was:
 
 ```
 .text:10098650 This block calls:
