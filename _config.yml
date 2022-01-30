@@ -3,4 +3,4 @@ plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
 title: PlackyHacker
 description: 
-avatar: /images/blog-logo.svg
+avatar: https://avatars.githubusercontent.com/u/42491100?v=4
