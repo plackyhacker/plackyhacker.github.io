@@ -18,7 +18,6 @@ The goal of this exercise was for me to get better at reverse engineering using 
 
 The goal isn't to track down any new vulnerabilites. I guess this binary has been done to death! I will try to track down the code where the known vulnerability exists.
 
-
 ## The Proof of Concept
 
 I started with a similar Proof of Concept, but I reduced the size of the payload to test against the username field. The exploit will be written in `Python` because that's what all exploits are written in duh!
