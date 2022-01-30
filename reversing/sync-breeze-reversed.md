@@ -247,7 +247,7 @@ In the next part I will start looking at how I can trace the instructions using 
 
 **A note on ASLR**
 
-I later realised that two of the DLLs that ship with `Sync Breeze` were loaded with different base addresses upon each realod into `WinDbg`:
+I later realised that two of the DLLs that ship with `Sync Breeze` were loaded with different base addresses upon each reaload into `WinDbg`:
 
 ```
 00400000 00462000   syncbrs    (deferred)             
