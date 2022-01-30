@@ -199,7 +199,7 @@ The buffer had been allocated in stack memory. Some readers might be thinking, h
 
 ## Aligning IDA with WinDbg
 
-In order to start reverse engineering the PE and trying to find the vulnerability I needed to align `IDA` with `WinDbg`. Luckily the binary files that ship with `Sync Breeze` do not have any ASLR mitigations so the memory addresses remain the same. This makes using dynamic and static analysis much easier.
+In order to start reverse engineering the PE and trying to find the vulnerability I needed to align `IDA` with `WinDbg`. Luckily the binary files that ship with `Sync Breeze` do not have any ASLR mitigations so the memory addresses remain the same (whe I was going through the alignment again later I discovered that two of the binaries did load with different base addresses, see the end of this blog post for details). This makes using dynamic and static analysis much easier.
 
 The first step was to find out which function in the `Sync Breeze` application called `ws2_32!recv`, this is straighforward as the application returns to the saved return address before the call to `recv` (`0x007e2181`).
 
@@ -243,3 +243,38 @@ I loaded the DLL into `IDA` and rebased the module using `Edit > Segments > Reba
 This shows the call to `WS2_32_16` at address `0x007E217B`: this is the call to `recv`.
 
 In the next part I will start looking at how I can trace the instructions using dynamic and static analysis.
+
+
+**A note on ASLR**
+
+I later realised that two of the DLLs that ship with `Sync Breeze` were loaded with different base addresses upon each realod into `WinDbg`:
+
+```
+00400000 00462000   syncbrs    (deferred)             
+007d0000 008a4000   libpal     (deferred)             
+009b0000 00a64000   libsync    (deferred)             
+10000000 10223000   libspp     (deferred)             
+
+00400000 00462000   syncbrs    (deferred)             
+00770000 00844000   libpal     (deferred)             
+00950000 00a04000   libsync    (deferred)             
+10000000 10223000   libspp     (deferred)
+```
+
+Upon inspecting the loaded modules using the `narly` plugin I found none of them were compiled with ASLR mitigations:
+
+```
+0:009> !nmod
+00400000 00462000 syncbrs              /SafeSEH OFF                C:\Program Files\Sync Breeze Enterprise\bin\syncbrs.exe
+00770000 00844000 libpal               /SafeSEH OFF                C:\Program Files\Sync Breeze Enterprise\bin\libpal.dll
+00950000 00a04000 libsync              /SafeSEH OFF                C:\Program Files\Sync Breeze Enterprise\bin\libsync.dll
+10000000 10223000 libspp               /SafeSEH OFF                C:\Program Files\Sync Breeze Enterprise\bin\libspp.dll
+```
+
+I found this very odd. I asked my fellow OSED students and was referred to this:
+
+https://www.mandiant.com/resources/six-facts-about-address-space-layout-randomization-on-windows
+
+_Fact 5: Windows 10 is more aggressive at applying ASLR, and even to EXEs and DLLs not marked as ASLR-compatible, and this could make ASLR stronger._
+
+This still confuses me, as two of the binaries didn't have ASLR applied but two of them _appear_ to have ASLR applied. Computers eh?!?
