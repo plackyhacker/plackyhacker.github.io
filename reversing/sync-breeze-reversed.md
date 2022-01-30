@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2)
 
 # Sync Breeze Revisited Part 1
 
@@ -276,3 +276,5 @@ I found this very odd. I asked my fellow OSED students and was referred to [this
 This still confuses me, as two of the binaries didn't have ASLR applied but two of them _appear_ to have ASLR applied. This reminds me of a quote by Albert Einstein: _"God does not play dice with ASLR."_ Or something like that!
 
 This means that when tracing `libpal` or `libsync`, every time I restarted the debugger I had to realign `IDA`.
+
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2)
