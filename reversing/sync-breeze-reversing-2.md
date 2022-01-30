@@ -42,6 +42,15 @@ The next two instructions following the call to `recv` were easy to follow:
 
 The `test` instruction carries out a bitwise AND against the two operands. In this case the two operands are both `eax`. The `test` instruction can be used to test for a zero value in a register, if `eax` is set to `0x0` then the `zf` (zero flag) will be set (to `0x1`), otherwise it will not be set. I established in part one of this article that the `eax` register contained the size of the buffer sent in the PoC, after the `test` instruction `zf` is set to `0x0` and the jump to `0x00862193` is made.
 
+After the jump was made the next basic block contained:
 
+```
+.text:00862193
+.text:00862193 loc_862193:
+.text:00862193 cmp     eax, 0FFFFFFFFh
+.text:00862196 jnz     short loc_8621B3
+```
+
+This is easily recognisable. As `eax` is the return value from the `recv` function it is compared to the value `0xffffffff` (`-1`), which is equivalent to the constant `SOCKET_ERROR`. I changed the name of the block `loc_862193` to `l_sockerror_check`. This seems quite trivial but it is good to get in the habit of being organised, particularly if you don't know when you will return to the blocks later. Renaming variables, blocks, functions and adding comments is really good practice.
 
 **WIP: Currently reverse engineering and writing at the same time!**
