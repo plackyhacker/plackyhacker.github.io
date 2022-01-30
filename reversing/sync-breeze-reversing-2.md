@@ -89,6 +89,8 @@ The instruction sets the FLAG registry, which contains a number of flags that ca
 
 I noted that our buffer length was moved into the memory location pointed to by `esi` (I wasn't sure if this was important at this stage). I used dynamic analysis in `WinDbg` to find out where the return took me:
 
+**Note:** The optional numeric `10h` parameter to `ret` specifies the number of stack bytes to be released rafter the return address is popped from the stack, these are generally the parameters pushed to the stack for the call to the function.
+
 ```
 0:011> p
 *** WARNING: Unable to verify checksum for C:\Program Files\Sync Breeze Enterprise\bin\libspp.dll
