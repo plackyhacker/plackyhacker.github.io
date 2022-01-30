@@ -99,15 +99,15 @@ libspp!SCA_HttpAgent::ReadHttpHeader+0x5c:
 1009864c 85c0            test    eax,eax
 ```
 
-This took me into the `libspp` binary, I loaded that in to `IDA` to continue tracing the instructions. There isn't any point me documenting all of the `cmp`/jump instructions, I have written about those which I found to be important, howver I continued using the same startegy in this section. I was trying to figure out how the buffer was minipulated and at what point there may be a vulnerability.
+This took me into the `libspp` binary, I loaded that in to `IDA` to continue tracing the instructions. There isn't any point me documenting all of the `cmp`/jump instructions, I have written about those which I found to be important, however I continued using the same startegy in this section. I was trying to figure out how the buffer was minipulated and at what point there may be a vulnerability.
 
-**Note:** The optional numeric `10h` parameter to `ret` specifies the number of stack bytes to be released rafter the return address is popped from the stack, these are generally the parameters pushed to the stack for the call to the function.
+**Note:** The optional numeric `10h` parameter to `ret` specifies the number of stack bytes to be released after the return address is popped from the stack, these are generally the parameters pushed to the stack for the call to the function.
 
 ## Psuedo Code
 
 It isn't always necessary, but it is sometimes helpful to write psuedo-code base upon the reverse engineered assembly instructions. I am aware that `Ghidra` and `IDA Pro` can do this, but these tools are not allowed in the OSED exam and it's always good to understand what I am looking at.
 
-The second block I encountered in the `libspp` binary following our return from `libpal` binary finds the length of the buffer sent in the PoC. At this point I wasn't sure if this was important to finding the vulnerability but it is probably used to seperated the headers from the POST variables.
+The second block I encountered in the `libspp` binary following our return from `libpal` binary finds the length of the buffer sent in the PoC. At this point I wasn't sure if this was important to finding the vulnerability but it is probably used to seperate the headers from the POST variables.
 
 I commented the block quite heaviy:
 
