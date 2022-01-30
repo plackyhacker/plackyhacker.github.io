@@ -151,7 +151,7 @@ else
 }
 ```
 
-Again, this can seem very trivial but for longer blocks, or multiple blocks it can help to understand the flow of the instructions and the variables.
+Again, this can seem very trivial but for longer blocks, or multiple blocks it can help to understand the flow of the instructions and the variables being used/accessed.
 
 
 **WIP: Currently reverse engineering and writing at the same time!**
