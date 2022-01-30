@@ -190,12 +190,12 @@ ReadHttpHeader::SCA_HttpAgent(?)
 |
 |		// this calls the recv function, not sure if the paramaters are important yet
 +-- f_calls_recv(?) [don't know function name]
-		|
+    |
     |		// this is the API that receives our POST buffer	
   	+-- ws2_32.recv(SOCKET, char*, int, int)
-  			|
-  	<---+
-  	|
+	|
+    <---+
+    |
 <---+
 |
 |		// [1] char* is the entire buffer (at ebp), [2] not important, [3] is the length of the POST header
