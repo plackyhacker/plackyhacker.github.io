@@ -68,7 +68,7 @@ And the next block was changed to:
 .text:00862193
 .text:00862193 l_sockerror_check:
 .text:00862193 cmp     eax, 0FFFFFFFFh
-.text:00862196 jnz     short b_cleanup_and_return
+.text:00862196 jnz     short l_cleanup_and_return
 ```
 
 This next block checked the return value against `SOCKET_ERROR` using a `cmp` instruction. The `cmp` instruction is very easy to understand (thankfully). The `cmp` instruction subtracts the second operand (in this case `0FFFFFFFFh`) from the first operand (in this case `eax` - which contains the buffer length).
@@ -79,7 +79,7 @@ The instruction sets the FLAG registry, which contains a number of flags that ca
 .text:008621B3 This block moves the length of our buffer (eax) into the memory location pointed to by [esi],
 .text:008621B3 sets the return value to 1 (eax), then returns to libssp 0x1009864c
 .text:008621B3
-.text:008621B3 b_cleanup_and_return:
+.text:008621B3 l_cleanup_and_return:
 .text:008621B3 mov     [esi], eax
 .text:008621B5 mov     eax, 1
 .text:008621BA pop     esi
@@ -88,8 +88,6 @@ The instruction sets the FLAG registry, which contains a number of flags that ca
 ```
 
 I noted that our buffer length was moved into the memory location pointed to by `esi` (I wasn't sure if this was important at this stage). I used dynamic analysis in `WinDbg` to find out where the return took me:
-
-**Note:** The optional numeric `10h` parameter to `ret` specifies the number of stack bytes to be released rafter the return address is popped from the stack, these are generally the parameters pushed to the stack for the call to the function.
 
 ```
 0:011> p
@@ -103,6 +101,57 @@ libspp!SCA_HttpAgent::ReadHttpHeader+0x5c:
 
 This took me into the `libspp` binary, I loaded that in to `IDA` to continue tracing the instructions. There isn't any point me documenting all of the `cmp`/jump instructions, I have written about those which I found to be important, howver I continued using the same startegy in this section. I was trying to figure out how the buffer was minipulated and at what point there may be a vulnerability.
 
+**Note:** The optional numeric `10h` parameter to `ret` specifies the number of stack bytes to be released rafter the return address is popped from the stack, these are generally the parameters pushed to the stack for the call to the function.
+
+## Psuedo Code
+
+It isn't always necessary, but it is sometimes helpful to write psuedo-code base upon the reverse engineered assembly instructions. I am aware that `Ghidra` and `IDA Pro` can do this, but these tools are not allowed in the OSED exam and it's always good to understand what I am looking at.
+
+The second block I encountered in the `libspp` binary following our return from `libpal` binary finds the length of the buffer sent in the PoC. At this point I wasn't sure if this was important to finding the vulnerability but it is probably used to seperated the headers from the POST variables.
+
+I commented the block quite heaviy:
+
+```
+.text:10098650 This block calls:
+.text:10098650 IsHeaderReady(char const* , ulong, ulong *)
+.text:10098650
+.text:10098650 Our entire POST buffer is passed in to char const*.
+.text:10098650 Once the function is completed, the ulong* contains the length of our buffer minus the POST variables.
+.text:10098650 (This is the http headers length)
+.text:10098650
+.text:10098650 mov     eax, [esp+30h+var_20] ; The length of our buffer is stored here and moved in to eax
+.text:10098654 add     esi, eax        ; esi now contains the length of our buffer
+.text:10098656 sub     edi, eax        ; edi started at 2800 - minus the length of our buffer, edi=00002621 (479)
+.text:10098658 lea     eax, [esp+30h+var_18] ; This is a memory address that will be used to store the length of the http headers
+.text:1009865C lea     ecx, [esi+1]    ; This moves our buffer length + 1 into esi
+.text:1009865F push    eax             ; a pointer to a memory address to hold the length of our buffer minus the POST variables
+.text:10098660 push    ecx             ; our buffer length + 1, probably used to scan the buffer for the header  terminator '\r\n\r\n'
+.text:10098661 push    ebp             ; char * - this points to the start of our entire POST buffer, including http variables
+.text:10098662 lea     ecx, [esp+3Ch+var_14]
+.text:10098666 call    ?IsHeaderReady@SCA_HttpParser@@QAEHPBDKPAK@Z ; SCA_HttpParser::IsHeaderReady(char const *,ulong,ulong *)
+.text:10098666
+.text:10098666 After the function returns the memory pointed to by eax (pre-call at [esp+30h+var_18]) contains the length of our buffer minus the variables.
+.text:10098666
+.text:1009866B test    eax, eax        ; The function returns 1 (success)
+.text:1009866D jnz     short loc_100986B1 ; Not sure what the next block does yet.
+```
+
+I convertedt this to what I believed to be the psuedo-code (the purpose of this is not line-by-line accuracy but to help understand the purpose of the block in my head):
+
+```c
+bool result = SCA_HttpParser.IsHeaderReady(&postBuffer, lenOfBuffer, &headersLength);
+
+if(result == true)
+{
+  // got to success block
+}
+else
+{
+  // go to fail block
+}
+```
+
+Again, this can seem very trivial but for longer blocks, or multiple blocks it can help to understand the flow of the instructions and the variables.
 
 
 **WIP: Currently reverse engineering and writing at the same time!**
