@@ -87,4 +87,20 @@ The instruction sets the FLAG registry, which contains a number of flags that ca
 .text:008621BB f_calls_recv endp
 ```
 
+I noted that our buffer length was moved into the memory location pointed to by `esi` (I wasn't sure if this was important at this stage). I used dynamic analysis in `WinDbg` to find out where the return took me:
+
+```
+0:011> p
+*** WARNING: Unable to verify checksum for C:\Program Files\Sync Breeze Enterprise\bin\libspp.dll
+eax=00000001 ebx=00b7efb0 ecx=00000002 edx=0185cf08 esi=00000000 edi=00002800
+eip=1009864c esp=0185cf4c ebp=0185d744 iopl=0         nv up ei pl nz na po cy
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000203
+libspp!SCA_HttpAgent::ReadHttpHeader+0x5c:
+1009864c 85c0            test    eax,eax
+```
+
+This took me into the `libspp` binary, I loaded that in to `IDA` to continue tracing the instructions. There isn't any point me documenting all of the `cmp`/jump instructions, I have written about those which I found to be important, howver I continued using the same startegy in this section. I was trying to figure out how the buffer was minipulated and at what point there may be a vulnerability.
+
+
+
 **WIP: Currently reverse engineering and writing at the same time!**
