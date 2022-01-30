@@ -7,6 +7,7 @@ I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear In
 ### Reverse Engineering
 
 January 2022 - [Syn Breeze Revisited Part 1](https://plackyhacker.github.io/reversing/sync-breeze-reversed)
+January 2022 - [Syn Breeze Revisited Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2)
 
 
 ## Repositories
