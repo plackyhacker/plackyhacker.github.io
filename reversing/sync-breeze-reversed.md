@@ -274,3 +274,5 @@ Upon inspecting the loaded modules using the `narly` plugin I found none of them
 I found this very odd. I asked my fellow OSED students and was referred to [this article](https://www.mandiant.com/resources/six-facts-about-address-space-layout-randomization-on-windows) which states _"Fact 5: Windows 10 is more aggressive at applying ASLR, and even to EXEs and DLLs not marked as ASLR-compatible, and this could make ASLR stronger"._
 
 This still confuses me, as two of the binaries didn't have ASLR applied but two of them _appear_ to have ASLR applied. This reminds me of a quote by Albert Einstein: _"God does not play dice with ASLR."_ Or something like that!
+
+This means that when tracing `libpal` or `libsync`, every time I restarted the debugger I had to realign `IDA`.
