@@ -53,4 +53,38 @@ After the jump was made the next basic block contained:
 
 This is easily recognisable. As `eax` is the return value from the `recv` function it is compared to the value `0xffffffff` (`-1`), which is equivalent to the constant `SOCKET_ERROR`. I changed the name of the block `loc_862193` to `l_sockerror_check`. This seems quite trivial but it is good to get in the habit of being organised, particularly if you don't know when you will return to the blocks later. Renaming variables, blocks, functions and adding comments is really good practice.
 
+It might seem trivial, the preceeding instructions were changed to:
+
+```
+.text:00862181 Check that the return value from ws2_32.recv is not 0x0
+.text:00862181 test    eax, eax
+.text:00862183 jnz     short l_sockerror_check
+```
+
+And the next block was changed to:
+
+```
+.text:00862193 Check that the return value from ws2_32.recv is not SOCKET_ERROR
+.text:00862193
+.text:00862193 l_sockerror_check:
+.text:00862193 cmp     eax, 0FFFFFFFFh
+.text:00862196 jnz     short b_cleanup_and_return
+```
+
+This next block checked the return value against `SOCKET_ERROR` using a `cmp` instruction. The `cmp` instruction is very easy to understand (thankfully). The `cmp` instruction subtracts the second operand (in this case `0FFFFFFFFh`) from the first operand (in this case `eax` - which contains the buffer length).
+
+The instruction sets the FLAG registry, which contains a number of flags that can be used in jump instructions, in this example the `zf` (sero flag). After the `cmp` instruction `zf` was set to `0x0` and the jump to `0x008621b3` was made. This took me to the final block before the function returns:
+
+```
+.text:008621B3 This block moves the length of our buffer (eax) into the memory location pointed to by [esi],
+.text:008621B3 sets the return value to 1 (eax), then returns to libssp 0x1009864c
+.text:008621B3
+.text:008621B3 b_cleanup_and_return:
+.text:008621B3 mov     [esi], eax
+.text:008621B5 mov     eax, 1
+.text:008621BA pop     esi
+.text:008621BB retn    10h
+.text:008621BB f_calls_recv endp
+```
+
 **WIP: Currently reverse engineering and writing at the same time!**
