@@ -107,7 +107,7 @@ This took me into the `libspp` binary, I loaded that in to `IDA` to continue tra
 
 It isn't always necessary, but it is sometimes helpful to write psuedo-code base upon the reverse engineered assembly instructions. I am aware that `Ghidra` and `IDA Pro` can do this, but these tools are not allowed in the OSED exam and it's always good to understand what I am looking at.
 
-The second block I encountered in the `libspp` binary following our return from `libpal` binary finds the length of the buffer sent in the PoC. At this point I wasn't sure if this was important to finding the vulnerability but it is probably used to seperate the headers from the POST variables.
+The second block I encountered in the `libspp` binary following our return from the `libpal` binary finds the length of the buffer sent in the PoC. At this point I wasn't sure if this was important to finding the vulnerability but it is probably used to seperate the headers from the POST variables.
 
 I commented the block quite heavily, to explain what my thought process was:
 
