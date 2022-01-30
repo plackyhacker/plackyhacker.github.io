@@ -29,4 +29,19 @@ libpal!SCA_Base64::Destroy+0x7db1:
 00862181 85c0            test    eax,eax
 ```
 
+## Tracing TEST and CMP Instructions
+
+When reverse engineering a binary you often have to follow the flow of the instructions to see where buffers are accessed and manipulated, and it is important to understand `test`, `cmp` and the various jump instructions.
+
+The next two instructions following the call to `recv` were easy to follow:
+
+```
+.text:00862181 test    eax, eax
+.text:00862183 jnz     short loc_862193
+```
+
+The `test` instruction carries out a bitwise AND against the two operands. In this case the two operands are both `eax`. The `test` instruction can be used to test for a zero value in a register, if `eax` is set to `0x0` then the `zf` (zero flag) will be set (to `0x1`), otherwise it will not be set. I established in part one of this article that the `eax` register contained the size of the buffer sent in the PoC, after the `test` instruction `zf` is set to `0x0` and the jump to `0x00862193` is made.
+
+
+
 **WIP: Currently reverse engineering and writing at the same time!**
