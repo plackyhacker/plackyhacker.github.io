@@ -182,7 +182,7 @@ At this point I noticed that the POST buffer was located at `ebp` (which makes s
 
 The first command inspects the dword at `0x01a5cf64`, this is where the length of the headers is stored. The second command shows the POST buffer located at the location pointed to by `ebp`, and the third command confirms that the `SCA_HttpParser.IsHeaderReady` call is used (at least) to parse the headers for their length; I examined the buffer locate at `ebp + 167` and sure enough I found the beginning of the POST parameters.
 
-This is what we know so far:
+This is what I know so far:
 
 ```
 // not sure if the paramaters are important yet
