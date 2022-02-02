@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/reversing/sync-breeze-reversed)
+[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/reversing/sync-breeze-reversed) : [Part 3](https://plackyhacker.github.io/reversing/sync-breeze-reversing-3)
 
 # Sync Breeze Revisited Part 2
 
@@ -208,4 +208,4 @@ ReadHttpHeader::SCA_HttpAgent(?)
 
 That's it for part two!
 
-[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/reversing/sync-breeze-reversed)
+[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/reversing/sync-breeze-reversed) : [Part 3](https://plackyhacker.github.io/reversing/sync-breeze-reversing-3)
