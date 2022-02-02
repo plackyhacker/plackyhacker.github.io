@@ -6,7 +6,7 @@
 
 I continued tracing the instrcution flow trying to see if any vulnerable functions were called (such as `strcpy`), but nothing! However, following the instruction flow I arrived upon the following:
 
-```nasm
+```
 .text:00754E30 ; int __thiscall SCA_ConfigObj::GetField(SCA_ConfigObj *__hidden this, const char *, char *, unsigned int)
 .text:00754E30 public ?GetField@SCA_ConfigObj@@QAEHPBDPADK@Z
 .text:00754E30 ?GetField@SCA_ConfigObj@@QAEHPBDPADK@Z proc near
