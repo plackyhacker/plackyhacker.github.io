@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2) : [Part 3](https://plackyhacker.github.io/reversing/sync-breeze-reversing-3)
 
 # Sync Breeze Revisited Part 1
 
@@ -277,4 +277,4 @@ This still confuses me, as two of the binaries didn't have ASLR applied but two 
 
 This means that when tracing `libpal` or `libsync`, every time I restarted the debugger I had to realign `IDA`.
 
-[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2) : [Part 3](https://plackyhacker.github.io/reversing/sync-breeze-reversing-3)
