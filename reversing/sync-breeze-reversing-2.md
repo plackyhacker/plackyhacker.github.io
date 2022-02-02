@@ -195,7 +195,7 @@ ReadHttpHeader::SCA_HttpAgent(?)
     ws2_32.recv(SOCKET, char*, int, int)
   }
 
-	// [1] char* is the entire buffer (at ebp), [2] not important, [3] is the length of the POST header
+  // [1] char* is the entire buffer (at ebp), [2] not important, [3] is the length of the POST header
   SCA_HttpParser:IsHeaderReady(char*, ulong, ulong *);
 
   // to be continued...
