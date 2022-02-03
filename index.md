@@ -10,4 +10,4 @@ January 2022 - [Syn Breeze Revisited Part 1](https://plackyhacker.github.io/reve
 
 January 2022 - [Syn Breeze Revisited Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2)
 
-Febuary 2022 - [Syn Breeze Revisited Part 3](https://plackyhacker.github.io/reversing/sync-breeze-reversing-3)
+February 2022 - [Syn Breeze Revisited Part 3](https://plackyhacker.github.io/reversing/sync-breeze-reversing-3)
