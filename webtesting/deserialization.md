@@ -1,4 +1,4 @@
- # Deserialization Attacks
+ # Deserialization - Object Instantiation for Remote Code Execution
  
 I am currently studying Offensive Security Advanced Web Attacks and Exploitation (WEB-300). One of the sections in the curriculum is a Dot Net Nuke (DNN) deserialization vulnerability leading to code execution.
 
