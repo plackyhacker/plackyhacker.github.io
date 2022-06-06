@@ -4,6 +4,10 @@ I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear In
 
 ## Articles
 
+### Web Application Hacking
+
+January 2022 - [Deserialization - Object Instantiation for Remote Code Execution](https://plackyhacker.github.io/webtesting/deserialization)
+
 ### Reverse Engineering
 
 January 2022 - [Syn Breeze Revisited Part 1](https://plackyhacker.github.io/reversing/sync-breeze-reversed)
