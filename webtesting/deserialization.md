@@ -8,7 +8,23 @@ I decided to have a look at the underlying .Net objects to demonstrate what is h
 
 Hopefully this will help others understand why code execution is achieved.
 
-## JSON
+The questions I am going to try and answer are:
+
+- What is a deserialization vulnerability?
+- What is an `ObjectDataProvider`?
+- How does the PowerShell script get executed automatically?
+
+## Deserialization Vulnerabilities
+
+According to [OWASP (2017)](https://owasp.org/www-project-top-ten/2017/A8_2017-Insecure_Deserialization) 'the impact of deserialization flaws cannot be overstated. These flaws can lead to remote code execution attacks, one of the most serious attacks possible'.
+
+Serialization is the operation of taking an object or objects in memory and encoding them into a stream of bytes that can be stored (for example to a datase or file) or transmit (for example over a network). Deserialization is the opposite of serialization, a stream of bytes is taken and used to reconstruct an object or objects in memory. Examples of serialization outputs are XML and JSON.
+
+Serialization can be very useful for transmitting objects over a network where two discontiguous systems can effectively contain the same state in terms of object instantiations.
+
+
+
+## An Example - JSON
 
 The hack the box JSON machine is a perfect example to explain the underlying object instantiation. Without going in to too much detail the HTTP POST payload used to exploit JSON is shown below:
 
@@ -23,17 +39,3 @@ The hack the box JSON machine is a perfect example to explain the underlying obj
     'ObjectInstance':{'$type':'System.Diagnostics.Process, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'}
 }
 ```
-
-The questions I am going to try and answer are:
-
-- What is a deserialization vulnerability?
-- What is an `ObjectDataProvider`?
-- How does the PowerShell script get executed automatically?
-
-## Deserialization Vulnerabilities
-
-According to [OWASP (2017)](https://owasp.org/www-project-top-ten/2017/A8_2017-Insecure_Deserialization) 'the impact of deserialization flaws cannot be overstated. These flaws can lead to remote code execution attacks, one of the most serious attacks possible'.
-
-Serialization is the operation of taking an object or objects in memory and encoding them into a stream of bytes that can be stored (for example to a datase or file) or transmit (for example over a network). Deserialization is the opposite of serialization, a stream of bytes is taken and used to reconstruct an object or objects in memory. Examples of serialization outputs are XML and JSON.
-
-Serialization can be very useful for transmitting objects over a network where two discontiguous systems can effectively contain the same state in terms of object instantiations.
