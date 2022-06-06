@@ -14,6 +14,8 @@ The questions I am going to try and answer are:
 - What is an `ObjectDataProvider`?
 - How does the PowerShell script get executed automatically?
 
+I am not going to discuss the code of a deserialization vulnerability as that has been done many times before... maybe instantiation has too... I don't really know... or care!
+
 ## Deserialization Vulnerabilities
 
 According to [OWASP (2017)](https://owasp.org/www-project-top-ten/2017/A8_2017-Insecure_Deserialization) 'the impact of deserialization flaws cannot be overstated. These flaws can lead to remote code execution attacks, one of the most serious attacks possible'.
@@ -22,11 +24,13 @@ Serialization is the operation of taking an object or objects in memory and enco
 
 Serialization can be very useful for transmitting objects over a network where two discontiguous systems can effectively contain the same state in terms of object instantiations.
 
+<img width="273" alt="Screenshot 2022-06-06 at 19 05 06" src="https://user-images.githubusercontent.com/42491100/172219463-bc6dcf9e-e317-470d-abbc-a70902cfea64.png">
 
+If the target application has a deserialization vulnerability then it may be possible to submit unsanitized JSON/XML to the web application and trigger code execution.
 
 ## An Example - JSON
 
-The hack the box JSON machine is a perfect example to explain the underlying object instantiation. Without going in to too much detail the HTTP POST payload used to exploit JSON is shown below:
+The hack the box JSON machine is a perfect example to explain the underlying object instantiation. The HTTP POST payload used to exploit JSON is shown below:
 
 ```
 {
@@ -39,3 +43,11 @@ The hack the box JSON machine is a perfect example to explain the underlying obj
     'ObjectInstance':{'$type':'System.Diagnostics.Process, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'}
 }
 ```
+
+When the web application deserializes the JSON object it spawns a reverse shell, but why?
+
+## ObjectDataProvider
+
+
+
+## PowerShell Execution
