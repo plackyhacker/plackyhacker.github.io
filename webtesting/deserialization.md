@@ -3,11 +3,11 @@
  
 I am currently studying Offensive Security Advanced Web Attacks and Exploitation (WEB-300). One of the sections in the curriculum is a Dot Net Nuke (DNN) deserialization vulnerability leading to code execution.
 
-I have carried out some deserialization attacks before (all legal of course), and whilst I understand the concpet behind them I had never really thought about how the RCE occurs.
+I have carried out some deserialization attacks before (all legal of course), and whilst I understood the concept behind them I had never really thought about how the RCE occurs.
 
-I decided to have a look at the underlying .Net objects to demonstrate what is happening under the hood once the deserialization has been carried out an the object has been instantiated.
+I decided to have a look at the underlying .Net objects to demonstrate what is happening under the hood once the deserialization has been carried out and the object has been instantiated.
 
-Hopefully this will help others understand why code execution is achieved.
+Hopefully this will help others to understand why code execution is achieved.
 
 The questions I am going to try and answer are:
 
@@ -49,6 +49,26 @@ When the web application deserializes the JSON object it spawns a reverse shell,
 
 ## ObjectDataProvider
 
+The `ObjectDataProvider` class wraps and creates an object that you can use as a binding source. A binding source is used to bind underlying data to a form control. We aren't too interested in that, what we are interested in is that it can act as a wrapper to instantiate a class and call a method in the instantiated object.
 
+### PowerShell Execution
 
-## PowerShell Execution
+Our goal is to get PowerShell execution on the target. In C# we can do that with the following code:
+
+```csharp
+Process p = new Process();
+p.Start("cmd", "/c powershell.exe  -exec bypass -enc ...");
+```
+
+Unfortunately we cannot do this from a web browser. What we can do is abuse the vulnerable JSON deserializer to instantiate an `ObjectDataProvider` which in turn will instantiate a `Process` and call the `Start()` method automatically upon instantiation. In C# it looks like this:
+
+```csharp
+ObjectDataProvider provider = new ObjectDataProvider();
+
+provider.MethodName = "Start";
+provider.MethodParameters.Add("cmd");
+provider.MethodParameters.Add("/c powershell.exe  -exec bypass -enc ...");
+provider.ObjectInstance = new Process();
+```
+
+The JSON deserializer creates these objects as part of the deserialization process and the `ObjectDataProvider` does its magic and calls the `Start()` method on our behalf!
