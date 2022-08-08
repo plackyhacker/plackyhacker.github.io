@@ -8,6 +8,10 @@ The OSWE is a source code review exam so I will use the Java code to find the vu
 
 The Javulna application is a REST API web application; this means there is no website front end.
 
+## My Methodology
+
+coming soon
+
 ## Vulnerability 1
 
 coming soon
