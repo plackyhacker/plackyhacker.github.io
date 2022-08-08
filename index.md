@@ -8,6 +8,8 @@ I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear In
 
 June 2022 - [Deserialization - Object Instantiation for Remote Code Execution](https://plackyhacker.github.io/webtesting/deserialization)
 
+August 2022 - [Javulna - SQL Injection Walkthrough](https://github.com/plackyhacker/plackyhacker.github.io/webtesting/javulna-sqli.md)
+
 ### Reverse Engineering
 
 January 2022 - [Syn Breeze Revisited Part 1](https://plackyhacker.github.io/reversing/sync-breeze-reversed)
