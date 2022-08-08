@@ -10,6 +10,10 @@ The Javulna application is a REST API web application; this means there is no we
 
 ## My Methodology
 
+### Mapping out the web application
+
+### Looking for Vulnerabilities
+
 coming soon
 
 ## Vulnerability 1
