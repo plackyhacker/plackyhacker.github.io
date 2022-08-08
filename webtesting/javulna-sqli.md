@@ -10,18 +10,18 @@ The Javulna application is a REST API web application; this means there is no we
 
 ## Vulnerability 1
 
-~coming soon~
+coming soon
 
 ## Vulnerability 2
 
-~coming soon~
+coming soon
 
 ## Walkthrough
 
-~coming soon~
+coming soon
 
 ## Full Exploit Code
 
-~coming soon~
+coming soon
 
 [Home](https://plackyhacker.github.io)
