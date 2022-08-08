@@ -1,6 +1,6 @@
-# Javulna Auth Bypass and RCE Walkthrough
-
 [Home](https://plackyhacker.github.io)
+
+# Javulna Auth Bypass and RCE Walkthrough
 
 At the time of writing I am currently studying OSWE and I decided to do a bit of Java MVC exploitation as part of my studies. The OSWE exam requires the candidate to bypass authentication and gain reverse shell in a single exploit script, so that's what I decided to do using the [Javulna](https://github.com/defdeveu/code.java.Javulna) vulnerable web app.
 
