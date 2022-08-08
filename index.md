@@ -8,7 +8,7 @@ I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear In
 
 June 2022 - [Deserialization - Object Instantiation for Remote Code Execution](https://plackyhacker.github.io/webtesting/deserialization)
 
-August 2022 - [Javulna SQL Injection leading to Auth Bypass and RCE Walthrough](https://github.com/plackyhacker/plackyhacker.github.io/webtesting/javulna-sqli)
+August 2022 - [Javulna SQL Injection leading to Auth Bypass and RCE Walthrough](https://github.com/plackyhacker/webtesting/javulna-sqli)
 
 ### Reverse Engineering
 
