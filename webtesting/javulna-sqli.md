@@ -73,6 +73,7 @@ Included in the application is a `data.sql` file which gives us details of the d
 
 <img width="905" alt="Screenshot 2022-08-09 at 11 39 34" src="https://user-images.githubusercontent.com/42491100/183628665-3ccb2cca-e5d8-4b05-94a5-16c8f905fcfd.png">
 
+Notice that the user accounts are stored in a table called `appuser`.
 
 
 ### Looking for Vulnerabilities
