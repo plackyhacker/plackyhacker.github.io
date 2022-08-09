@@ -94,6 +94,8 @@ When the application is quite large, I will also use regular expressions to look
 
 Visual Studio Code is quite good for searching using regular expressions.
 
+Eyes down for a full house... on to the exploitation!
+
 ## SQL Injection Vulnerability Revealing User Credentials
 
 coming soon
