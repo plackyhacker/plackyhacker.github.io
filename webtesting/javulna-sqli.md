@@ -62,6 +62,8 @@ After taking a note of all the endpoints I map out the code flow, this helps to 
 
 <img width="772" alt="Screenshot 2022-08-09 at 09 30 59" src="https://user-images.githubusercontent.com/42491100/183602812-4f0ca8b1-aae9-4eb9-962e-94002d8cd4bd.png">
 
+I also do a quick manual walk over the website, recording all of the requests, in BurpSuit. In this case there is no website so I would only use BurpSuite to examine specific requests, headers and cookies.
+
 ### Data Storage
 
 It is important to understand how the data is stored by the web app; the database engine being used and the tables that store the data. There may be ways that you can execute code or file upload via a SQL injection (for example in MS SQL and PostgreSQL), and if there is a SQL injection vulnerability it is much easier if you understand the database schema.
@@ -169,7 +171,7 @@ curl "http://10.10.0.120:8080/login" -X POST -d "username=Yoda&password=NoSecret
 
 ## Java Deserialization Vulnerability Leading to RCE
 
-coming soon
+At this point we have access to all of the endpoints.
 
 ## Steps to Compromise
 
