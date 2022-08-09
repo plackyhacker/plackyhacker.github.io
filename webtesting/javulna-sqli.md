@@ -112,7 +112,9 @@ public List<MovieDto> findMovie(String title, String description, String genre, 
 ...
 ```
 
-We control the `title` variable/input. The `sql` string is concatinated so it is very likely that this code contains a SQL injection vulnerability. We already discovered that the `rest/movie` endpoint leads to this code (using a GET request). We can send a GET request to test the theory:
+We control the `title` variable/input. The `sql` string is concatinated so it is very likely that this code contains a SQL injection vulnerability. We already discovered that the `rest/movie` endpoint leads to this code (using a GET request).
+
+We can send a GET request to test the SQL injection theory (grey-box testing):
 
 ```
 curl "http://10.10.0.120:8080/rest/movie?title=Star%';--"
