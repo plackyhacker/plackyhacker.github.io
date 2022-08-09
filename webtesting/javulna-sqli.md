@@ -110,4 +110,8 @@ coming soon
 
 coming soon
 
+## Finally
+
+There is loads of vulnerabilities in the Javulna application, there might even be other ways to get remote code execution. There is also a [Udemy Course](https://www.udemy.com/course/backend-development-security-fundamentals/) if you want to learn more about exploiting Java web applications. The course uses [Postman](https://www.postman.com) to demonstrate exploitation, so don't expect any `python` exploit code.
+
 [Home](https://plackyhacker.github.io)
