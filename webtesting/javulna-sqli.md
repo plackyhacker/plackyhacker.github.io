@@ -98,7 +98,21 @@ Eyes down for a full house... on to the exploitation!
 
 ## SQL Injection Vulnerability Revealing User Credentials
 
-coming soon
+During white-box source code review I found the following code:
+
+```java
+public List<MovieDto> findMovie(String title, String description, String genre, String id) {
+  int conditions = 0;
+  StringBuilder sql = new StringBuilder("select description, title, genre, id from movie ");
+  if (StringUtils.hasText(title)) {
+    appendCondition(sql, conditions);
+    conditions++;
+    sql.append("title LIKE '%").append(title).append("%'");
+  }
+...
+```
+
+We control the `title` variable/input. The `sql` string is concatinated so it is very likely that this code contains a SQL injection vulnerability.
 
 ## Java Deserialization Vulnerability Leading to RCE
 
