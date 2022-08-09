@@ -34,6 +34,11 @@ curl 10.10.0.120:8080/rest/movie
 [{"id":"1","title":"Star Wars - A new hope","description":"Luke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee, and two droids to save the galaxy from the Empires world-destroying battle-station, while also attempting to rescue Princess Leia from the evil Darth Vader.","genre":" Action, Adventure, Fantasy"},{"id":"2","title":"Star Wars - The Empire Strikes Back","description":"After the rebels are overpowered by the Empire on their newly established base, Luke Skywalker begins Jedi training with Master Yoda. His friends accept shelter from a questionable ally as Darth Vader hunts them in a plan to capture Luke.","genre":" Action, Adventure, Fantasy"},{"id":"3","title":"Star Wars - Return of the Jedi","description":"After a daring mission to rescue Han Solo from Jabba the Hutt, the rebels dispatch to Endor to destroy a more powerful Death Star. Meanwhile, Luke struggles to help Vader back from the dark side without falling into the Emperors trap.","genre":" Action, Adventure, Fantasy"}] 
 ```
 
+Using Visual Studio Code we can find all of the `@RestController` classes:
+
+<img width="1591" alt="Screenshot 2022-08-09 at 07 53 30" src="https://user-images.githubusercontent.com/42491100/183583758-26e4cb8b-7803-41fb-bc3c-d867c6cb72b0.png">
+
+
 ### Looking for Vulnerabilities
 
 coming soon
