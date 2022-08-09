@@ -85,7 +85,7 @@ When the application is quite large, I will also use regular expressions to look
 
 | Language | Regex | Vulnerability |
 | -------- | ----- | ------------- |
-| PHP | \$.*( ==&#124;== )( \$&#124;\$).* | Type juggling vulnerabilities |
+| PHP | &#92;$.*( ==&#124;== )( &#92;$&#124;&#92;$).* | Type juggling vulnerabilities |
 | N/A | .*select.* | SQL injection vulnerabilities |
 
 
