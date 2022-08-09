@@ -8,6 +8,10 @@ The OSWE is a source code review exam so I will use the Java code to find the vu
 
 The Javulna application is a [REST API](https://aws.amazon.com/what-is/restful-api/) web application; this means there is no website front end.
 
+## A Note on the OSWE Exam
+
+The OSWE exam is going to be harder than exploiting the Javulna application. The purpose of this is to show my methodology.
+
 ## My Methodology
 
 I have developed my own method for exploiting web applications when the objectives are to bypass authentication then gain remote code execution; because this is what is expected in the exam. If the objective was to test for as many vulnerabilities as possible in the application then this methodology would need to be adjusted somewhat.
