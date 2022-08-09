@@ -17,7 +17,6 @@ I have developed my own method for exploiting web applications when the objectiv
 The first thing I do is to spend a bit of time mapping out the web application's endpoints; the URIs that I can interact with as a user. Because I have access to the source code and I know that it is an MVC application finding the endpoints is quite easy (but can be time consuming). Essentially we are looking for classes that use the `@RestController` annotation, and the functions within the class that use the `@RequestMapping`, `@PostMapping`, `@PutMapping`, `@GetMapping` etc.
 
 
-
 ```java
 @RestController()
 public class MovieController {
@@ -33,7 +32,6 @@ public class MovieController {
 Javulna has a simple `MovieController` class, which contains an endpoint mapping for a GET request to the `rest/movie` URI. This can be used to demonstrate:
 
 
-
 ```
 curl 10.10.0.120:8080/rest/movie
 
@@ -41,16 +39,13 @@ curl 10.10.0.120:8080/rest/movie
 ```
 
 
-
 Using Visual Studio Code we can find all of the `@RestController` classes:
-
 
 
 <img width="1591" alt="Screenshot 2022-08-09 at 07 53 30" src="https://user-images.githubusercontent.com/42491100/183583758-26e4cb8b-7803-41fb-bc3c-d867c6cb72b0.png">
 
 
 The search results can be taken and a diagram of the web application can be made:
-
 
 
 
