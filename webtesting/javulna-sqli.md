@@ -187,7 +187,7 @@ The steps to compromise the web application are as follows:
 
 ## Full Exploit Code
 
-coming soon
+I have posted the [full exploit code here](https://github.com/plackyhacker/plackyhacker.github.io/blob/master/code/javulna-exploit.py). I have tried to comment the code as much as possible so it makes sense.
 
 ## Finally
 
