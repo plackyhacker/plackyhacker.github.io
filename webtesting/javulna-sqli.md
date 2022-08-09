@@ -126,6 +126,22 @@ Notice in the result we still get a valid response even after we have injected S
 [{"id":"1","title":"Star Wars - A new hope","description":"Luke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee, and two droids to save the galaxy from the Empires world-destroying battle-station, while also attempting to rescue Princess Leia from the evil Darth Vader.","genre":" Action, Adventure, Fantasy"},{"id":"2","title":"Star Wars - The Empire Strikes Back","description":"After the rebels are overpowered by the Empire on their newly established base, Luke Skywalker begins Jedi training with Master Yoda. His friends accept shelter from a questionable ally as Darth Vader hunts them in a plan to capture Luke.","genre":" Action, Adventure, Fantasy"},{"id":"3","title":"Star Wars - Return of the Jedi","description":"After a daring mission to rescue Han Solo from Jabba the Hutt, the rebels dispatch to Endor to destroy a more powerful Death Star. Meanwhile, Luke struggles to help Vader back from the dark side without falling into the Emperors trap.","genre":" Action, Adventure, Fantasy"}]
 ```
 
+Notice that each `json` element returned looks like this:
+
+```json
+{
+    "id":"",
+    "title":"",
+    "description":"",
+    "genre":""}
+```
+
+We now know three things:
+
+- There's a SQLi vulnerability.
+- We can inject using the `title` parameter.
+- We can use a `UNION` statement to fill the four values in the `json` elements.
+
 ## Java Deserialization Vulnerability Leading to RCE
 
 coming soon
