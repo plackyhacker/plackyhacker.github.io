@@ -79,7 +79,16 @@ Notice that the user accounts are stored in a table called `appuser`.
 
 ### Looking for Vulnerabilities
 
-coming soon
+My methodology is a combination of white-box and grey-box testing. I generally read through code and try to spot obvious vulnerabilities, if I find something I test it with Burp Suite to see if I can inject maliciou user input.
+
+When the application is quite large, I will also use regular expressions to look for common vulnerabilities. For example:
+
+| Language | Regex | Vulnerability |
+| -------- | ----- | ------------- |
+| PHP | `\$.*( ==|== )( \$|\$).*` | Type juggling vulnerabilities |
+| N/A | `.*select.*` | SQL injection vulnerabilities |
+
+
 
 ## Vulnerability 1
 
