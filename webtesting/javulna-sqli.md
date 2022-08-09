@@ -98,7 +98,7 @@ coming soon
 
 coming soon
 
-## Walkthrough
+## Steps to Compromise
 
 coming soon
 
