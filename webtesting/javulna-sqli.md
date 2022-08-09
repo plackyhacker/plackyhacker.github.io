@@ -182,7 +182,7 @@ Set-Cookie: USER_AUTHENTICATION_EXTRA_SECURITY=rO0ABXNyAB5jb20ua2FsYXZpdC5qYXZ1b
 ...
 ```
 
-Also notice that the `USER_AUTHENTICATION_EXTRA_SECURITY` cookie begins with a familiar signature: `rO0`; this means that the cookie is deserialized and that there may be a deserialization vulnerability.
+Also notice that the `USER_AUTHENTICATION_EXTRA_SECURITY` cookie begins with a familiar signature: `rO0`; this means that the cookie is serialized and that there may be a deserialization vulnerability.
 
 ## Steps to Compromise
 
