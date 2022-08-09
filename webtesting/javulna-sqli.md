@@ -173,7 +173,15 @@ coming soon
 
 ## Steps to Compromise
 
-coming soon
+The steps to compromise the web application are as follows:
+
+- Carry out the SQL Injection vulnerability to revael the user credentials.
+- Log in to the web application.
+- Generate a reverse shell payload for use with `ysoserial`.
+- Generate a Java Deserialization exploit, using the `CommonsCollections4` payload in `ysoserial` (reverse shell).
+- Adjust the `USER_AUTHENTICATION_EXTRA_SECURITY` cookie to contain the `ysoserial` payload.
+- Start a local `netcat` listener.
+- Send the malicious cookie to any authenticated endpoint.
 
 ## Full Exploit Code
 
