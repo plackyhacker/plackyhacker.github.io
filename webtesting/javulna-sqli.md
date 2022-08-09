@@ -58,6 +58,10 @@ After taking a note of all the endpoints I map out the code flow, this helps to 
 
 <img width="772" alt="Screenshot 2022-08-09 at 09 30 59" src="https://user-images.githubusercontent.com/42491100/183602812-4f0ca8b1-aae9-4eb9-962e-94002d8cd4bd.png">
 
+### Data Storage
+
+coming soon
+
 ### Looking for Vulnerabilities
 
 coming soon
