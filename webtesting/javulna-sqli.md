@@ -60,7 +60,20 @@ After taking a note of all the endpoints I map out the code flow, this helps to 
 
 ### Data Storage
 
-coming soon
+It is important to understand how the data is stored by the web app; the database engine being used and the tables that store the data. There may be ways that you can execute code or file upload via a SQL injection (for example in MS SQL and PostgreSQL), and if there is a SQL injection vulnerability it is much easier if you understand the database schema.
+
+Javulna uses the built in [HSQL](http://www.hsqldb.org) database so it has no remote code execution functionality in it. We know it uses HSQL because of the `application.properties` entry:
+
+```
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.HSQLDialect
+```
+
+Included in the application is a `data.sql` file which gives us details of the database schema and the default data inserted into the tables:
+
+
+<img width="905" alt="Screenshot 2022-08-09 at 11 39 34" src="https://user-images.githubusercontent.com/42491100/183628665-3ccb2cca-e5d8-4b05-94a5-16c8f905fcfd.png">
+
+
 
 ### Looking for Vulnerabilities
 
