@@ -6,7 +6,7 @@ At the time of writing I am currently studying OSWE and I decided to do a bit of
 
 The OSWE is a source code review exam so I will use the Java code to find the vulnerabilities and exploit them.
 
-The Javulna application is a REST API web application; this means there is no website front end.
+The Javulna application is a [REST API](https://aws.amazon.com/what-is/restful-api/) web application; this means there is no website front end.
 
 ## My Methodology
 
