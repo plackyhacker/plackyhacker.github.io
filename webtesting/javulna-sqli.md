@@ -171,7 +171,18 @@ curl "http://10.10.0.120:8080/login" -X POST -d "username=Yoda&password=NoSecret
 
 ## Java Deserialization Vulnerability Leading to RCE
 
-At this point we have access to all of the endpoints.
+At this point we have access to all of the endpoints. During black-box testing I noticed that there is an authentication cookie set afetr login:
+
+```
+curl -D - "http://10.10.0.120:8080/login" -X POST -d "username=Yoda&password=NoSecretsATrueJediHas"
+
+HTTP/1.1 200 
+...
+Set-Cookie: USER_AUTHENTICATION_EXTRA_SECURITY=rO0ABXNyAB5jb20ua2FsYXZpdC5qYXZ1bG5hLm1vZGVsLlVzZXJtUBnAtT2LlQIABkwADGVtYWlsQWRkcmVzc3QAEkxqYXZhL2xhbmcvU3RyaW5nO0wABW1vdHRvcQB+AAFMAARuYW1lcQB+AAFMAAhwYXNzd29yZHEAfgABTAADc2V4cQB+AAFMAAp3ZWJQYWdlVXJscQB+AAF4cgAkY29tLmthbGF2aXQuamF2dWxuYS5tb2RlbC5CYXNlRW50aXR5QO/pccfE7scCAANMAAljcmVhdGVkQXR0ABBMamF2YS91dGlsL0RhdGU7TAACaWRxAH4AAUwADWxhc3RVcGRhdGVkQXRxAH4AA3hwcHQAATFwdAASeW9kYUBsdWNhc2FydHMuY29tdAAaSSBkb24ndCBrbm93IGhvdyBvbGQgSSBhbS50AARZb2RhdAAVTm9TZWNyZXRzQVRydWVKZWRpSGFzdAABbXQAJWh0dHA6Ly93d3cuc3RhcndhcnMuY29tL2RhdGFiYW5rL3lvZGE=; Max-Age=2147483647; Expires=Sun, 27-Aug-2090 18:10:56 GMT
+...
+```
+
+Also notice that the `USER_AUTHENTICATION_EXTRA_SECURITY` cookie begins with a familiar signature: `rO0`; this means that the cookie is deserialized and that there may be a deserialization vulnerability.
 
 ## Steps to Compromise
 
