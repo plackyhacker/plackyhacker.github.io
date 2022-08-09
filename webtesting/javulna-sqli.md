@@ -75,6 +75,7 @@ Included in the application is a `data.sql` file which gives us details of the d
 
 Notice that the user accounts are stored in a table called `appuser`.
 
+**Note**: never rely upon the data in this table when targetting a live instance of the application, this is default data and is very likely to have been removed (especially in an OSWE exam scenario ;-))
 
 ### Looking for Vulnerabilities
 
