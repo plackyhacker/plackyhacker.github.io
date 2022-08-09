@@ -184,7 +184,7 @@ Set-Cookie: USER_AUTHENTICATION_EXTRA_SECURITY=rO0ABXNyAB5jb20ua2FsYXZpdC5qYXZ1b
 
 Also notice that the `USER_AUTHENTICATION_EXTRA_SECURITY` cookie begins with a familiar signature: `rO0`; this means that the cookie is serialized and that there may be a deserialization vulnerability.
 
-The web application uses a [Filter Config](https://www.javatpoint.com/filter-config) to implement the cookie desrialization to check the cookie. The code flow is as follows:
+The web application uses a [Filter Config](https://www.javatpoint.com/filter-config) to implement the cookie deserialization which acts as an authentication cookie for the user. The code flow is as follows:
 
 <img width="1230" alt="Screenshot 2022-08-09 at 16 18 07" src="https://user-images.githubusercontent.com/42491100/183689102-1fe961c4-ddd4-4b05-b96d-783d527b5e1a.png">
 
