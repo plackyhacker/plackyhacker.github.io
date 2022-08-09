@@ -192,7 +192,19 @@ Deserializing unsanitized objects is [dangerous](https://owasp.org/www-community
 
 <img width="444" alt="Screenshot 2022-08-09 at 16 20 28" src="https://user-images.githubusercontent.com/42491100/183689589-c7531b67-76bc-44cd-8743-446fd0ddbb0c.png">
 
-We are now set up to attempt to exploit this vulnerability!
+We are now set up to attempt to exploit this vulnerability using the `ysoserial` tool!
+
+### Reverse Shell
+
+coming soon
+
+### YSOSerial
+
+coming soon
+
+### Exploitation
+
+coming soon
 
 ## Steps to Compromise
 
