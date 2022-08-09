@@ -161,7 +161,11 @@ some data omitted for brevity):
 ]
 ```
 
-We can use any of these accounts to log in to the web application. We could do some brute forcing to find the login API but most web applications would document this anyway. Within Javulna this is at `/login`.
+We can use any of these accounts to log in to the web application. We could do some brute forcing to find the login API but most web applications would document this anyway. Within Javulna this is at `/login`:
+
+```
+curl "http://10.10.0.120:8080/login" -X POST -d "username=Yoda&password=NoSecretsATrueJediHas"
+```
 
 ## Java Deserialization Vulnerability Leading to RCE
 
