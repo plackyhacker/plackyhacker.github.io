@@ -188,6 +188,11 @@ The web application uses a [Filter Config](https://www.javatpoint.com/filter-con
 
 <img width="1230" alt="Screenshot 2022-08-09 at 16 18 07" src="https://user-images.githubusercontent.com/42491100/183689102-1fe961c4-ddd4-4b05-b96d-783d527b5e1a.png">
 
+Deserializing unsanitized objects is [dangerous](https://owasp.org/www-community/vulnerabilities/Deserialization_of_untrusted_data) and should be avoided. Looking at the project in Eclispse we can also see that the application has a dependency on `CommonsCollections` version `4-4.0`:
+
+<img width="444" alt="Screenshot 2022-08-09 at 16 20 28" src="https://user-images.githubusercontent.com/42491100/183689589-c7531b67-76bc-44cd-8743-446fd0ddbb0c.png">
+
+We are now set up to attempt to exploit this vulnerability!
 
 ## Steps to Compromise
 
