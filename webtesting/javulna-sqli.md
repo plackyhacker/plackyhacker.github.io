@@ -79,7 +79,7 @@ Notice that the user accounts are stored in a table called `appuser`.
 
 ### Looking for Vulnerabilities
 
-My methodology is a combination of white-box and grey-box testing. I generally read through code and try to spot obvious vulnerabilities, if I find something I test it with Burp Suite to see if I can inject maliciou user input.
+My methodology is a combination of white-box and grey-box testing. I generally read through code and try to spot obvious vulnerabilities, if I find something I test it with Burp Suite to see if I can inject malicious user input.
 
 When the application is quite large, I will also use regular expressions to look for common vulnerabilities. For example:
 
@@ -88,7 +88,7 @@ When the application is quite large, I will also use regular expressions to look
 | PHP | &#92;$.&#42;( ==&#124;== )( &#92;$&#124;&#92;$).&#42; | Type juggling vulnerabilities |
 | N/A | .&#42;select.&#42; | SQL injection vulnerabilities |
 
-
+Visual Studio Code is quite good for searching using regular expressions.
 
 ## Vulnerability 1
 
