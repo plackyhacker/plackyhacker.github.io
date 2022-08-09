@@ -45,9 +45,18 @@ Using Visual Studio Code we can find all of the `@RestController` classes:
 <img width="1591" alt="Screenshot 2022-08-09 at 07 53 30" src="https://user-images.githubusercontent.com/42491100/183583758-26e4cb8b-7803-41fb-bc3c-d867c6cb72b0.png">
 
 
-The search results can be taken and a diagram of the web application can be made:
+The search results can be taken and a diagram of the web application endpoints can be made:
 
 
+<img width="1199" alt="Screenshot 2022-08-09 at 09 25 14" src="https://user-images.githubusercontent.com/42491100/183601462-c3558817-5c8d-4ca7-95e2-8c74e7127781.png">
+
+
+Notice that there is no REST endpoint for logging in to the application, which is our first objective. I'll come back to that later.
+
+After taking a note of all the endpoints I map out the code flow, this helps to find vulnerable code, but it can also be quite time consuming. If the application is very large I might focus on endpoints that are related to authentication, sessions, password resets (stuff that might give me authentication bypass). As Javulna isn't that large I map each flow out like so:
+
+
+<img width="772" alt="Screenshot 2022-08-09 at 09 30 59" src="https://user-images.githubusercontent.com/42491100/183602812-4f0ca8b1-aae9-4eb9-962e-94002d8cd4bd.png">
 
 ### Looking for Vulnerabilities
 
