@@ -214,7 +214,7 @@ And send the malicious cookie using BurpSuite (to the `rest/movie` endpoint):
 
 <img width="1251" alt="Screenshot 2022-08-10 at 08 41 23" src="https://user-images.githubusercontent.com/42491100/183843626-8b757577-db07-4e18-896f-d790d85d3c03.png">
 
-We now have a reverse shell to the target:
+We now have a reverse shell on the target:
 
 ```
 nc -nvlp 4444
