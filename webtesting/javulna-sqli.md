@@ -10,7 +10,7 @@ The Javulna application is a [REST API](https://aws.amazon.com/what-is/restful-a
 
 ## A Note on the OSWE Exam
 
-The OSWE exam is going to be harder than exploiting the Javulna application. The Advanced Web Attacks and Exploitation course gives you all of the knowledge you need to exploit the exam targets. This is about developing my own methodology.
+The OSWE exam is going to be harder than exploiting the Javulna application. The [Advanced Web Attacks and Exploitation](https://www.offensive-security.com/awae-oswe/) course gives you all of the knowledge you need to exploit the exam targets. This is about developing and sharing my own methodology.
 
 ## My Methodology
 
