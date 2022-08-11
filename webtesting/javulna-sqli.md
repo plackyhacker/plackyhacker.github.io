@@ -143,7 +143,8 @@ Notice that each `json` element returned looks like this:
     "id":"",
     "title":"",
     "description":"",
-    "genre":""}
+    "genre":""
+}
 ```
 
 We now know five things:
