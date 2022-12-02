@@ -4,6 +4,10 @@ I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear In
 
 ## Articles
 
+### Binary Exploitation
+
+December 2022 - [Finding Windows APIs for ROP Chaining](https://plackyhacker.github.io/binary/findingapis)
+
 ### Web Application Hacking
 
 June 2022 - [Deserialization - Object Instantiation for Remote Code Execution](https://plackyhacker.github.io/webtesting/deserialization)
