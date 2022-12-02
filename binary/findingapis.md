@@ -10,7 +10,7 @@ I was recently reading [Playing ROP'em COP'em Robots with WriteProcessMemory()](
 
 ## ASLR
 
-Here's the problem; the built in Windows modules (particularly kernel32.dll) are all compiled with ASLR (address space layout randomization). ASLR is used to radnomize the address space of modules upon each Windows reboot. The objective is to make it difficult to exploit stack based buffer overflows without knowing the address space of usable instructions, such as `jmp esp`.
+Here's the problem; the built in Windows modules (particularly kernel32.dll) are all compiled with ASLR (address space layout randomization). ASLR is used to randomize the address space of modules upon each Windows reboot. The objective is to make it difficult to exploit stack based buffer overflows without knowing the address space of usable instructions, such as `jmp esp`.
 
 Why do we care about this if we are using ROP (return oriented programming). Isn't ROP used to bypass DEP (data execution prevention)? **Yes it is!** But we need to use one of the Win32 APIs to change the memory protection in order to execute our shellcode on the stack. If we don't know the memory address of the Win32 APIs we can't call them using ROP.
 
