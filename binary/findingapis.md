@@ -20,9 +20,11 @@ Furthermore, if there is no entry in the IAT for the API we want to reference, w
 
 ## Python
 
-If you want further background information, read Connor's explanation. I wrote a simple Python script to automate this in Windbg, using PYKD. The Windows User Mode Exploit Development (EXP-301) course shows how to find references to Win32 APIs in ASLR modules in the IAT (import address table) of non-ASLR modules. You might find out the hard way, but you can't always rely on IDA. ;-)
+If you want further background information, read Connor's explanation. I wrote a simple Python script to automate this in Windbg, using PYKD. The Windows User Mode Exploit Development (EXP-301) course shows how to find references to Win32 APIs in ASLR modules in the IAT (import address table) of non-ASLR modules.
 
 <img width="972" alt="Screenshot 2022-12-02 at 07 59 50" src="https://user-images.githubusercontent.com/42491100/205244386-6c6c41ea-6296-446f-b5c3-36e6468475f6.png">
+
+You might find out the hard way... you can't always rely on IDA. ;-)
 
 The script: [find-win32apis.py](https://github.com/plackyhacker/plackyhacker.github.io/blob/master/code/find-win32apis.py)
 
