@@ -1,6 +1,6 @@
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro)
 
-# Writing Custom Shellcode, x86 32-Bit Introduction
+# Writing Custom Shellcode, x86 32-Bit Architecture
 
 Assembly language is a low-level programming language and is not generally used by developers to write full blown applications. Applications are written in high-level programming language, such as C, and are compiled into machine code. Machine code is binary that is encoded into instructions that are understood by the CPU. Assembly language is a human-readable representation of machine code.
 
