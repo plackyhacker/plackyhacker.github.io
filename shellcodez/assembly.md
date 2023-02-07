@@ -31,7 +31,7 @@ The registers that we use the most when writing shellcode are the general purpos
 
 <img width="693" alt="Screenshot 2023-02-07 at 20 04 13" src="https://user-images.githubusercontent.com/42491100/217353012-2aaf1778-e4d7-4062-965f-3dbcf464e503.png">
 
-If we want to access only the lower 16 bits of the **eax** register we refer to **ax**, the lower 8 bits **al**, and the higher 8 bits of **ax** we refer to as **ah**. This can be useful in shellcode, which will be discussed in a later article.
+If we want to access only the lower 16 bits of the **eax** register we refer to as **ax**, the lower 8 bits as **al**, and the higher 8 bits of **ax** we refer to as **ah**. This can be useful in shellcode, which will be discussed in a later article.
 
 We can move values into registers and carry out arithmetic operations on them. For example:
 
