@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) | [Part 3](https://plackyhacker.github.io/shellcodez/finding-kernel32)
+[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) : [Part 3](https://plackyhacker.github.io/shellcodez/finding-kernel32)
 
 # Writing Custom Shellcode, x86 32-Bit Introduction
 
@@ -10,11 +10,19 @@ We write shellcode in assembly language because we want to inject small pieces o
 
 <img width="851" alt="Screenshot 2023-02-07 at 19 30 59" src="https://user-images.githubusercontent.com/42491100/217346384-a46f91c6-f238-40b3-aaa9-32e3a1de5a9d.png">
 
+## The ALU
+
+Coming very soon
+
 ## Registers
 
 Coming very soon
 
 ## Flags
+
+Coming very soon
+
+## Random Access Memory
 
 Coming very soon
 
@@ -32,4 +40,4 @@ mov eax, 0x10     ; move the value 0x10 into the eax register
 
 I will refer to this as an **opcode**.
 
-[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) | [Part 3](https://plackyhacker.github.io/shellcodez/finding-kernel32)
+[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) : [Part 3](https://plackyhacker.github.io/shellcodez/finding-kernel32)
