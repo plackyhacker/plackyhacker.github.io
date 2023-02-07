@@ -119,4 +119,6 @@ This is ok, but it has a few problems. It is compiled as a PE (portable executab
 
 When writing shellcode we need to carry out the same four tasks to establish a reverse shell, but we need to program it in assembly language, which presents us with a different set of problems.
 
+In the next article I will write about Windows calling conventions and some basic assembly language.
+
 [Home](https://plackyhacker.github.io)
