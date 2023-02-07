@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/assembly) : [Part 3](https://plackyhacker.github.io/shellcodez/finding-kernel32)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/assembly)
 
 # Writing Custom Shellcode, Introduction
 
@@ -123,6 +123,6 @@ This is ok, but it has a few problems. It is compiled as a PE (portable executab
 
 When writing shellcode we need to carry out the same four tasks to establish a reverse shell, but we need to program it in assembly language, which presents us with a different set of problems.
 
-In the next article I will write about Windows calling conventions and some basic assembly language.
+In the next article I will write about the x86 high-level architecture that we need to understand to write shellcode.
 
-[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/assembly) : [Part 3](https://plackyhacker.github.io/shellcodez/finding-kernel32)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/assembly)
