@@ -16,7 +16,7 @@ The answer to this question is simple: when you are learning to write or analyse
 
 ## Anatomy of a Reverse Shell
 
-Let's begin by looking at a basic reverse shell coded in C.
+Let's begin by looking at a basic reverse shell coded in C. I have heavily commented this code to make it easier to follow.
 
 ```c
 include <winsock2.h>
