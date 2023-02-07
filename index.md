@@ -8,6 +8,10 @@ I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear In
 
 February 2023 - [Introduction](https://plackyhacker.github.io/shellcodez/intro)
 
+February 2023 - [x86 32-Bit Introduction](https://plackyhacker.github.io/shellcodez/assembly)
+
+February 2023 - [Finding Kernel32](https://plackyhacker.github.io/shellcodez/finding-kernel32)
+
 ### Binary Exploitation
 
 December 2022 - [Finding Windows APIs for ROP Chaining](https://plackyhacker.github.io/binary/findingapis)
