@@ -10,7 +10,7 @@ Writing shellcode isn't easy, but like any other subject it can be learned! Stic
 
 ## Introduction
 
-This series of articles will show how to write custom shellcode in x86 assembly language, why x86?
+This series of articles will show how to write custom shellcode in x86 assembly language, why x86 (32-bit)?
 
 The answer to this question is simple: when you are learning to write or analyse shellcode it is easier to study x86 than x64. The concepts are the same (albeit the instructions and calling conventions might be different), but the memory addresses, and the register sizes are 32-bits in length. Once you have learned x86 shellcode the transition to x64 should be easy.
 
