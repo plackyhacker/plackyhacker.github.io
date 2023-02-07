@@ -4,6 +4,10 @@ I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear In
 
 ## Articles
 
+### Writing Custom Shellcode
+
+February 2023 - [Introduction](https://plackyhacker.github.io/shellcodez/intro)
+
 ### Binary Exploitation
 
 December 2022 - [Finding Windows APIs for ROP Chaining](https://plackyhacker.github.io/binary/findingapis)
