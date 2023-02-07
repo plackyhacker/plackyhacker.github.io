@@ -8,11 +8,19 @@ We write shellcode in assembly language because we want to inject small pieces o
 
 ## Basic x86 Architecture
 
+The following diagram shows a high-level view of x86 architecture.
+
 <img width="851" alt="Screenshot 2023-02-07 at 19 30 59" src="https://user-images.githubusercontent.com/42491100/217346384-a46f91c6-f238-40b3-aaa9-32e3a1de5a9d.png">
+
+The three buses are used to carry data, control instructions, and addressing. These aren't that important in the context of writing shellcode, so will not be discussed.
 
 ## The ALU
 
-Coming very soon
+The Arithmetic Logic Unit is the brains of the CPU. The ALU carries out calculations, compares values, increments values etc. Once the values have been processed they are generally stored in a general purpose register, for example the following opcode will be processed by the ALU and the CPU control unit (which we will not discuss) will save the result in the **eax** register:
+
+```asm
+add eax, ecx    ; add the value in the ecx register to the value in the eax register and store in the eax register
+```
 
 ## Registers
 
