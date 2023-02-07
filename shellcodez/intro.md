@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/assembly) | [Part 3](https://plackyhacker.github.io/shellcodez/finding-kernel32)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/assembly) : [Part 3](https://plackyhacker.github.io/shellcodez/finding-kernel32)
 
 # Writing Custom Shellcode, Introduction
 
@@ -125,4 +125,4 @@ When writing shellcode we need to carry out the same four tasks to establish a r
 
 In the next article I will write about Windows calling conventions and some basic assembly language.
 
-[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/assembly) | [Part 3](https://plackyhacker.github.io/shellcodez/finding-kernel32)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/assembly) : [Part 3](https://plackyhacker.github.io/shellcodez/finding-kernel32)
