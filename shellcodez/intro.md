@@ -6,9 +6,13 @@
 
 It is assumed that you know what a reverse shell is and you have a basic ability to read the flow of code. It is not necessary to understand the Win32 API calling conventions, or assembly language - this will be explained in later articles.
 
+Writing shellcode isn't easy, but like any other subject it can be learned! Stick with it, it is extremely rewarding!
+
 ## Introduction
 
-X86, and why...
+This series of articles will show how to write custom shellcode in x86 assembly language, why x86?
+
+The answer to this question is simple: when you are learning to write or analyse shellcode it is easier to study x86 than x64. The concepts are the same (albeit the instructions and calling conventions might be different), but the memory addresses, and the register sizes are 32-bits in length. Once you have learned x86 shellcode the transition to x64 should be easy.
 
 ## Anatomy of a Reverse Shell
 
