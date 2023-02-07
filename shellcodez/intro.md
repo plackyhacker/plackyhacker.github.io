@@ -1,8 +1,14 @@
-## Writing Custom Shellcode, Introduction
+[Home](https://plackyhacker.github.io)
 
-# Assumptions
+# Writing Custom Shellcode, Introduction
+
+## Assumptions
 
 It is assumed that you know what a reverse shell is and you have a basic ability to read the flow of code. It is not necessary to understand the Win32 API calling conventions, or assembly language - this will be explained in later articles.
+
+## Introduction
+
+X86, and why...
 
 ## Anatomy of a Reverse Shell
 
@@ -112,3 +118,5 @@ C:\Users\John\Desktop>
 This is ok, but it has a few problems. It is compiled as a PE (portable executable) file, this means it needs to be dropped to disk and executed, which is not desirable. It cannot be used in a remote exploit, such as a buffer overflow. For this we need shellcode that can be injected into an existing process and does not rely upon the structure of a PE file to execute.
 
 When writing shellcode we need to carry out the same four tasks to establish a reverse shell, but we need to program it in assembly language, which presents us with a different set of problems.
+
+[Home](https://plackyhacker.github.io)
