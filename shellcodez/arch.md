@@ -66,10 +66,10 @@ cmp eax, ecx    ; compare the value in eax to the value in ecx
 We can then control the flow of the instructions using a **jnz** (jump not zero) instruction:
 
 ```asm
-jnz do_something: ; jump to do_something if the ZF is 1
+jnz do_something ; jump to do_something if the ZF is 1
 ```
 
-These flags will be discussed when we use them in our shellcode.
+These flags will be discussed when we use them in our shellcode. Note that `do_something`, like comments, is not a machine code, it is used in assembly language to label group instructions (referred to as functions). This makes it easier to organise your shellcode when writing it.
 
 **Note:** not all flags are used by conditional instructions, for example the **interupt flag** determines whether external inputs should be processed or not.
 
