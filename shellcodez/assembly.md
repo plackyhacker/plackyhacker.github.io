@@ -1,3 +1,5 @@
+[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) : [Part 2](https://plackyhacker.github.io/shellcodez/arch)
+
 # Writing Shellcode, A Little Bit of Assembly Code
 
 Assembly language statements are made up of a **mnemonic**, **operands**, and **comments** (although comments aren't sent to the CPU). The following is a simple example:
@@ -67,3 +69,5 @@ Details on Keystone Engine can be found [here](https://www.keystone-engine.org).
 You can use any 32 bit debugger, it doesn't have to be Windbg, that's just my favourite! On to the assembly.
 
 Coming soon!
+
+[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) : [Part 2](https://plackyhacker.github.io/shellcodez/arch)
