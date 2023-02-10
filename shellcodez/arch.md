@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro)
+[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) : [Part 3](https://plackyhacker.github.io/shellcodez/assembly)
 
 # Writing Custom Shellcode, x86 32-Bit Architecture
 
@@ -114,4 +114,4 @@ I have left some details out of the diagram above, for now we don't need to unde
 
 The stack is also very important in the x86 Win32 calling convention, which will be discussed in a later article.
 
-[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro)
+[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) : [Part 3](https://plackyhacker.github.io/shellcodez/assembly)
