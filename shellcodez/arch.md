@@ -86,7 +86,18 @@ We have also seen how we use labels to reference different sections of assembly 
 
 ## The Stack
 
-Coming very soon
+The stack is a memory structure used to store arguments, variables and pointers to variables. It is a temporary area in memory and every thread has one. vaues are pushed on to the stack and they are popped off the stack:
+
+```asm
+push eax        ; push the value stored in eax onto the bottom of the stack
+pop  ebx        ; pop the last value added to the stack into the ebx register
+```
+
+The stack is a last in, first out (LIFO) structure. You can actually save values, and reference values on the stack without manipulating the stack itself:
+
+```asm
+mov eax, [esp+0x4]  ; mov the value at an offset of 0x04 of esp to eax 
+```
 
 ## Just Enough Assembly
 
