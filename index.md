@@ -10,6 +10,8 @@ February 2023 - [Introduction](https://plackyhacker.github.io/shellcodez/intro)
 
 February 2023 - [x86 32-Bit Architecture](https://plackyhacker.github.io/shellcodez/arch)
 
+February 2023 - [A Little Bit of Assembly Code](https://plackyhacker.github.io/shellcodez/assembly)
+
 ### Binary Exploitation
 
 December 2022 - [Finding Windows APIs for ROP Chaining](https://plackyhacker.github.io/binary/findingapis)
