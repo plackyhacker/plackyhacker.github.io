@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/arch)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/arch) : [Part 3](https://plackyhacker.github.io/shellcodez/assembly)
 
 # Writing Custom Shellcode, Introduction
 
@@ -125,4 +125,4 @@ When writing shellcode we need to carry out the same four tasks to establish a r
 
 In the next article I will write about the x86 high-level architecture that we need to understand to write shellcode.
 
-[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/arch)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/arch) : [Part 3](https://plackyhacker.github.io/shellcodez/assembly)
