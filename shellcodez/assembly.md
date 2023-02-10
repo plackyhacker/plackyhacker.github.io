@@ -64,7 +64,7 @@ Shellcode located at address 0x4180000
 Press enter to execute shellcode...
 ```
 
-Details on Keystone Engine can be found [here](https://www.keystone-engine.org). This is a great way to debug and test your shellcode as you develop it.
+Details on Keystone Engine can be found [here](https://www.keystone-engine.org). This is a great way to debug and test your shellcode as you develop it, just add a breakpoint to the memory address, in this case `bp 0x4180000`.
 
 You can use any 32 bit debugger, it doesn't have to be Windbg, that's just my favourite! And of course you need to install Python on the your Windows development machine.
 
