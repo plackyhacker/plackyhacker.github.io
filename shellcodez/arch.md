@@ -78,7 +78,8 @@ These flags will be discussed when we use them in our shellcode. Note that `do_s
 RAM in x86 32 bit is as the name would suggest; 32 bit addressable (`0x00000000` through `0xffffffff`).When writing shellcode it is not common to hard-code addresses into the instructions, they are generally referenced as offsets:
 
 ```asm
-mov [ebp-0x12], eax   ; move the value in the eax register into the memory location at a -0x12 offset from the value referenced by ebp
+mov [ebp-0x12], eax   ; move the value in the eax register into the memory 
+                      ; location at a -0x12 offset from the value referenced by ebp
 ```
 
 We have also seen how we use labels to reference different sections of assembly code instead of hard-coded addresses. The reason we don't hard-code addresses is because when memory is assigned by the kernel, or we are trying to overflow the stack, the memory addresses change upon each running of the application.
