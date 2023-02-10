@@ -14,7 +14,7 @@ For ease, I will refer to this as an **instruction**. I will explain what the mo
 
 I learned the following workflow when doing the Offensive Security [EXP-301: Windows User Mode Exploit Development](https://www.offensive-security.com/courses/exp-301/) course. We create a python script that allows us to write assembly code, inject it into the python process and examine it using Windbg.
 
-The python script is show below:
+The python script is shown below:
 
 ```python
 import ctypes, struct
@@ -64,9 +64,13 @@ Shellcode located at address 0x4180000
 Press enter to execute shellcode...
 ```
 
-Details on Keystone Engine can be found [here](https://www.keystone-engine.org).
+Details on Keystone Engine can be found [here](https://www.keystone-engine.org). This is a great way to debug and test your shellcode as you develop it.
 
-You can use any 32 bit debugger, it doesn't have to be Windbg, that's just my favourite! On to the assembly.
+You can use any 32 bit debugger, it doesn't have to be Windbg, that's just my favourite! And of course you need to install Python on the your Windows development machine.
+
+OK, On to the assembly language.
+
+## Assembly Primer!
 
 Coming soon!
 
