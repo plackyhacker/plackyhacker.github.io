@@ -114,14 +114,4 @@ I have left some details out of the diagram above, for now we don't need to unde
 
 The stack is also very important in the x86 Win32 calling convention, which will be discussed in a later article.
 
-## Just Enough Assembly
-
-Assembly language statements are made up of a **mnemonic**, **operands**, and **comments** (although comments aren't sent to the CPU). The following is a simple example:
-
-```asm
-mov eax, 0x10     ; move the value 0x10 into the eax register
-```
-
-I will refer to this as an **opcode**.
-
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro)
