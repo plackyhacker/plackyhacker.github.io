@@ -99,6 +99,17 @@ The stack is a last in, first out (LIFO) structure. You can actually save values
 mov eax, [esp+0x4]  ; mov the value at an offset of 0x04 of esp to eax 
 ```
 
+There is two important registers associated with the stack:
+
+- Extended Stack Pointer (**esp**); this points to the last value pushed on to the stack.
+- Extended Base Pointer (**ebp**; this points to the start/base of the stack.
+
+<img width="789" alt="Screenshot 2023-02-10 at 15 12 45" src="https://user-images.githubusercontent.com/42491100/218126595-10e5f7c1-6958-470c-8a65-23b053cdee2b.png">
+
+Just to complicate things the stack looks upside down to us mere humans! I have left some details missing from the diagram above, for now we don't need to understand the details about saved return addresses and **eip**. I assume if you are reading this, you already know what a buffer overflow is!
+
+The stack is also very important in the x86 Win32 calling convention, which will be discussed in a later article.
+
 ## Just Enough Assembly
 
 Assembly language statements are made up of a **mnemonic**, **operands**, and **comments** (although comments aren't sent to the CPU). The following is a simple example:
