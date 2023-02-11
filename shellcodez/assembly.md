@@ -70,8 +70,32 @@ You can use any 32 bit debugger, it doesn't have to be Windbg, that's just my fa
 
 OK, On to the assembly language.
 
-## Assembly Primer!
+## Assembly Primer
 
-Coming soon!
+Coming very soon!
+
+### Stack Instructions
+
+Coming very soon!
+
+### Move Instructions
+
+Coming very soon!
+
+### Jump Instructions
+
+Coming very soon!
+
+### Call Instructions
+
+Coming very soon!
+
+### Arithmetic Instructions
+
+Coming very soon!
+
+### XOR Instructions
+
+Coming very soon!
 
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) : [Part 2](https://plackyhacker.github.io/shellcodez/arch)
