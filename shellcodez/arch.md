@@ -114,4 +114,8 @@ I have left some details out of the diagram above, for now we don't need to unde
 
 The stack is also very important in the x86 Win32 calling convention, which will be discussed in a later article.
 
+## Endianness
+
+Endianness is the order of bytes of data in computer memory. It can be big-endian (BE) or little-endian (LE). x86 architecture is little endian. In little-endian architecture, the least-significant byte is stored at the smallest address. This is important when it comes to assigning data to memory and will be discussed further when we start writing shellcode.
+
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) : [Part 3](https://plackyhacker.github.io/shellcodez/assembly)
