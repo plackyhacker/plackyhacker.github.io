@@ -72,11 +72,30 @@ OK, On to the assembly language.
 
 ## Assembly Primer
 
-Coming very soon!
+Assembly Code can look a bit daunting at first, but it isn't that bad. Stick with it, practice and it will become much easier.
 
 ### Stack Instructions
 
-Coming very soon!
+There are two instructions for adding and removing values to/from the stack. As previously stated the stack is a **Last in First Out** memory structure. When you push a value on the stack, the stack grows, when you pop a value from the stack the stack shrinks (as it pops the last pushed value from the stack). The **extended stack pointer (esp)** ** is the register that points to the memory location at the top of the stack. **esp** is updated automatically when values are pushed and popped.
+
+If we want to push something on to the stack we can use the **push** instruction:
+
+```asm
+push 0x11111111     ; push the value 0x11111111 on to the stack
+push eax            ; push the value stored in eax on to the stack
+push dword ptr[eax] ; push the 32 bit value located at the address 
+                    ; stored in eax on to the stack
+```
+
+As seen above, we can push values, values stored in registers and values stored in memory pointed to by the addresses in registers.
+
+If we want to pop something fromthe stack we can use the **pop** instruction:
+
+```asm
+pop eax             ; pop the last added value from the stack in to eax
+```
+
+When we **pop** a value from the satck we tell it which register to pop it in to.
 
 ### Move Instructions
 
