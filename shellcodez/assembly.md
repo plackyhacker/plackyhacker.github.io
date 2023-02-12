@@ -76,7 +76,7 @@ Assembly Code can look a bit daunting at first, but it isn't that bad. Stick wit
 
 ### Stack Instructions
 
-There are two instructions for adding and removing values to/from the stack. As previously stated the stack is a **Last in First Out** memory structure. When you push a value on the stack, the stack grows, when you pop a value from the stack the stack shrinks (as it pops the last pushed value from the stack). The **extended stack pointer (esp)** ** is the register that points to the memory location at the top of the stack. **esp** is updated automatically when values are pushed and popped.
+There are two instructions for adding and removing values to/from the stack. As previously stated the stack is a **Last in First Out** memory structure. When you push a value on the stack, the stack grows, when you pop a value from the stack the stack shrinks (as it pops the last pushed value from the stack). The **extended stack pointer (esp)** is the register that points to the memory location at the top of the stack. **esp** is updated automatically when values are pushed and popped.
 
 If we want to push something on to the stack we can use the **push** instruction:
 
