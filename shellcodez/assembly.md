@@ -89,7 +89,13 @@ push dword ptr[eax] ; push the 32 bit value located at the address
 
 As seen above, we can push values, values stored in registers and values stored in memory pointed to by the addresses in registers.
 
-If we want to pop something fromthe stack we can use the **pop** instruction:
+We can also **push** words (16 bit) on to the stack:
+
+```asm
+pushw ax            ; push the value in ax on to the stack
+```
+
+If we want to pop something from the stack we can use the **pop** instruction:
 
 ```asm
 pop eax             ; pop the last added value from the stack in to eax
