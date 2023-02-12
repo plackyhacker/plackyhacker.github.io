@@ -2,6 +2,8 @@
 
 # Writing Custom Shellcode, Introduction
 
+Ever since doing the original OSCE I have had an interest in assembly code and writing shellcode, here I am sharing what I know hoping that it will help others.
+
 ## Assumptions
 
 It is assumed that you know what a reverse shell is and you have a basic ability to read the flow of code. It is not necessary to understand the Win32 API calling conventions, or assembly language - this will be explained in later articles.
