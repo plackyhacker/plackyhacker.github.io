@@ -101,7 +101,7 @@ If we want to pop something from the stack we can use the **pop** instruction:
 pop eax             ; pop the last added value from the stack in to eax
 ```
 
-When we **pop** a value from the satck we tell it which register to pop it in to.
+When we **pop** a value from the stack we tell it which register to pop it in to.
 
 ### Move Instructions
 
