@@ -102,7 +102,7 @@ mov eax, [esp+0x4]  ; mov the value at an offset of 0x04 of esp to eax
 There is two important registers associated with the stack:
 
 - Extended Stack Pointer (**esp**); this points to the last value pushed on to the stack.
-- Extended Base Pointer (**ebp**; this points to the start/base of the stack.
+- Extended Base Pointer (**ebp**); this points to the start/base of the stack.
 
 <img width="800" alt="Screenshot 2023-02-10 at 15 22 05" src="https://user-images.githubusercontent.com/42491100/218128678-bbee3dc6-0ab0-408c-801b-bf7d5763b5ec.png">
 
