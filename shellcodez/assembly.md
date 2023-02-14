@@ -105,7 +105,22 @@ When we **pop** a value from the stack we tell it which register to pop it in to
 
 ### Move Instructions
 
-Coming very soon!
+The **mov** instruction is used to move data from one operand to another, for example:
+
+```asm
+mov eax, 0x11111111 ; move the value 0x11111111 into eax
+mov eax, ecx        ; move the value in ecx into eax 
+mov [ebp-0x38], eax ; move the value in eax into the memory located
+                    ; at an offset of -0x38 from ebp
+```
+
+When data is moved, it is not deleted from the source. It is not possible to move data between memory locations using the **mov** instruction, for this we can use the **movs** instruction.
+
+The **xchg** instruction can be used to exchange the values in two registers:
+
+```asm
+xchg eax, ecx       ; exchange eax with ecx
+```
 
 ### Jump Instructions
 
