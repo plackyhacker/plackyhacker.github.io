@@ -124,6 +124,22 @@ xchg eax, ecx       ; exchange eax with ecx
 
 ### Jump Instructions
 
+Jump instructions can be unconditional and they can be conditional. Unconditional jumps can be short or long, we will discuss these in a later article when we are trying to avoid bad characters (specifically `0x00`) in our shellcode.
+
+The **jmp** instruction is used to jump over other instructions unconditionally. To do this we use labels in our assembly code, this way we avoid having to use definite memory locations which just won't work:
+
+```asm
+start:
+  jmp end           ;
+  mov eax, 0x10     ;
+  mov ecx, 0x10     ;
+  add eax, ecx      ;
+end:
+  mov eax, 0x20     ;
+```
+
+In the above example only two instructions will be executed, `jmp end` and `mov eax, 0x20`.
+
 Coming very soon!
 
 ### Call Instructions
