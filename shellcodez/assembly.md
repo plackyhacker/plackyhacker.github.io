@@ -2,6 +2,8 @@
 
 # Writing Shellcode, A Little Bit of Assembly Code
 
+**Warning!** This post is long and may take some time to read.
+
 Assembly language statements are made up of a **mnemonic**, **operands**, and **comments** (although comments aren't sent to the CPU). The following is a simple example:
 
 ```asm
