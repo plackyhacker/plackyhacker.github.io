@@ -140,7 +140,120 @@ end:
 
 In the above example only two instructions will be executed, `jmp end` and `mov eax, 0x20`.
 
-Coming very soon!
+Before we discuss conditional jumps we need to understand the **test** and **cmp** instructions. Perhaps the best way to do this is to show some outputs from Windbg when stepping through instructions:
+
+```
+eax=00000010 ebx=00000010 ecx=00000020 edx=04880000 esi=04880000 edi=04880000
+eip=0488001a esp=04a7fc20 ebp=04a7fe30 iopl=0         nv up ei pl nz na po cy
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000203
+0488001a 85c0            test    eax,eax
+```
+
+The **test eax, eax** instruction is first up! If we examine the **zero flag** after stepping over the instruction we see that it is `0`; meaning that the **zero flag** is not set:
+
+```
+0:005> r zf
+zf=0
+```
+
+When the **test** instruction is used with the two same operands at tests to see if the value is `0`. In this example **eax** is `0x10` so the **zero flag** is not set.
+
+Next we **test eax** against **ebx**:
+
+```
+eax=00000010 ebx=00000010 ecx=00000020 edx=04880000 esi=04880000 edi=04880000
+eip=0488001c esp=04a7fc20 ebp=04a7fe30 iopl=0         nv up ei pl nz na po nc
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202
+0488001c 85d8            test    eax,ebx
+```
+
+On this occassion the **zero flag** is also `0`:
+
+```
+0:005> r zf
+zf=0
+```
+
+The **test** instruction is referred to as a logical instruction. It uses **AND** logic to compare each bit. As the bits are the same the **zero flag** is not set.
+
+Finally we **test eax** against **ecx**, this time the values in the registers are different and the **zero flag** is set to `1`:
+
+```
+eax=00000010 ebx=00000010 ecx=00000020 edx=04880000 esi=04880000 edi=04880000
+eip=0488001e esp=04a7fc20 ebp=04a7fe30 iopl=0         nv up ei pl nz na po nc
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202
+0488001e 85c8            test    eax,ecx
+```
+
+```
+0:005> r zf
+zf=1
+```
+
+It should be ovbious that we can use the **jump not zero (jnz)** instruction to enact logical comparisons.
+
+Now we move on to the **compare** instruction:
+
+First we compare **eax** with itself:
+
+```
+eax=00000010 ebx=00000010 ecx=00000020 edx=04880000 esi=04880000 edi=04880000
+eip=04880020 esp=04a7fc20 ebp=04a7fe30 iopl=0         nv up ei pl zr na pe nc
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246
+04880020 39c0            cmp     eax,eax
+```
+
+The values stored in the two operands (the same in this case) are equal, so the **zero flag** is set to `1`:
+
+```
+0:005> r zf
+zf=1
+```
+
+The **cmp** instruction is an arithmetic instruction, it subtracts one operand from the other and sets the **zero flag** if the value is not `0`.
+
+```
+eax=00000010 ebx=00000010 ecx=00000020 edx=04880000 esi=04880000 edi=04880000
+eip=04880022 esp=04a7fc20 ebp=04a7fe30 iopl=0         nv up ei pl zr na pe nc
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246
+04880022 39d8            cmp     eax,ebx
+
+0:005> r zf
+zf=1
+```
+
+Note that **eax** and **ebx** store the same value so the **zero flag** is set to `1`.
+
+```
+eax=00000010 ebx=00000010 ecx=00000020 edx=04880000 esi=04880000 edi=04880000
+eip=04880024 esp=04a7fc20 ebp=04a7fe30 iopl=0         nv up ei pl zr na pe nc
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246
+04880024 39c8            cmp     eax,ecx
+
+0:005> r zf
+zf=0
+```
+
+OK, so now we understand **test** and **cmp** we can use them to make decisions:
+
+```asm
+start:
+  mov eax, 0x10     ;
+  mov ecx, 0x20     ;
+  cmp eax, ecx      ;
+  jnz func1         ; jump is not taken, zf=0
+  ; do some stuff
+  cmp eax, ecx      ;
+  jz end            ; jump is take, zf=0
+func1:
+  ; do some other stuff
+end:
+  ; this is the end, my only friend
+```
+
+The above example shows how we can use the **cmp** instruction to make decisions and jump over other instructions if needed. Note that it is also possible to jump backwards, not only forwards.
+
+There are other flags that can be used with **test** and **cmp**. Do some research if you want to know more!
 
 ### Call Instructions
 
@@ -153,5 +266,9 @@ Coming very soon!
 ### XOR Instructions
 
 Coming very soon!
+
+### The End!
+
+Phew that was a fairly chunky post. I hope it helped readers understand basic x86 32 bit assembly.
 
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/shellcodez/intro) : [Part 2](https://plackyhacker.github.io/shellcodez/arch)
