@@ -255,15 +255,15 @@ The above example shows how we can use the **cmp** instruction to make decisions
 
 There are other flags that can be used with **test** and **cmp**. Do some research if you want to know more!
 
+### XOR Instructions
+
+Coming very soon!
+
 ### Call Instructions
 
 Coming very soon!
 
 ### Arithmetic Instructions
-
-Coming very soon!
-
-### XOR Instructions
 
 Coming very soon!
 
