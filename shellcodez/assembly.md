@@ -241,7 +241,7 @@ start:
   mov eax, 0x10     ;
   mov ecx, 0x20     ;
   cmp eax, ecx      ;
-  jnz func1         ; jump is not taken, zf=0
+  jnz func1         ; jump is not taken, zf=1
   ; do some stuff
   cmp eax, ecx      ;
   jz end            ; jump is take, zf=0
