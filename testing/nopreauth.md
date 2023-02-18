@@ -6,7 +6,7 @@ I used Bloodhound to analyse these:
 
 <img width="732" alt="Screenshot 2023-02-18 at 17 21 51" src="https://user-images.githubusercontent.com/42491100/219879488-f09b9da4-a189-475a-92e0-f16dd4ec51e3.png">
 
-The image is for illustrative purposes only, there are more than 3 user accounts in the domain!
+The image is for illustrative purposes only, there is more than 3 user accounts in the domain!
 
 I couldn't change the service account password as it would break the underlying service. So I decided to briefly change the `userAccountControl` attribute on the object so I could get a Kerberos Ticket Granting Ticket for the account and abuse it that way instead. I used `PowerView` to do this:
 
