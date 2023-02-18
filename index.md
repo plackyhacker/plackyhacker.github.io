@@ -4,6 +4,10 @@ I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear In
 
 ## Articles
 
+### Pen Testing
+
+February 2023 - [Changing the userAccountControl Attribute in AD](https://plackyhacker.github.io/testing/nopreauth)
+
 ### Writing Custom Shellcode
 
 February 2023 - [Introduction](https://plackyhacker.github.io/shellcodez/intro)
