@@ -1,3 +1,5 @@
+[Home](https://plackyhacker.github.io)
+
 # Changing the userAccountControl Attribute in AD
 
 Recently I was conducting some technical testing, specifically permissions and privileges that users have in AD. During the tests I found that a group containing low privileged users had the `GenericAll` permission over a service account that had the `ForceChangePassword` permission over ALL user accounts in the domain.
@@ -34,3 +36,5 @@ https://learn.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccou
 The initial attribute value was `0x10200`.
 
 I could then grab a TGT (using Impacket GetNPUsers), force a password change on any user, and change the attribute back.
+
+[Home](https://plackyhacker.github.io)
