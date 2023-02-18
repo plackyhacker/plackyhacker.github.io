@@ -13,7 +13,7 @@ The image is for illustrative purposes only, there is more than 3 user accounts 
 I couldn't change the service account password as it would break the underlying service. So I decided to briefly change the `userAccountControl` attribute on the object so I could get a Kerberos Ticket Granting Ticket for the account and abuse it that way instead. I used `PowerView` to do this:
 
 ```powershell
- . .\PowerView.ps1
+. .\PowerView.ps1
 $username = "low.priv.account@domain.local";
 $password = ConvertTo-SecureString "PASSWORD_HERE" -AsPlainText -Force;
 $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $username, $password;
