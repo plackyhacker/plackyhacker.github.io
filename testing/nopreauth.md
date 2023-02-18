@@ -22,12 +22,12 @@ Set-DomainObject -Identity 'target.account' -Set @{'userAccountControl'=0x410200
 The setting I made breaks down as follows:
 
 ```
-NORMAL_ACCOUNT	0x0200
-DONT_EXPIRE_PASSWORD	0x10000
-DONT_REQ_PREAUTH	0x400000
+NORMAL_ACCOUNT       0x0200
+DONT_EXPIRE_PASSWORD 0x10000
+DONT_REQ_PREAUTH     0x400000
 ```
 
-More settings can be referred to at:
+More settings can be refered to at:
 
 https://learn.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties
 
