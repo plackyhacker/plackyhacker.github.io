@@ -259,13 +259,35 @@ There are other flags that can be used with **test** and **cmp**. Do some resear
 
 ### XOR Instructions
 
+XOR is an abbreviation for Exclusively-OR, this means when two bits are compared only one of the should be equal to 1 to yield a result of 1! The truth table is shown below:
+
+```
+1 XOR 1 = 0
+1 XOR 0 = 1
+0 XOR 1 = 1
+0 XOR 0 = 0
+```
+
+We can do XOR logic in asssembly as follows:
+
+```asm
+xor eax, ecx        ;
+xor eax, 0x11111111 ;
+xor eax, eax        ;
+```
+
+We can use **xor** instructions to zero out a register by XORing it against itself, this is veery useful when we want to avoid using `0` bytes:
+
+```asm
+mov eax, 0x00000000 ; this is a no, no!
+xor eax, eax        ; this will work quit nicely!
+```
+
+### Arithmetic Instructions
+
 Coming very soon!
 
 ### Call Instructions
-
-Coming very soon!
-
-### Arithmetic Instructions
 
 Coming very soon!
 
