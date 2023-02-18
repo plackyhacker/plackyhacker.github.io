@@ -31,7 +31,7 @@ DONT_REQ_PREAUTH     0x400000
 
 More settings can be refered to at:
 
-https://learn.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties
+[Use the UserAccountControl flags to manipulate user account properties](https://learn.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties)
 
 The initial attribute value was `0x10200`.
 
