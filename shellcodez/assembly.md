@@ -285,7 +285,32 @@ xor eax, eax        ; this will work quit nicely!
 
 ### Arithmetic Instructions
 
-Coming very soon!
+Arithmetic Instructions are straight forward:
+
+```asm
+add eax, 0x30       ; add the value 0x30 to eax
+add eax, ecx        ; add the value in ecx to eax
+sub eax, 0x30       ; subtract the value 0x30 from eax
+sub eax, ecx        ; subtract the value in ecx from eax
+```
+
+Nothing complicated here. However there is something to note. The extended registers are 32 bits in size and they contain a sign bit. This means that the value they represent can be a positive number or a negative number (this is known as [two's complement](https://en.wikipedia.org/wiki/Two%27s_complement)); this can be used to our advantage to avoid null bytes in our shellcode. We will discuss this later.
+
+So what happens to eax if the following instructions are executed?
+
+```asm
+mov eax, 0xffffffff ;
+add eax, 0x01       ;
+```
+
+**eax** now equals `0x00000000`; 32 bit registers overflow back to zero. Likewise:
+
+```asm
+xor eax, eax        ;
+sub eax, 0x10       ;
+```
+
+**eax** now equals `0xfffffff0`.
 
 ### Call Instructions
 
