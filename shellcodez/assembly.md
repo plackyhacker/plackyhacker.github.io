@@ -312,6 +312,15 @@ sub eax, 0x10       ;
 
 **eax** now equals `0xfffffff0`.
 
+There is two instructions that can be used to increment and decrement a register value by `0x1`:
+
+```asm
+inc eax             ;
+dec eax             ;
+```
+
+These are self explanatory and can be useful when one of our values contains a null byte. Again this will be discussed later.
+
 ### Call Instructions
 
 Coming very soon!
