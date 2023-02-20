@@ -29,7 +29,7 @@ DONT_EXPIRE_PASSWORD 0x10000
 DONT_REQ_PREAUTH     0x400000
 ```
 
-More settings can be refered to at:
+More settings can be referred to at:
 
 [Use the UserAccountControl flags to manipulate user account properties](https://learn.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties)
 
