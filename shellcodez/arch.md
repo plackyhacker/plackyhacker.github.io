@@ -44,7 +44,7 @@ add eax, 0x20   ; the eax register now stores the value 0x30
 
 Two registers of note are **esp**; the extended stack pointer and **ebp**; the extended base pointer. These will be discussed in the stack section.
 
-Most people that have done any sort of buffer overflow study will know what the **eip** pointer is. It is the extended instruction pointer, and points at the address of thext instruction to be executed.
+Most people that have done any sort of buffer overflow study will know what the **eip** pointer is. It is the extended instruction pointer, and points at the address of the next instruction to be executed.
 
 ## Flags
 
