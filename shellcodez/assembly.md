@@ -323,7 +323,18 @@ These are self explanatory and can be useful when one of our values contains a n
 
 ### Call Instructions
 
-Coming very soon!
+The **call** instruction pushes the return address on the stack; this is the address of the instruction immediately after the call. This ensures when the function being called returns, with the **rtn** instruction, execution commences after the function call.
+
+```asm
+call func           ; call func
+mov ecx, eax        ; this instruction executes after the function call
+                    ; do some other stuff
+func:               ; the call instruction sets eip to this address
+                    ; do some stuff in the function
+  retn              ; return back to the mov instruction
+```
+
+That's about it really, other than we can use it to create position independant shellcode (to help us avoid null bytes). That's for a later article!
 
 ### The End!
 
