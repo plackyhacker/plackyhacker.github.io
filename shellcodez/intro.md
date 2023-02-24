@@ -1,3 +1,8 @@
+---
+layout: post
+title: Writing Custom Shellcode, Introduction
+---
+
 [Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/shellcodez/arch) : [Part 3](https://plackyhacker.github.io/shellcodez/assembly)
 
 # Writing Custom Shellcode, Introduction
