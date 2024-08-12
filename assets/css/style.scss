@@ -3,8 +3,9 @@
 
 @import "{{ site.theme }}";
 
-$main-max-width: $large !default;
+@media (min-width: 80em) {
 
 .inner {
   width: 75%;
+}
 }
