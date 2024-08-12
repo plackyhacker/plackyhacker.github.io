@@ -2,11 +2,7 @@
 
 I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear Industry. I am interested in malicious codez!
 
-## Articles
-
-### Pen Testing
-
-February 2023 - [Changing the userAccountControl Attribute in AD](https://plackyhacker.github.io/testing/nopreauth)
+## Posts
 
 ### Writing Custom Shellcode
 
