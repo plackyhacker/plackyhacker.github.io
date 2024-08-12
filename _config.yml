@@ -1,7 +1,7 @@
 remote_theme: pages-themes/modernist@v0.2.0
 plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
-title: The hoe of the plackyhacker
+title: The home of the plackyhacker
 description: 
 avatar: https://avatars.githubusercontent.com/u/42491100?v=4
 google_analytics:
