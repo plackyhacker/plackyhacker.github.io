@@ -3,6 +3,8 @@
 
 @import "{{ site.theme }}";
 
+$main-max-width: $large !default;
+
 .inner {
   width: 75%;
 }
