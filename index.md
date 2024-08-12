@@ -1,6 +1,13 @@
 # Welcome to my GitHub Blog.
 
-I currently work as a Technical Cybersecurity Manager in the UK Civil Nuclear Industry. I am interested in malicious codez!
+
+I have studied Offensive Security topics for many years and work in a highly-sensitive industry as a cybersecurity professional. Previously, I worked in Information Technology for over twenty years, and I have always been 'fascinated' with 'exploitation'.
+
+I have completed all the requirements and criteria to earn the [OSCP](https://www.offsec.com/courses/pen-200/), [OSCE](https://www.offsec.com/ctp-osce/) (discontinued), and [OSCE<sup>3</sup>](https://www.offsec.com/offsec/osce3-certification/) certifications.
+
+You can find me on GitHub and LinkedIn. And you can view my Offensive Security credentials on [Accredible](https://www.credential.net/profile/johntear402666/wallet).
+
+I hope to take the [OSEE](https://www.offsec.com/courses/exp-401/) at least once!
 
 ## Posts
 
