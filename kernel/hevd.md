@@ -131,7 +131,7 @@ To understand what this is, we need to understand how dispatch functions are imp
 NTSTATUS sub_85078(PDEVICE_OBJECT DeviceObject, PIRP Irp);
 ```
 
-The `PIRP` object is a pointer to an `IRP` bject, which is The IRP structure is a structure that represents an I/O request packet. Essentially what is being sent from user mode. [The structure](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/ns-wdm-_irp) is documented on Microsoft's website.
+The `PIRP` object is a pointer to an `IRP` object, which is The IRP structure is a structure that represents an I/O request packet. Essentially what is being sent from user mode. [The structure](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/ns-wdm-_irp) is documented on Microsoft's website.
 
 On line 109 this is passed in to the Type Confusion function:
 
@@ -153,7 +153,7 @@ __int64 __fastcall HEVDTypeConfusion(__int64 a1, __int64 a2)
 }
 ```
 
-Thisi ssomewhat confusing as the pseudocode suggests nothing is passed in to the function `sub_87314()`. This isn't true, if we view this function we can see that there is clearly a parameter:
+This is somewhat confusing as the pseudocode suggests nothing is passed in to the function `sub_87314()`. This isn't true, if we view this function we can see that there is clearly a parameter:
 
 ```c
 __int64 __fastcall sub_87314(const void **a1)
@@ -184,7 +184,7 @@ This function allocates some pool memory of 16 bytes and then copies the user bu
 // ..
 ```
 
-This is where the second QWORD of our 16 byte buffer is called. So if our analysis is right we should be able to provide a memory address in our user buffer that will be called in kernel space.
+This is where the second `QWORD` of our 16 byte buffer is called. So if our analysis is right we should be able to provide a memory address in our user buffer that will be called in kernel space.
 
 ## PoC
 
