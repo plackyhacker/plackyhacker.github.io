@@ -41,7 +41,7 @@ The HEVD driver has a lot of dispatch routines, the one we are interested in for
 
 ### Driver Setup
 
-Loading the `HEVD.sys` file into IDA we can locate dthe `DriverEntry` function and examine the pseudocode (using the menu: View > Open subviews > Genertae psuedocode):
+Loading the `HEVD.sys` file into IDA we can locate the `DriverEntry` function and examine the pseudocode (using the menu: View > Open subviews > Genertae psuedocode):
 
 ```c
 __int64 __fastcall DriverEntry(__int64 a1, __int64 a2)
@@ -76,7 +76,7 @@ DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING)
 }
 ```
 
-In `C++`he `->` operator is used with pointers to access members (variables or methods) of an object, in this instance `DriverObject`. Effectively this code registers a new dispatch routine called `HEVDDeviceControl`. Notice from our **Windbg** output that `IRP_MJ_DEVICE_CONTROL` is equal to `0x0e` (go back and take a look). Let's go back to the `HEVDDriverSetup` pseudocode and pick out the bits we need:
+In `C++` the `->` operator is used with pointers to access members (variables or methods) of an object, in this instance `DriverObject`. Effectively this code registers a new dispatch routine called `HEVDDeviceControl`. Notice from our **Windbg** output that `IRP_MJ_DEVICE_CONTROL` is equal to `0x0e` (go back and take a look). Let's go back to the `HEVDDriverSetup` pseudocode and pick out the bits we need:
 
 ```c
 __int64 __fastcall HEVDDriverSetup(_QWORD *DriverObject)
@@ -92,7 +92,7 @@ __int64 __fastcall HEVDDriverSetup(_QWORD *DriverObject)
 }
 ```
 
-I have renamed `a1` to `DriverObject`. We can see that starting it an offset of `0x0e` some functions are being assigned to memory, these are the dispatch routines. If we add `0x0e` (the base offset, and `0x0e` which we believe to be our `IRP_MJ_DEVICE_CONTROL` dispatch function we get `0x1c`. If we follow this we end up at the following function:
+I have renamed `a1` to `DriverObject`. We can see that starting it an offset of `0x0e` some functions are being assigned to memory, these are the dispatch routines. If we add `0x0e` (the base offset), and `0x0e` which we believe to be our `IRP_MJ_DEVICE_CONTROL` dispatch function we get `0x1c`. If we follow this logic we end up at the following function:
 
 ```c
 __int64 __fastcall sub_85078(__int64 a1, __int64 a2)
@@ -111,5 +111,11 @@ case 0x222023:
 ```
 
 I have renamed the target function to `HEVDTypeConfusion` and the IOCTL we need is `0x222023`.
+
+## The Vulnerability
+
+## PoC
+
+## Type Confusion
 
 [Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/hevd-2) : [Part 3](https://plackyhacker.github.io/kernel/hevd-2)
