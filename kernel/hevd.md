@@ -101,6 +101,7 @@ Within this function we can see debug messages that describe the types of vulner
 This is the IOCTL we are going to exploit:
 
 ```c
+// line 107
 case 0x222023:
   DbgPrintEx(0x4Du, 3u, "****** HEVD_IOCTL_TYPE_CONFUSION ******\n");
   v6 = HEVDTypeConfusion(a2, v2);
