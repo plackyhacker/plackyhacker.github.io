@@ -1,3 +1,5 @@
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/hevd-2) : [Part 3](https://plackyhacker.github.io/kernel/hevd-2)
+
 # HEVD Type Confusion Exploit in Windows 2022
 
 ## Introduction
@@ -109,3 +111,5 @@ case 0x222023:
 ```
 
 I have renamed the target function to `HEVDTypeConfusion` and the IOCTL we need is `0x222023`.
+
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/hevd-2) : [Part 3](https://plackyhacker.github.io/kernel/hevd-2)
