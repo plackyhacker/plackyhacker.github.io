@@ -118,7 +118,7 @@ I have renamed the target function to `HEVDTypeConfusion` and the IOCTL we need 
 
 ### Follow the Code
 
-
+[TODO]
 
 ## PoC
 
@@ -162,6 +162,10 @@ ffffd286`5abf3fa0  41414141`41414141 42424242`42424242
 Notice that when we run the exploit in our target lab, our breakpoint is hit. When we examine the two QWORDs pointed to by `rbx` we see our test buffer. This means we control what is executed by `call qword ptr [rbx+8]`.
 
 ## Type Confusion
+
+It is easier to look at the source code provided to understand why this is a type confusion vulnerability. When I have looked at type confusion vulnerabilities in the past they have been in browser exploits and they generally require the exploit to trick the target code in to treating an object in a way that is intended for another object. This however is pretty straightforward, and somewhat trivial, but that's how we learn!
+
+[TODO]
 
 ## Next Steps
 
