@@ -10,7 +10,7 @@ Chances are if you have taken an interest in kernel exploitation you have heard 
 
 The [GitHub page](https://github.com/hacksysteam/HackSysExtremeVulnerableDriver) for the driver states "The HackSys Extreme Vulnerable Driver (HEVD) is a Windows Kernel driver that is intentionally vulnerable. It has been developed for security researchers and enthusiasts to improve their skills in kernel-level exploitation". I don't need to say anything else about this great resource.
 
-At the time of writing, I am preparing to take the (Advanced Windows Exploitation)[https://www.offsec.com/courses/exp-401/] course by OffSec. I want to document my attempt to exploit the HEVD driver, using some slightly less common techniques than I have used before. Hiopefully this can help others too!
+At the time of writing, I am preparing to take the [Advanced Windows Exploitation](https://www.offsec.com/courses/exp-401/) course by OffSec. I want to document my attempt to exploit the HEVD driver, using some slightly less common techniques than I have used before. Hiopefully this can help others too!
 
 ## Gathering Information
 
