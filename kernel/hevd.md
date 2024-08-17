@@ -10,6 +10,8 @@ Chances are if you have taken an interest in kernel exploitation you have heard 
 
 The [GitHub page](https://github.com/hacksysteam/HackSysExtremeVulnerableDriver) for the driver states "The HackSys Extreme Vulnerable Driver (HEVD) is a Windows Kernel driver that is intentionally vulnerable. It has been developed for security researchers and enthusiasts to improve their skills in kernel-level exploitation". I don't need to say anything else about this great resource.
 
+At the time of writing, I am preparing to take the Advanced Windows Exploitation course by OffSec. I want to document my attempt to exploit the HEVD driver, using some slightly less common techniques than I have used before. Hiopefully this can help others too!
+
 ## Gathering Information
 
 Typically the first stage in reverse engineering a driver is to understand how we can interact with it from user mode. Drivers register a **Symlink** which is effectively the ID used to communicate with the driver from user mode, they also register **dispatch routines**; in simple terms these are functions that execute the driver code when data is received from user mode. 
@@ -41,7 +43,7 @@ The HEVD driver has a lot of dispatch routines, the one we are interested in for
 
 ### Driver Setup
 
-Loading the `HEVD.sys` file into IDA we can locate the `DriverEntry` function and examine the pseudocode (using the menu: View > Open subviews > Genertae psuedocode):
+Loading the `HEVD.sys` file into IDA we can locate the `DriverEntry` function and examine the pseudocode (using the menu: `View > Open subviews > Generate` psuedocode):
 
 ```c
 __int64 __fastcall DriverEntry(__int64 a1, __int64 a2)
@@ -114,6 +116,10 @@ I have renamed the target function to `HEVDTypeConfusion` and the IOCTL we need 
 
 ## The Vulnerability
 
+### Follow the Code
+
+
+
 ## PoC
 
 We can do some basic dynamic analysis to test our theory. The following code uses the `CreateFile` Win32 API to get a handle to the driver using the SymLink we obtained earlier. We define a character array of 16 bytes and send it to the driver using `DeviceIoControl`. Notice the parameters for this call; `hDriver` is a handle to the driver, `0x222023` is our target IOCTL, and `someData` is our test buffer:
@@ -155,12 +161,10 @@ ffffd286`5abf3fa0  41414141`41414141 42424242`42424242
 
 Notice that when we run the exploit in our target lab, our breakpoint is hit. When we examine the two QWORDs pointed to by `rbx` we see our test buffer. This means we control what is executed by `call qword ptr [rbx+8]`.
 
-
-
 ## Type Confusion
 
 ## Next Steps
 
-In the next post we will attempt to direct execution to some malicious shellcode to escalate our privileges. To do this we need to overcome some Windows exploit mitigations, such as **SMEP**, **kASLR**, and **DEP**.
+In the next post we will attempt to direct execution to malicious shellcode we control to escalate our privileges. To do this we need to overcome some Windows exploit mitigations, such as **SMEP**, **kASLR**, and **DEP**.
 
 [Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/hevd-2) : [Part 3](https://plackyhacker.github.io/kernel/hevd-2)
