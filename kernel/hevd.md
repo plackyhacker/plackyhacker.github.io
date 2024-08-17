@@ -2,6 +2,8 @@
 
 ## Introduction
 
+Why should we be interested in driver exploits? The answer to that is that on Windows architecture drivers execute their code in kernel space. This is very desirable for a threat actor, if there is a vulnerability in the driver code and it can be exploited it can be used to gain privilege escalation from user mode. This is because user mode can interact with kernel mode via drivers.
+
 Chances are if you have taken an interest in kernel exploitation you have heard of the **Hacksys Extreme Vulnerable Driver**.
 
 The [GitHub page](https://github.com/hacksysteam/HackSysExtremeVulnerableDriver) for the driver states "The HackSys Extreme Vulnerable Driver (HEVD) is a Windows Kernel driver that is intentionally vulnerable. It has been developed for security researchers and enthusiasts to improve their skills in kernel-level exploitation". I don't need to say anything else about this great resource.
