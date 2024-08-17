@@ -118,7 +118,73 @@ I have renamed the target function to `HEVDTypeConfusion` and the IOCTL we need 
 
 ### Follow the Code
 
-[TODO]
+First let's take a look at the dispatch function in IDA:
+
+```c
+__int64 __fastcall sub_85078(__int64 a1, __int64 a2)
+```
+
+To understand what this is, we need to understand how dispatch functions are implemented in drivers, the prototype is as follows:
+
+```c
+// The HEVDDeviceControl
+NTSTATUS sub_85078(PDEVICE_OBJECT DeviceObject, PIRP Irp);
+```
+
+The `PIRP` object is a pointer to an `IRP` bject, which is The IRP structure is a structure that represents an I/O request packet. Essentially what is being sent from user mode. [The structure](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/ns-wdm-_irp) is documented on Microsoft's website.
+
+On line 109 this is passed in to the Type Confusion function:
+
+```c
+v6 = HEVDTypeConfusion(a2, v2);
+```
+
+If we follow this call we come to the next function:
+
+```c
+__int64 __fastcall HEVDTypeConfusion(__int64 a1, __int64 a2)
+{
+  __int64 result; // rax
+
+  result = 0xC0000001LL;
+  if ( *(_QWORD *)(a2 + 0x20) )
+    return ((__int64 (*)(void))sub_87314)();
+  return result;
+}
+```
+
+Thisi ssomewhat confusing as the pseudocode suggests nothing is passed in to the function `sub_87314()`. This isn't true, if we view this function we can see that there is clearly a parameter:
+
+```c
+__int64 __fastcall sub_87314(const void **a1)
+```
+
+This function is where it gets interesting, it turns out that `a1` is the data being passed in to the driver from user mode, and this is where the type confusion occurs:
+
+```c
+// ...
+// line 7
+PoolWithTag = (const void **)ExAllocatePoolWithTag(0LL, 16LL, 'kcaH');
+// ...
+// line 17
+*PoolWithTag = *a1;
+PoolWithTag[1] = a1[1];
+// ...
+// line 22
+v4 = sub_87514((__int64)PoolWithTag);
+// ...
+```
+
+This function allocates some pool memory of 16 bytes and then copies the user buffer in to that allocated memory. On line 22 the newly allocated object (which is now a kernel representation of the object) is passed to the `sub_87514` function, which will look at next:
+
+```c
+// ...
+// line 5
+(*(void (**)(void))(a1 + 8))();
+// ..
+```
+
+This is where the second QWORD of our 16 byte buffer is called. So if our analysis is right we should be able to provide a memory address in our user buffer that will be called in kernel space.
 
 ## PoC
 
@@ -163,9 +229,48 @@ Notice that when we run the exploit in our target lab, our breakpoint is hit. Wh
 
 ## Type Confusion
 
-It is easier to look at the source code provided to understand why this is a type confusion vulnerability. When I have looked at type confusion vulnerabilities in the past they have been in browser exploits and they generally require the exploit to trick the target code in to treating an object in a way that is intended for another object. This however is pretty straightforward, and somewhat trivial, but that's how we learn!
+It is easier to look at the [source code](https://github.com/hacksysteam/HackSysExtremeVulnerableDriver/blob/b02b6ea3ce4b53652348ac8fa5cc7e96b4e6c999/Driver/HEVD/Windows/TypeConfusion.h#L63) provided to understand why this is a type confusion vulnerability. When I have looked at type confusion vulnerabilities in the past they have been in browser exploits and they generally require the exploit to trick the target code in to treating an object in a way that is intended for another object. This however is pretty straightforward, and somewhat trivial, but that's how we learn!
 
-[TODO]
+In the source code we see two types:
+
+```c
+typedef struct _USER_TYPE_CONFUSION_OBJECT
+{
+    ULONG_PTR ObjectID;
+    ULONG_PTR ObjectType;
+} USER_TYPE_CONFUSION_OBJECT, *PUSER_TYPE_CONFUSION_OBJECT;
+```
+
+The first is the intended user mode input, and the second is how it is represented in the kernel:
+
+```c
+typedef struct _KERNEL_TYPE_CONFUSION_OBJECT
+{
+    ULONG_PTR ObjectID;
+    union
+    {
+        ULONG_PTR ObjectType;
+        FunctionPointer Callback;
+    };
+} KERNEL_TYPE_CONFUSION_OBJECT, *PKERNEL_TYPE_CONFUSION_OBJECT;
+```
+
+Essentially when we pass in a value as `ObjectType` the driver treats it as the `Callback` value, and calls the value we provide. We can see the [type confusion bug](https://github.com/hacksysteam/HackSysExtremeVulnerableDriver/blob/b02b6ea3ce4b53652348ac8fa5cc7e96b4e6c999/Driver/HEVD/Windows/TypeConfusion.c#L161) here:
+
+```c
+KernelTypeConfusionObject->ObjectID = UserTypeConfusionObject->ObjectID;
+KernelTypeConfusionObject->ObjectType = UserTypeConfusionObject->ObjectType;
+```
+
+This is basically the pseudocode we reviewed earlier:
+
+```c
+// line 17
+*PoolWithTag = *a1;
+PoolWithTag[1] = a1[1];
+```
+
+We now know there is a type confusion bug and that we can provide a user mode buffer that will execute code in kernel mode. We must provide a memory address where that code resides. This sounds simple, and in the past it was. Not in Windows 2022, we have a few hoops to jump through first.
 
 ## Next Steps
 
