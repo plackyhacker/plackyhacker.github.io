@@ -7,6 +7,10 @@ Here I will write about things I find interesting, and hopefully about things th
 
 ## Posts
 
+### Kernel Driver Exploitation
+
+August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd)
+
 ### Writing Custom Shellcode
 
 February 2023 - [Introduction](https://plackyhacker.github.io/shellcodez/intro)
