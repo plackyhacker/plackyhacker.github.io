@@ -560,7 +560,7 @@ mov qword[r10], rax				;
 wbinvd 						;
 ```
 
-The `MiGetPteAddress` call is a little bit tricky in our ROP chain becasue we have to know what this is as an ofset of the Kernel Base address we disclosed. To do this I used my debuggee lab to display the code in **WinDbg**:
+The `MiGetPteAddress` call is a little bit tricky in our ROP chain because we have to know what this is as an ofset of the Kernel Base address we disclosed. To do this I used my debuggee lab to display the code in **WinDbg**:
 
 ```
 1: kd> uf nt!MiGetPteAddress
