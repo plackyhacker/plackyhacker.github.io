@@ -665,5 +665,9 @@ If we don't recover the stack following our exploit in Kernel space it is inevit
 
 While I was initially debugging my exploit I noticed that as the `_guard_dispatch_icall_fptr()` call was being made the `rdx` register always had a value `0x18` higher than `rsp`. Provided I didn't change the value in `rdx` I could use this register to restore `rsp` at the end of my shellcode.
 
+## Final Thoughts
 
+I learnt a stack of new techniques from this lab and expanded my knowledge in browser and Kernel exploitation. Thanks to `xct` for a great learning experience!
+
+If you have any questions feel free to contact me on Discord: `plackyhacker#1905`.
 
