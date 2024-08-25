@@ -211,6 +211,10 @@ ATTEMPTED_EXECUTE_OF_NOEXECUTE_MEMORY (fc)
 
 This is **SMEP** preventing Kernel mode from executing code in user space. We need to be a bit more creative to gain code execution.
 
+## Registers and a ROP NOP
+
+todo
+
 ## Stack Pivoting
 
 todo
