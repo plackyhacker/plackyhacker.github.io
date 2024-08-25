@@ -11,7 +11,7 @@ Here I will write about things I find interesting, and hopefully about things th
 
 August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd)
 
-### Lab Walkthrougha
+### Lab Walkthroughs
 
 August 2024 - [VulnLab Reaper 2 Walkthrough](https://plackyhacker.github.io/walkthrough/reaper2)
 
