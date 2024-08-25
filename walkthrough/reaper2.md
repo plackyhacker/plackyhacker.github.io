@@ -669,6 +669,20 @@ If we don't recover the stack following our exploit in Kernel space it is inevit
 
 While I was initially debugging my exploit I noticed that as the `_guard_dispatch_icall_fptr()` call was being made the `rdx` register always had a value `0x18` higher than `rsp`. Provided I didn't change the value in `rdx` I could use this register to restore `rsp` at the end of my shellcode.
 
+## The End
+
+I suppose we have to do this (and don't forget the flag):
+
+```
+C:\Users\Administrator\Desktop>whoami
+whoami
+nt authority\system
+
+C:\Users\Administrator\Desktop>hostname
+hostname
+Reaper2
+```
+
 ## Final Thoughts
 
 I learnt a stack of new techniques from this lab and expanded my knowledge in browser and Kernel exploitation. This lab is classed as **insane** for a reason, it isn't easy. I spent around 6 weeks from start to finish and I needed some nudges from other folk much cleverer than me. If you approach the challenge in small chunks you can also beat **Reaper 2**!
