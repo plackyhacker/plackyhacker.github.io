@@ -128,7 +128,7 @@ fffff800`10a00000 fffff800`11a47000   nt
 
 Now we have the base address of the kernel we can search for code chunks or gadgets that we can chain together to acheive our goal.
 
-## Stack Pivoting
+## User Mode Code Execution
 
 We can execute code using the bug in the driver but we only control the first `call` to some code. Let's see what happens when we jump to some user space shellcode.
 
@@ -194,7 +194,7 @@ nt!DbgBreakPointWithStatus:
 fffff800`10e1edc0 cc              int     3
 ```
 
-If we run `!analyze -v` to see what the bug check is:
+If we run `!analyze -v` to see what the bugcheck is:
 
 ```
 0: kd> !analyze -v
@@ -209,9 +209,21 @@ ATTEMPTED_EXECUTE_OF_NOEXECUTE_MEMORY (fc)
 ...
 ```
 
-This is Supervisor Mode Execution Prevention (SMEP) stopping Kernel mode from executing code in user space. We need to be a bit more creative to gain code execution.
+This is **SMEP** preventing Kernel mode from executing code in user space. We need to be a bit more creative to gain code execution.
+
+## Stack Pivoting
+
+todo
 
 ## Return Oriented Programming
+
+todo
+
+## Modifying Page Table Entries
+
+todo
+
+## User Mode Code Execution Take 2
 
 todo
 
