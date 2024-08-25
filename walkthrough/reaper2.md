@@ -29,13 +29,22 @@ PORT      STATE SERVICE
 
 It's a Windows operating system, as expected. It has the **RPC** and **SMB** ports open and it also has a web service running on **HTTP**, and Terminal Services (**RDP**).
 
-Visiting the wensite we are presented with the following:
+Visiting the website we are presented with the following:
 
-<img width="1498" alt="Screenshot 2024-08-25 at 13 43 24" src="https://github.com/user-attachments/assets/7d6cd890-2fde-4bbd-a7d3-b55ea71a54bc">
+<img width="835" alt="Screenshot 2024-08-25 at 13 55 12" src="https://github.com/user-attachments/assets/91cf2196-e8a8-45e2-9890-b7c9250f3ea8">
 
-From here we can input some JavaScript and the **V8** engine will process it and display the output. We can test this with an input of `print(version());`, and we will get an output of `12.2.0 (candidate)`.
+
+From here we can input some JavaScript and the **V8** engine will process it and display the output. We can test this with an input of `print(version());`, and we will get an output of `12.2.0 (candidate)`. What is even more interesting is that if we look at the source code in the returned web page we will see:
+
+```html
+<!-- Completed: d8.exe --allow-natives-syntax --harmony-set-methods data.js -->
+```
+
+We have arbitrary JavaScript code input into **D8**. **D8** is a lightweight, standalone command-line interpreter for the **V8** JavaScript engine. It's primarily used for testing and debugging JavaScript code and **V8** itself. We also observe that the `--allow-natives-syntax --harmony-set-methods` arguments are being used.
 
 ### Type Confusion Bug
+
+
 
 ### Exploitation
 
