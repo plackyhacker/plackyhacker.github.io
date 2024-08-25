@@ -6,7 +6,7 @@
 
 At the end of part 1 we had code execution, we were able to pass a 16 byte buffer into the driver vio an IOCTL. If our target was [Windows 7](https://github.com/plackyhacker/HEVD/blob/main/hevd_type_confusion.cpp) we could simply write some shellcode, allocate some memory in user space, copy our shellcode to this memory, and trigger the type confuusion bug to execute our code. In modern Windows OSes, such as Server 2022, we can't do that.
 
-## Supervisor Mode Execution Prevention
+## Supervisor Mode Execution Prevention
 
 Supervisor Mode Execution Prevention (SMEP) is a security feature found in modern CPUs that prevents kernel-mode code from executing user-mode code. If the kernel jumps to or executes code located in user space, SMEP triggers a fault, preventing the action and mitigating potential exploitation avenues like privilege escalation attacks.
 
