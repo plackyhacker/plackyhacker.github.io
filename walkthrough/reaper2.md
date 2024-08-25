@@ -111,7 +111,7 @@ This was a painful process because of the JIT compiler restrictions outlined by 
 
 Essentially I wrote my shellcode in chunks of 8 bytes:
 
-```asm
+```masm
 locate_kernel32:
     xor rcx, rcx                    ; zero out rcx
     nop                             ;
@@ -167,7 +167,7 @@ Essentially my shellcode does the following:
 - Locates the base address of `kernel32`.
 - Resolves `WinExec`, this is done by examining the `kernel32.dll` file and finding the offset of `WinExec` then adding it to the base of `kernel32`:
 
-```asm
+```masm
 ; r15 = base address of kernel32
 resolve_winexec:
     mov ebx, [offset]               ; mov the offset of WinExec in to ebx
@@ -546,7 +546,7 @@ I decided to use the PTE Table Overwrite technique. This technique effectively p
 
 I won't explain this technique, it has already been done by [Connor McGarr](https://twitter.com/33y0re) in his blog [Leveraging Page Table Entries for Windows Kernel Exploitation](https://connormcgarr.github.io/pte-overwrites/), what I will do is present the `asm` that is required to carry out this technique (convoluted based upon the ROP gadgets I found). You will have to find the ROP gadgets yourself and add them to your exploit:
 
-```asm
+```masm
 pop rcx, [address of your shellcode]
 call MiGetPteAddress				; you will need to resolve this address
 mov r8, rax					; r8 = Shellcode's PTE address
@@ -587,7 +587,7 @@ This returned several functions, upon examining them I found the function I was 
 
 The user space shellcode is the one we will `ret` to when we have marked it as being owend by the Kernel. It is fairly standard token stealing shellcode:
 
-```asm
+```masm
 BITS 64
 SECTION .text
     SYS_PID equ 0x04
@@ -667,7 +667,9 @@ While I was initially debugging my exploit I noticed that as the `_guard_dispatc
 
 ## Final Thoughts
 
-I learnt a stack of new techniques from this lab and expanded my knowledge in browser and Kernel exploitation. Thanks to `xct` for a great learning experience!
+I learnt a stack of new techniques from this lab and expanded my knowledge in browser and Kernel exploitation. This lab is classed as **insane** for a reason, it isn't easy. I spent around 6 weeks from start to finish and I needed some nudges from other folk much cleverer than me. If you approach the challenge in small chunks you can also beat **Reaper 2**!
+
+Thanks to `xct` for a great learning experience!
 
 If you have any questions feel free to contact me on Discord: `plackyhacker#1905`.
 
