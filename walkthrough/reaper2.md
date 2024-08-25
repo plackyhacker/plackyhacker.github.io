@@ -429,7 +429,9 @@ QWORD ReadMSR(HANDLE hDevice, DWORD msr)
 }
 ```
 
-This gives us a Kernel base address with which to defeat **kASRL**. 
+This gives us a Kernel base address with which to defeat **kASRL**.
+
+**Note:** Because our initial shell is running in **Low Integrity** we cannot use Win32 APIs to disclose the base address of the Kernel.
 
 ### Arbitrary Code Execution Bug
 
