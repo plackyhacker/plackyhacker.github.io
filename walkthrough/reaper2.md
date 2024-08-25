@@ -79,7 +79,7 @@ smb: \> dir
 
 We should download copies of all the files we find, this includes `v8_debug.zip`, `v8_release`, `d8.exe`, `snapshot_blob.bin`, and `kernel32.dll`. We cannot download `Reaper.sys` but don't worry about that for now.
 
-These files have been provided by `xct` to make debugging and writing your exploit easier. The **V8** and **D8** files mean you don't have to build the environemnt yourself, and the `kernel32.dll` file will come in handy later when we need to use some Win32 API offsets.
+These files have been provided by `xct` to make debugging and writing your exploit easier. The **V8** and **D8** files mean you don't have to build the environment yourself, and the `kernel32.dll` file will come in handy later when we need to use some Win32 API offsets.
 
 ### Type Confusion Bug
 
