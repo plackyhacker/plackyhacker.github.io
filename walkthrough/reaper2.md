@@ -387,7 +387,7 @@ Line `53` allows us to read a model-specific register (MSR). The register `0xC00
 Evaluate expression: 11055488 = 00000000`00a8b180
 ```
 
-**Note:** On the target you will need to find the offset of `KiSystemServiceHandler`. It is a pain, but it can be done.
+**Note:** On the target you will need to find the offset of `KiSystemServiceHandler`. It is a pain, but it can be done. **Test this** in your lab, and test this on the target, without the correct offset you will BSOD the target/lab.
 
 ### Kernel Base Address Disclosure Bug
 
@@ -427,7 +427,11 @@ QWORD ReadMSR(HANDLE hDevice, DWORD msr)
 }
 ```
 
-This gives us a Kernel base address with which to defeat **kASRL**. The execute bug is similar, although we use a different IOCTL and pass the address of the code we want to execute in the user buffer:
+This gives us a Kernel base address with which to defeat **kASRL**. 
+
+### Arbitrary Code Execution Bug
+
+The execute bug is similar, although we use a different IOCTL and pass the address of the code we want to execute in the user buffer:
 
 ```c
 void ExecuteGadget(HANDLE hDevice, QWORD address)
@@ -460,10 +464,22 @@ void ExecuteGadget(HANDLE hDevice, QWORD address)
 }
 ```
 
-
-
-### Arbitrary Code Execution Bug
-
 ### Kernel Debugging
 
+Initially you will need to develop and test your exploit in a lab environment, this is going to be different to the target. The ROP gadgets will have different offset addresses. My advice would be to build and test a working exploit in your own lab and then change the offsets in your exploit to match the target environment.
+
+Whist I was debugging my exploit I found myself being unable to step through my ROP chain after I had pivoted the stack in to user space. I spent far too much time worrying about this and trying to understand what was wrong, this probably accounted for the vast majority of time I spent on this lab. I was thinking that my exploit was broken when in fact I just couldn't debug it effectively in **WinDbg**.
+
+When debugging I would insert an `int3` ROP gadget into my chain and examine memory, registers etc. Then I would have to reload my VM snapshot and send the exploit again.
+
 ### Exploitation
+
+I am not going to explain how to write ROP chains, and find ROP gadgets. If you are attempting this lab then you probably already know how to do this.
+
+#### Stack Pivoting
+
+#### PTE Bit Flipping
+
+#### User Space Shellcode
+
+#### Stack Recovery
