@@ -360,7 +360,7 @@ This shows all of our **rop nops**. Also notice where `rsp` points to now:
 rsp=00000000f6000008
 ```
 
-This is pointing in our user space stack. In the next section we will look at what we can do to defeat SMEP in our ROP chain, and `ret` to shellcode in user space.
+This is pointing in our user space stack. In the next section we will look at what we can do to defeat SMEP in our ROP chain, and `ret` to shellcode in user space. Don't forget to restart your target (or rollback to a snapshot) ready for the next section.
 
 ## Disabling SMEP
 
