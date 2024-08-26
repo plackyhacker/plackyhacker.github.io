@@ -275,7 +275,7 @@ Because we can only execute one gadget we need to execute something that can all
 
 <img width="1059" alt="Screenshot 2024-08-26 at 16 35 32" src="https://github.com/user-attachments/assets/3605c86a-79ad-402e-8a84-cc7279bddf6f">
 
-The first thing we need to do is locate a suitable `mov esp` gadget. For it to be suitable it should allign to 16 bytes (essentially end with `0`). We can search `ntsokrnl.exe` for this. When one is allocated we can allocate the user space memory, lock it in, and execute it:
+The first thing we need to do is locate a suitable `mov esp` gadget. For it to be suitable it should allign to 16 bytes (essentially end with `0`). We can search `ntsokrnl.exe` for this. When one is located we can allocate the user space memory, lock it in, and execute it:
 
 ```c
 // stack pivoting gadgets/values
