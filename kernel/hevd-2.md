@@ -548,7 +548,7 @@ char shellcode[] = {
 
 I have changed the shellcode to execute 8 nops then restore the stack and return to the driver. We can compile the exploit, copy it to the target and execute it:
 
-<img width="921" alt="Screenshot 2024-08-26 at 18 57 46" src="https://github.com/user-attachments/assets/159d7e40-105a-462b-bbaf-a2e5d90d74b2">
+<img width="918" alt="Screenshot 2024-08-26 at 19 00 27" src="https://github.com/user-attachments/assets/10455a12-0bf6-4751-bbea-8d3ff81fa487">
 
 Excellent! We execute our shellcode and restore execution back within the driver when we are done. We have a stable exploit, albeit one that doesn't execute any useful shellcode yet.
 
