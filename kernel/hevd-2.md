@@ -353,7 +353,7 @@ We hit the breakpoint on our ROP chain. Let's take a look at the stack:
 00000000`f6000078  fffff800`11039131 fffff800`11039131
 ```
 
-This shows all of our **nop rops**. Also notice where `rsp` points to now:
+This shows all of our **rop nops**. Also notice where `rsp` points to now:
 
 ```
 1: kd> r rsp
