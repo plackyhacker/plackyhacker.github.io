@@ -364,7 +364,19 @@ This is pointing in our user space stack. In the next section we will look at wh
 
 ## Disabling SMEP
 
-todo
+We can disable SMEP by altering the `cr4` register, this works but it can be a little bit tricky if you don't know what the `cr4` register contains on the target.
+
+SMEP leverages the 20th bit of the Control Register 4 (`cr4`) in x86 processors. When the SMEP bit is enabled by setting it in `cr4`, it prevents the processor from executing user mode code in kernel mode.
+
+We can write a ROP chain to disable SMEP:
+
+```
+pop rcx ; ret ;
+[the new cr4 value]
+mov cr4, rcx ; ret;
+```
+
+Feel free to have a go at this yourself. I am going to discuss a way we can play by SMEPs rules. This way we don't have to know what the existing `cr4` value is on the target. We will make SMEP believe the user space page is owned by Kernel space.
 
 ## Modifying Page Table Entries
 
