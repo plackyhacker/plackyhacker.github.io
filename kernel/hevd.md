@@ -12,6 +12,47 @@ The [GitHub page](https://github.com/hacksysteam/HackSysExtremeVulnerableDriver)
 
 At the time of writing, I am preparing to take the [Advanced Windows Exploitation](https://www.offsec.com/courses/exp-401/) course by OffSec. I want to document my attempt to exploit the HEVD driver, using some slightly less common techniques than I have used before. Hopefully this can help others too!
 
+## Kernel Debugging
+
+I have included this short section on kernel debugging for those that have not done it before. Network debugging is a method of debugging, supported by Microsoft, offers easier setup and faster performance compared to the Serial method. However, it is limited to Windows 8 and above as supported operating systems (which shouldn't really be a problem in 2024).
+
+Enter the following commands in the debugee/target host (the one running HEVD):
+
+```
+bcdedit /copy {current} /d "Network Debugging"
+The entry was successfully copied to {c8596674-0997-11ee-a0f8-e8245697ece2}.
+
+bcdedit /debug {c8596674-0997-11ee-a0f8-e8245697ece2} on
+The operation completed successfully.
+
+C:\Windows\system32>bcdedit /dbgsettings net hostip:1.1.1.1 port:50000
+Key=1234
+```
+
+You will need to take a note of the key as this is needed in **WinDbg** to attach to the remote kernel. In **WinDbg** choose 'Attach to kernel' and use these details to debug the target host; the IP, the port number, and the key. Restart the target and attch the debugger to the kernel as it restarts.
+
+## Running the Driver
+
+To run the driver in the target host you need to allow the installation of unsigned drivers from an escalated command prompt:
+
+```
+bcdedit /set testsigning on
+```
+
+To install the driver you will need to execute the following command:
+
+```
+sc create hevd type= kernel binPath= <the location of the sys file>
+```
+
+When the operating system restarts we will need to restart the driver service. The following command can be used from an escalated command prompt:
+
+```
+sc start hevd
+```
+
+**Tip**: Rather than rebotting the OS after every BSOD, take snapshots of the VM; restoring these are much quicker than rebooting the VM.
+
 ## Gathering Information
 
 Typically the first stage in reverse engineering a driver is to understand how we can interact with it from user mode. Drivers register a **Symlink** which is effectively the ID used to communicate with the driver from user mode, they also register **dispatch routines**; in simple terms these are functions that execute the driver code when data is received from user mode. 
