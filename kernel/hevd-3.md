@@ -17,13 +17,70 @@ I first read about this [here](https://blog.improsec.com/tech-blog/windows-kerne
 
 ## Stopping Bugchecks
 
-todo
+Recently I learned from [this blog](https://www.linkedin.com/safety/go?url=https%3A%2F%2Fwafzsucks.medium.com%2Fhow-a-simple-k-typeconfusion-took-me-3-months-long-to-create-a-exploit-f643c94d445f&trk=flagship-messaging-web&messageThreadUrn=urn%3Ali%3AmessagingThread%3A2-NmRhNTQ0YTItNDAzYi00NDYzLWIzZDQtMjNiNThiOWZmYmI1XzAxMg%3D%3D&lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3B%2BbayF5W%2FTdqVBXlFeoIMxg%3D%3D) that trying to step through code when the stack is pivoted can be a pain, with bugchecks commonplace. So we can step through our shellcode without generating a BSOD, we should restore the stack as early as possible in our shellcode:
+
+```
+BITS 64
+SECTION .text
+
+global main
+
+main:
+restore_stack:
+    ; restore stack early to avoid stack pivot debugging errors
+    mov rsp, r11
+
+; our main shellcode will go in here
+
+the_end:
+    ret
+```
+
+Remember from previous posts that we only have to move `r11` in to `rsp` to restore the stack. If we do this we can insert breakpoints in our shellcode and step through it now that the stack has been restored to its previous state.
 
 ## Theory
 
 todo
 
 ## Shellcode
+
+### Finding KPROCESS
+
+todo
+
+### Locating winlogon.exe
+
+todo
+
+### Patching the DACL
+
+todo
+
+### Patching the Mandatory Policy
+
+todo
+
+## Process Injection
+
+todo
+
+### Getting the PID of winexec.exe
+
+todo
+
+### Locating WinExec
+
+todo
+
+### User Mode Shellcode
+
+todo
+
+### Win32 APIs
+
+todo
+
+## Final Exploit
 
 todo
 
