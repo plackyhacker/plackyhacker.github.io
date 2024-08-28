@@ -13,6 +13,8 @@ NULLing out ACLs doesn't actually work on Windows 10 1607 and above. Microsoft p
 
 There's lots of resources online for writing token stealing shellcode, so I'm going to go the other route, I'll call this **Privilged Process Discretionary ACL Manipulation**.
 
+I first read about this [here](https://blog.improsec.com/tech-blog/windows-kernel-shellcode-on-windows-10-part-2), so I can't take any credit for the technique.
+
 ## Stopping Bugchecks
 
 todo
