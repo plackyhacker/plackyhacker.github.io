@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/hevd-2) : [Part 3](https://plackyhacker.github.io/kernel/hevd-2)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/hevd-2) : [Part 3](https://plackyhacker.github.io/kernel/hevd-3)
 
 # HEVD Type Confusion Walkthrough on Windows 2022
 
@@ -315,4 +315,4 @@ We now know there is a type confusion bug and that we can provide a user mode bu
 
 In the next post we will attempt to direct execution to malicious shellcode we control to escalate our privileges. To do this we need to overcome some Windows exploit mitigations, such as **SMEP**, **kASLR**, and **DEP**.
 
-[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/hevd-2) : [Part 3](https://plackyhacker.github.io/kernel/hevd-2)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/hevd-2) : [Part 3](https://plackyhacker.github.io/kernel/hevd-3)
