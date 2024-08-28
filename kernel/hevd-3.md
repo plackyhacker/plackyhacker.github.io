@@ -42,6 +42,14 @@ Remember from previous posts that we only have to move `r11` in to `rsp` to rest
 
 todo
 
+### Process Hacker
+
+Before we get started, on the target host use **Process Hacker** to examine the `winlogon.exe` process. You will need elevated privileges to do this:
+
+<img width="1254" alt="image" src="https://github.com/user-attachments/assets/5b6e74fb-c47b-4e2d-bad7-d5030f7d43ee">
+
+We can see that in order to get access to the process (to inject shellcode) we need to be either `SYSTEM` or and `Administrator` (with `High` Integrity). What we want to do is manipulate this in the kernel so it allows us to inject shellcode into this privileged process. We will write shellcode that runs in our driver exploit to do just that.
+
 ## Shellcode
 
 ### Finding KPROCESS
@@ -64,7 +72,7 @@ todo
 
 todo
 
-### Getting the PID of winexec.exe
+### Getting the PID of winlogon.exe
 
 todo
 
