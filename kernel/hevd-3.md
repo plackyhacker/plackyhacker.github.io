@@ -117,6 +117,8 @@ We `mov` `r8` into `r9` then add the offset of the `ImageFileName` field to `r9`
 
 If `r9` and `r10` **don't** match we jump back to `next_process` and start over, looping until we locate the `winlogon.exe` process.
 
+**Fun Fact:** The linked list is circular, meaning when we get to the end it points back to the start, if we don't find `winlogon.exe` it will loop forever (in CPU terms). That is exactly what I did when I was debugging my code and made a mistake!
+
 When the target process is found `r8` points to the `_KPROCESS` of `winlogon.exe` and `r9` points to the `ImageFileName` field of `winlogon.exe`. We will continue to use the `r9` register, but we could easily use the `r8` one.
 
 ### Patching the DACL
