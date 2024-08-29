@@ -98,7 +98,28 @@ At on offset of `0x188` from the `gs` segment register is the `_KTHREAD` entry f
 
 ### Locating winlogon.exe
 
-todo
+We are going to ammend the DACL for the `winlogon.exe` process to allow us to inject shellcode in to it to elevate our privileges. The first thing we need to do is locate the `winlogon.exe` `_EPROCESS`:
+
+```
+next_process:
+    mov r8, [r8+ACTIVE_PROCESS_LINKS]
+    mov r8, [r8]            
+    sub r8, ACTIVE_PROCESS_LINKS
+
+    mov r9, r8
+    add r9, IMAGE_FILE_NAME
+    mov r10, WINLOGON
+    cmp [r9], r10
+    jnz next_process
+```
+
+Each `_EPROCESS` contains a cyclic, doubly-linked list, of all other processes running on the system, this is at offset `0x448` from the `_KPROCESS`. We reference the `ActiveProcessLinks` field using `mov r8, [r8+ACTIVE_PROCESS_LINKS]` and then dereference this (get the actual address ponted to) using `mov r8, [r8]`. Then we subtract `0x448` which places the address of the next process in the list in `r8`.
+
+We `mov` `r8` into `r9` then add the offset of the `ImageFileName` field to `r9`, which is at an offset of `0x5a8` (remember `r9` points to the `_KPROCESS` of the next process). We `mov` the little endian ASCII representation of `winlogon` in to `r10` then compare this with the `QWORD` value pointed to by `r9` (which is the `ImageFileName` field.
+
+If `r9` and `r10` **don't** match we jump back to `next_process` and start over, looping until we locate the `winlogon.exe` process.
+
+When the target process is found `r8` points to the `_KPROCESS` of `winlogon.exe` and `r9` points to the `ImageFileName` field of `winlogon.exe`. We will continue to use the `r9` register, but we could easily use the `r8` one.
 
 ### Patching the DACL
 
