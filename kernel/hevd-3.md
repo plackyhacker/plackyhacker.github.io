@@ -52,6 +52,8 @@ We can see that in order to get access to the process (to inject shellcode) we n
 
 ## Shellcode
 
+In this section I will use the `_KPROCESS` and `_EPROCESS` interchangably depending on what I think the context is; just be mindful that the `_KPROCESS` is a structure within the `_EPROCESS` at an offset of `0x0`.
+
 ### Finding KPROCESS
 
 Lets start with the following:
