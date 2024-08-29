@@ -113,7 +113,7 @@ next_process:
 
 Each `_EPROCESS` contains a cyclic, doubly-linked list, of all other processes running on the system, this is at offset `0x448` from the `_KPROCESS`. We reference the `ActiveProcessLinks` field using `mov r8, [r8+ACTIVE_PROCESS_LINKS]` and then dereference this (get the actual address ponted to) using `mov r8, [r8]`. Then we subtract `0x448` which places the address of the next process in the list in `r8`.
 
-We `mov` `r8` into `r9` then add the offset of the `ImageFileName` field to `r9`, which is at an offset of `0x5a8` (remember `r9` points to the `_KPROCESS` of the next process). We `mov` the little endian ASCII representation of `winlogon` in to `r10` then compare this with the `QWORD` value pointed to by `r9` (which is the `ImageFileName` field.
+We `mov` `r8` into `r9` then add the offset of the `ImageFileName` field to `r9`, which is at an offset of `0x5a8` (remember `r9` points to the `_KPROCESS` of the next process). We `mov` the little endian ASCII representation of `winlogon` in to `r10` then compare this with the `QWORD` value pointed to by `r9` (which is the `ImageFileName` field).
 
 If `r9` and `r10` **don't** match we jump back to `next_process` and start over, looping until we locate the `winlogon.exe` process.
 
