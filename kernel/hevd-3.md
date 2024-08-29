@@ -92,7 +92,7 @@ find_process:
     mov r8, rax
 ```
 
-At on offset of `0x188` from the `gs` segment register is the `_KTHREAD` entry for the currently executing thread, which is within our exploit process. At an offset of `0xb8` is a ponter to the `_KPROCESS` for the process. We take a copy of this location for later with the `mov rcx, rax`, and we also move it in to `r8` to use in the next section of our shellcode.
+At on offset of `0x188` from the `gs` segment register is the `_KTHREAD` entry for the currently executing thread, which is within our exploit process. At an offset of `0xb8` is a ponter to the `_KPROCESS`. We take a copy of this location for later with the `mov rcx, rax`, and we also move it in to `r8` to use in the next section of our shellcode.
 
 `r8`, `rcx`, and `rax` all point to the `_KPROCESS` (which is the first element of the `_EPROCESS` structure) of our exploit process.
 
@@ -123,7 +123,25 @@ When the target process is found `r8` points to the `_KPROCESS` of `winlogon.exe
 
 ### Patching the DACL
 
-todo
+Lets continue with our shellcode, the next section amends the DACL in the security descriptor for the process:
+
+```
+amend_security_descriptor:
+    sub r9, IMAGE_FILE_NAME
+    sub r9, 0x8
+    mov rax, [r9]
+    and rax, 0xfffffffffffffff0
+    add rax, SID_OFFSET
+    mov byte [rax], AUTHENTICATED_USERS
+```
+
+First we locate the `winlogon.exe` `_KPROCESS` by subtracting `0x5a8` from `r9`. We subtract a further `0x8` bytes from `r9`. `r9` now contains a pointer for the **Security Descriptor** associated with the process. We dereference this address into `rax`.
+
+The Security Descriptor address is actually an `_EX_FAST_REF` structure. This type of structure stores the actual address and the least significant 4 bits for metadata. To get the true address of the Security Descriptor we need to `and` the pointer with `0xfffffffffffffff0`, which effectively removes the 4 least significant bits (metadata).
+
+We then `add` `0x48` to the Security Descriptor address, this is the offset of the bit we want to change.
+
+The existing DACL in the Securituy Descriptor is set to `S-1-5-18` (`System`) and we want to change it to `S-1-5-11` (`Authenticated Users`); essentially we only want to change the last bit from `0x12` to `0xb`. We do this with the `mov byte` instruction.
 
 ### Patching the Mandatory Policy
 
