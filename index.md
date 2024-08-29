@@ -13,6 +13,8 @@ August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https:/
 
 August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 2](https://plackyhacker.github.io/kernel/hevd-2)
 
+August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 3](https://plackyhacker.github.io/kernel/hevd-3)
+
 ### Lab Walkthroughs
 
 August 2024 - [VulnLab Reaper 2 Walkthrough](https://plackyhacker.github.io/walkthrough/reaper2)
