@@ -82,7 +82,7 @@ The HEVD driver has a lot of dispatch routines, the one we are interested in for
 
 ### Driver Setup
 
-Loading the `HEVD.sys` file into IDA we can locate the `DriverEntry` function and examine the pseudocode (using the menu: `View > Open subviews > Generate` pseudocode):
+Loading the `HEVD.sys` file into IDA we can locate the `DriverEntry` function and examine the pseudocode (using the menu: `View > Open subviews > Generate pseudocode`):
 
 ```c
 __int64 __fastcall DriverEntry(__int64 a1, __int64 a2)
