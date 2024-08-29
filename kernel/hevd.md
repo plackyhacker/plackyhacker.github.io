@@ -57,7 +57,7 @@ sc start hevd
 
 Typically the first stage in reverse engineering a driver is to understand how we can interact with it from user mode. Drivers register a **Symlink** which is effectively the ID used to communicate with the driver from user mode, they also register **dispatch routines**; in simple terms these are functions that execute the driver code when data is received from user mode. 
 
-The next step involves kernel debugging. There are lots of resources online that describe how to do this.
+The next step involves kernel debugging.
 
 I find that the easiest way to get these is to attach a debugger to the kernel of the lab machine (the machine that has the driver loaded) and run the following commands, some of the output has been omitted for brevity:
 
