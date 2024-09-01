@@ -9,11 +9,7 @@ Here I will write about things I find interesting, and hopefully about things th
 
 ### Kernel Driver Exploitation
 
-August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd)
-
-August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 2](https://plackyhacker.github.io/kernel/hevd-2)
-
-August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 3](https://plackyhacker.github.io/kernel/hevd-3)
+August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd), [Part 2](https://plackyhacker.github.io/kernel/hevd-2), [Part 3](https://plackyhacker.github.io/kernel/hevd-3)
 
 ### Lab Walkthroughs
 
@@ -41,8 +37,4 @@ August 2022 - [Javulna Auth Bypass and RCE Walkthrough](https://plackyhacker.git
 
 ### Reverse Engineering
 
-January 2022 - [Syn Breeze Revisited Part 1](https://plackyhacker.github.io/reversing/sync-breeze-reversed)
-
-January 2022 - [Syn Breeze Revisited Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2)
-
-February 2022 - [Syn Breeze Revisited Part 3](https://plackyhacker.github.io/reversing/sync-breeze-reversing-3)
+January 2022 - [Syn Breeze Revisited Part 1](https://plackyhacker.github.io/reversing/sync-breeze-reversed), [Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2), [Part 3](https://plackyhacker.github.io/reversing/sync-breeze-reversing-3)
