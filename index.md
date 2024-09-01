@@ -19,6 +19,8 @@ August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 3](https:/
 
 August 2024 - [VulnLab Reaper 2 Walkthrough](https://plackyhacker.github.io/walkthrough/reaper2)
 
+July 2024 - [VulnLab Reaper Walkthrough](https://plackyhacker.github.io/walkthrough/reaper)
+
 ### Writing Custom Shellcode
 
 February 2023 - [Introduction](https://plackyhacker.github.io/shellcodez/intro)
