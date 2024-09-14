@@ -142,6 +142,15 @@ If we enter `g` to continue execution the program ends and we can see the result
 
 ![image](https://github.com/user-attachments/assets/270cb7ab-0449-4d6f-a85a-0795b02da26a)
 
+There is no trickery going on here, we are just displaying the returned value in our `C` code:
+
+```
+// display the return value
+printf("MyFunction returned 0x%p\n", ret);
+```
+
+This confirms that the value we placed in `rax` is the function return value.
+
 ## Why Should We Care
 
 If we are going to write shellcode then we need to be sure to follow these calling conventions, paritcularly if we are calling Windows Win32 APIs. When we are calling Win32 APIs we must ensure we place the parameters in the correct registers, and we must ensure that we establish shadow space for the called function to use.
