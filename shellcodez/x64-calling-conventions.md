@@ -77,6 +77,10 @@ If we compile the program we can now open it in **WinDbg** (make sure you open t
 
 ![image](https://github.com/user-attachments/assets/596febcc-801a-4cf7-8a91-3c86946220f9)
 
+Upon running the program **WinDbg** will break, enter the `g` command to continue execution. We will hit the breakpoint in our function:
+
+![image](https://github.com/user-attachments/assets/cfd8f873-74ac-4be1-8359-44192f7a00c6)
+
 ## WinDbg
 
 **Be patient, I am writing this!**
