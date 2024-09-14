@@ -126,6 +126,14 @@ It would appear that `rax` is being used as a temporary register to place the fi
 
 The first value is the return address; the address of the instruction that will be returned to when the function exits. The next four are the shadow space, and the next two are parameters five and six respectively.
 
-**Be patient, I am writing this!**
+The shadow space, must be reserved by the caller and consists of 32 bytes located just between the return address and the parameters, if they exist, on the stack. The called function owns this space and can be used as temporary storage and is positioned below any stack arguments
+
+If we enter `g` to continue execution the program ends and we can see the result that we placed in the `rax` register:
+
+![image](https://github.com/user-attachments/assets/270cb7ab-0449-4d6f-a85a-0795b02da26a)
+
+## Why Should We Care
+
+If we are going to write shellcode then we need to be sure to follow these calling conventions, paritcularly if we are calling Windows Win32 APIs.
 
 [Home](https://plackyhacker.github.io)
