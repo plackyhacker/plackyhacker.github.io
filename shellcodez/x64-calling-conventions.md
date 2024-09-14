@@ -83,6 +83,21 @@ Upon running the program **WinDbg** will break, enter the `g` command to continu
 
 ![image](https://github.com/user-attachments/assets/cfd8f873-74ac-4be1-8359-44192f7a00c6)
 
+We can use the `r` command to examine the registers:
+
+```
+0:000> r
+rax=4545454545454545 rbx=0000000000000000 rcx=4141414141414141
+rdx=4242424242424242 rsi=0000000000000000 rdi=0000000000000000
+rip=00007ff68ce51ad0 rsp=0000009783d3f708 rbp=0000009783d3f740
+ r8=4343434343434343  r9=4444444444444444 r10=0000000000000012
+r11=0000009783d3f7e0 r12=0000000000000000 r13=0000000000000000
+r14=0000000000000000 r15=0000000000000000
+iopl=0         nv up ei pl nz na pe nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
+```
+
+
 **Be patient, I am writing this!**
 
 [Home](https://plackyhacker.github.io)
