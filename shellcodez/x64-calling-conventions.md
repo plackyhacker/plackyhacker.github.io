@@ -73,6 +73,8 @@ I have named the parameters in the function to show where we would expect to see
 
 The `main` function calls `MyFunction` and displays the returned value.
 
+## WinDbg
+
 If we compile the program we can now open it in **WinDbg** (make sure you open the *Debug* build as this will include the debugging symbols):
 
 ![image](https://github.com/user-attachments/assets/596febcc-801a-4cf7-8a91-3c86946220f9)
@@ -80,8 +82,6 @@ If we compile the program we can now open it in **WinDbg** (make sure you open t
 Upon running the program **WinDbg** will break, enter the `g` command to continue execution. We will hit the breakpoint in our function:
 
 ![image](https://github.com/user-attachments/assets/cfd8f873-74ac-4be1-8359-44192f7a00c6)
-
-## WinDbg
 
 **Be patient, I am writing this!**
 
