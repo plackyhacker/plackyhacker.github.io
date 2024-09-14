@@ -9,3 +9,5 @@ Write a basic function in `asm`.
 Call the function from C code.
 
 Break in the function and examine the registers and stack in Windbg.
+
+**Be patient, I am writing this!**
