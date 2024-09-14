@@ -1,3 +1,5 @@
+[Home](https://plackyhacker.github.io)
+
 # Exploring x64 Calling Conventions
 
 It is a really useful to be able to include `asm` or 'shellcode' in your Visual Studio projects when you are studying or writing exploits for known bugs/CVEs, I'd go as far as to say it is a prerequisite.
@@ -74,3 +76,5 @@ The `main` function calls `MyFunction` and displays the returned value.
 ## WinDbg
 
 **Be patient, I am writing this!**
+
+[Home](https://plackyhacker.github.io)
