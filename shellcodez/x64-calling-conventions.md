@@ -97,6 +97,34 @@ iopl=0         nv up ei pl nz na pe nc
 cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
 ```
 
+Upon examining the registers we can observer that our first four parameters passed to `MyFunction` are in the registers `rcx`, `rdx`, `r8`, and `r9`. But wait, the fith parameter is in `rax`. If we open the binary in **IDA** we can see the following assembly:
+
+```asm
+mov     rax, 4646464646464646h
+mov     [rsp+120h+var_F8], rax
+mov     rax, 4545454545454545h
+mov     [rsp+120h+var_100], rax
+mov     r9, 4444444444444444h
+mov     r8, 4343434343434343h
+mov     rdx, 4242424242424242h
+mov     rcx, 4141414141414141h
+call    j_MyFunction
+```
+
+It would appear that `rax` is being used as a temporary register to place the fith and sixth parameters on the stack. Back in **WinDbg** if we examine the stack at the breakpoint using `dqs rsp` we can also see where the parameters have been placed:
+
+```
+0:000> dqs rsp
+000000e8`f6f9f568  00007ff6`8ce51997 x64_calling_conventions!main+0x67 [C:\Users\John\source\repos\x64-calling-conventions\x64-calling-conventions\x64-calling-conventions.cpp @ 11]
+000000e8`f6f9f570  00007ff6`8ce620f4 x64_calling_conventions!_NULL_IMPORT_DESCRIPTOR <PERF> (x64_calling_conventions+0x220f4)
+000000e8`f6f9f578  00000000`00000002
+000000e8`f6f9f580  00000000`00000000
+000000e8`f6f9f588  00007ffe`d9682016 ucrtbased!__crt_scoped_get_last_error_reset::~__crt_scoped_get_last_error_reset+0x16 [minkernel\crts\ucrt\inc\corecrt_internal.h @ 2056]
+000000e8`f6f9f590  45454545`45454545
+000000e8`f6f9f598  46464646`46464646
+```
+
+The first value is the return address; the address of the instruction that will be returned to when the function exits. The next four are the shadow space, and the next two are parameters five and six respectively.
 
 **Be patient, I am writing this!**
 
