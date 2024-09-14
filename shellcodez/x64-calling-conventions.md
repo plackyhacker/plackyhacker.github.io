@@ -67,7 +67,7 @@ int main()
 }
 ```
 
-First we need to ensure the compiler is aware of `MyFunction` by adding an `extern` to the code; without this the compiler will error with `identifier 'MyFunction' is undefined.
+First we need to ensure the compiler is aware of `MyFunction` by adding an `extern` to the code; without this the compiler will error with `identifier 'MyFunction' is undefined`.
 
 I have named the parameters in the function to show where we would expect to see the values we pass in to it.
 
