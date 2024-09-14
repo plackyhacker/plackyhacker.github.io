@@ -111,7 +111,7 @@ mov     rcx, 4141414141414141h
 call    j_MyFunction
 ```
 
-It would appear that `rax` is being used as a temporary register to place the fith and sixth parameters on the stack. Back in **WinDbg** if we examine the stack at the breakpoint using `dqs rsp` we can also see where the parameters have been placed:
+It would appear that `rax` is being used as a temporary register to place the fifth and sixth parameters on the stack. Back in **WinDbg** if we examine the stack at the breakpoint using `dqs rsp` we can also see where the parameters have been placed:
 
 ```
 0:000> dqs rsp
