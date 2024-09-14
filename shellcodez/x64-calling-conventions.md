@@ -22,7 +22,7 @@ PUBLIC MyFunction
 .CODE
 
 MyFunction PROC
-	int 3								; examine registers
+	int 3						; examine registers
 	mov rax, 4747474747474747h			; return value
 	ret;
 MyFunction ENDP
@@ -30,7 +30,11 @@ MyFunction ENDP
 END
 ```
 
+This function is pretty basic and it doesn't do much in terms of useful functionality but it will allow us to break into the program when we call the function from our `C` code and examine the registers and the stack.
 
+## The C Code
+
+The `C` code is very simple:
 
 ```c
 #include <iostream>
@@ -49,14 +53,19 @@ int main()
         0x4545454545454545,
         0x4646464646464646);
 
+    // display the return value
+    printf("MyFunction returned 0x%p\n", ret);
+
     return 0;
 }
 ```
 
-Write a basic function in `asm`.
+First we need to ensure the compiler is aware of `MyFunction` by adding an `extern` to the code; without this the compiler will error with `identifier 'MyFunction' is undefined.
 
-Call the function from C code.
+I have named the parameters in the function to show where we would expect to see the values we pass in to it.
 
-Break in the function and examine the registers and stack in Windbg.
+The `main` function calls `MyFunction` and displays the returned value.
+
+## WinDbg
 
 **Be patient, I am writing this!**
