@@ -144,7 +144,7 @@ If we enter `g` to continue execution the program ends and we can see the result
 
 There is no trickery going on here, we are just displaying the returned value in our `C` code:
 
-```
+```c
 // display the return value
 printf("MyFunction returned 0x%p\n", ret);
 ```
