@@ -157,6 +157,6 @@ If we are going to write shellcode then we need to be sure to follow these calli
 
 ## Just One More Thing
 
-When we make a call to a Win32 API using x64 assembly we must also ensure that the stack is `0x10` byte alligned. In short, this means that when the call is made `rsp` must end with a `0`. If you ever find WIn32 API calls crashing and you are not sure why; check that your stack is alligned. Be warned! 
+When we make a call to a Win32 API using x64 assembly we must also ensure that the stack is `0x10` byte alligned. In short, this means that when the call is made `rsp` must end with a `0`. If you ever find Win32 API calls crashing and you are not sure why; check that your stack is alligned. Be warned! 
 
 [Home](https://plackyhacker.github.io)
