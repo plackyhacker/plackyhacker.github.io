@@ -153,10 +153,10 @@ This confirms that the value we placed in `rax` is the function return value.
 
 ## Why Should We Care
 
-If we are going to write shellcode then we need to be sure to follow these calling conventions, paritcularly if we are calling Windows Win32 APIs. When we are calling Win32 APIs we must ensure we place the parameters in the correct registers, and we must ensure that we establish shadow space for the called function to use.
+If we are going to write shellcode then we need to be sure to follow these calling conventions, particularly if we are calling Windows Win32 APIs. When we are calling Win32 APIs we must ensure we place the parameters in the correct registers, and we must ensure that we establish shadow space for the called function to use.
 
 ## Just One More Thing
 
-When we make a call to a Win32 API using x64 assembly we must also ensure that the stack is `0x10` byte alligned. In short, this means that when the call is made `rsp` must end with a `0`. If you ever find Win32 API calls crashing and you are not sure why; check that your stack is alligned. Be warned! 
+When we make a call to a Win32 API using x64 assembly we must also ensure that the stack is `0x10` byte alligned. In short, this means that when the call is made the value in `rsp` must end with a `0`. If you ever find Win32 API calls crashing and you are not sure why; check that your stack is alligned. Be warned! 
 
 [Home](https://plackyhacker.github.io)
