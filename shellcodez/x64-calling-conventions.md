@@ -126,7 +126,17 @@ It would appear that `rax` is being used as a temporary register to place the fi
 
 The first value is the return address; the address of the instruction that will be returned to when the function exits. The next four are the shadow space, and the next two are parameters five and six respectively.
 
-The shadow space, must be reserved by the caller and consists of 32 bytes located just between the return address and the parameters, if they exist, on the stack. The called function owns this space and can be used as temporary storage and is positioned below any stack arguments
+The shadow space, must be reserved by the caller and consists of 32 bytes located just between the return address and the parameters, if they exist, on the stack. The called function owns this space and can be used as temporary storage and is positioned below any stack arguments:
+
+```
+000000e8`f6f9f568  00007ff6`8ce51997 	// return address
+000000e8`f6f9f570  00007ff6`8ce620f4	// ----------------+
+000000e8`f6f9f578  00000000`00000002	// shadow   	   |
+000000e8`f6f9f580  00000000`00000000	// space           |
+000000e8`f6f9f588  00007ffe`d9682016	// ----------------+
+000000e8`f6f9f590  45454545`45454545	// fifth parameter
+000000e8`f6f9f598  46464646`46464646	// sixth parameter
+```
 
 If we enter `g` to continue execution the program ends and we can see the result that we placed in the `rax` register:
 
@@ -134,6 +144,10 @@ If we enter `g` to continue execution the program ends and we can see the result
 
 ## Why Should We Care
 
-If we are going to write shellcode then we need to be sure to follow these calling conventions, paritcularly if we are calling Windows Win32 APIs.
+If we are going to write shellcode then we need to be sure to follow these calling conventions, paritcularly if we are calling Windows Win32 APIs. When we are calling Win32 APIs we must ensure we place the parameters in the correct registers, and we must ensure that we establish shadow space for the called function to use.
+
+## Just One More Thing
+
+When we make a call to a Win32 API using x64 assembly we must also ensure that the stack is `0x10` byte alligned. In short, this means that when the call is made `rsp` must end with a `0`. If you ever find WIn32 API calls crashing and you are not sure why; check that your stack is alligned. Be warned! 
 
 [Home](https://plackyhacker.github.io)
