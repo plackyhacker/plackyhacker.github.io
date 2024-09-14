@@ -41,7 +41,12 @@ The `C` code is very simple:
 #include "Windows.h"
 
 // defer MyFunction resolution to the linker
-extern "C" ULONGLONG MyFunction(ULONGLONG rcx, ULONGLONG rdx, ULONGLONG r8, ULONGLONG r9, ULONGLONG stack1, ULONGLONG stack2);
+extern "C" ULONGLONG MyFunction(ULONGLONG rcx,
+	ULONGLONG rdx,
+	ULONGLONG r8,
+	ULONGLONG r9,
+	ULONGLONG stack1,
+	ULONGLONG stack2);
 
 int main()
 {
