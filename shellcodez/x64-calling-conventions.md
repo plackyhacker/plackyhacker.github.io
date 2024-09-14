@@ -73,6 +73,10 @@ I have named the parameters in the function to show where we would expect to see
 
 The `main` function calls `MyFunction` and displays the returned value.
 
+If we compile the program we can now open it in **WinDbg** (make sure you open the *Debug* build as this will include the debugging symbols):
+
+![image](https://github.com/user-attachments/assets/596febcc-801a-4cf7-8a91-3c86946220f9)
+
 ## WinDbg
 
 **Be patient, I am writing this!**
