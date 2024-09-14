@@ -97,7 +97,7 @@ iopl=0         nv up ei pl nz na pe nc
 cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
 ```
 
-Upon examining the registers we can observer that our first four parameters passed to `MyFunction` are in the registers `rcx`, `rdx`, `r8`, and `r9`. But wait, the fith parameter is in `rax`. If we open the binary in **IDA** we can see the following assembly:
+Upon examining the registers we can observer that our first four parameters passed to `MyFunction` are in the registers `rcx`, `rdx`, `r8`, and `r9`. But wait, the fifth parameter is in `rax`. If we open the binary in **IDA** we can see the following assembly:
 
 ```asm
 mov     rax, 4646464646464646h
