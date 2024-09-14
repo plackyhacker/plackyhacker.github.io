@@ -71,7 +71,7 @@ First we need to ensure the compiler is aware of `MyFunction` by adding an `exte
 
 I have named the parameters in the function to show where we would expect to see the values we pass in to it.
 
-The `main` function calls `MyFunction` and displays the returned value.
+The `main` function calls `MyFunction` and displays the returned value. Notice that we are passing six different 64 bit values in via the parameters, this is so we can examine them in the registers and on the stack.
 
 ## WinDbg
 
