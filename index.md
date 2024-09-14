@@ -19,6 +19,8 @@ July 2024 - [VulnLab Reaper Walkthrough](https://plackyhacker.github.io/walkthro
 
 ### Writing Custom Shellcode
 
+September 2024 - [Exploring x64 Calling Conventions](https://plackyhacker.github.io/shellcodez/x64-calling-conventions)
+
 February 2023 - [Introduction](https://plackyhacker.github.io/shellcodez/intro)
 
 February 2023 - [x86 32-Bit Architecture](https://plackyhacker.github.io/shellcodez/arch)
