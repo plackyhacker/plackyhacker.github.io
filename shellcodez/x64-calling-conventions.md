@@ -140,7 +140,7 @@ The shadow space, must be reserved by the caller and consists of 32 bytes locate
 
 If we enter `g` to continue execution the program ends and we can see the result that we placed in the `rax` register:
 
-![image](https://github.com/user-attachments/assets/270cb7ab-0449-4d6f-a85a-0795b02da26a)
+<img width="918" alt="image" src="https://github.com/user-attachments/assets/5dd1f00e-14f5-4f0d-90e4-9da30b41b976">
 
 There is no trickery going on here, we are just displaying the returned value in our `C` code:
 
