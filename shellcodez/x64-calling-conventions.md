@@ -161,7 +161,7 @@ When we make a call to a Win32 API using x64 assembly we must also ensure that t
 
 ## And One Last Thing
 
-The 64-bit calling convention uses _volatile_ and _non-volatile_ registers. This means that the callee must preserve the values in _**non-volatile**_ registers, so if we take control of some code flow or we write our own functions **we** are the calle and must restore these _non-volatile_ registers before we return normal execution. I have copied this list from the [Microsoft's Register volatility and preservation guidance](https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions?view=msvc-170#register-volatility-and-preservation), use it wisely:
+The 64-bit calling convention uses _volatile_ and _non-volatile_ registers. This means that the callee must preserve the values in _**non-volatile**_ registers, so if we take control of some code flow or we write our own functions **we** are the callee and must restore these _non-volatile_ registers before we return normal execution. I have copied this list from the [Microsoft's Register volatility and preservation guidance](https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions?view=msvc-170#register-volatility-and-preservation), use it wisely:
 
 - `r12:r15` Nonvolatile, Must be preserved by callee.
 - `rdi`	Nonvolatile, Must be preserved by callee.
