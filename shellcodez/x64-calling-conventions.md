@@ -166,9 +166,9 @@ The 64-bit calling convention uses _volatile_ and _non-volatile_ registers. This
 - `r12:r15` Nonvolatile, Must be preserved by callee.
 - `rdi`	Nonvolatile, Must be preserved by callee.
 - `rsi`	Nonvolatile, Must be preserved by callee.
-- `rsi`	Nonvolatile, Must be preserved by callee.
-- `rsi`	Nonvolatile, May be used as a frame pointer; must be preserved by callee.
-- `rsi`	Nonvolatile, Stack pointer.
+- `rbx`	Nonvolatile, Must be preserved by callee.
+- `rbp`	Nonvolatile, May be used as a frame pointer; must be preserved by callee.
+- `rsp`	Nonvolatile, Stack pointer.
 
 That is all, go away!
 
