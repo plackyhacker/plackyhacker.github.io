@@ -20,7 +20,7 @@ Now the confusion (at least for me). If the doubly-linked list is inside an `_EP
 
 ## Doubly-Linked Lists in Structures
 
-It turns out it isn't confusing at all, it's actually really easy to understand, I just didn't know until after observing a few of these lists it just occurde to me. **_Yeah I know!_**
+It turns out it isn't confusing at all, it's actually really easy to understand, I just didn't know until after observing a few of these lists it just occurde to me. **_Yeah I know!_** That's what happens when you do an IT degree instead of a computer science degree!
 
 <img width="1333" alt="Screenshot 2024-09-23 at 20 31 53" src="https://github.com/user-attachments/assets/2095981f-9818-4d23-9ead-0e62360a230c">
 
