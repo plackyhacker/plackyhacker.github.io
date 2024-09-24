@@ -25,3 +25,61 @@ It turns out it isn't confusing at all, it's actually really easy to understand,
 <img width="1333" alt="Screenshot 2024-09-23 at 20 31 53" src="https://github.com/user-attachments/assets/2095981f-9818-4d23-9ead-0e62360a230c">
 
 The address of the `Flink` field, and of course the `Blink` field are simply offsets of the `_EPROCESS` structure! That is the address of `_LIST_ENTRY` is inside the `_EPROCESS` structure at an offset, to traverse the link, say to get the next `_EPROCESS` we dereference the `Flink` and use that address minus the offset of `ActiveProcessLinks` to get the address of the next `_EPROCESS`.
+
+## Walking Lists in Windbg
+
+If we break in to the kernel of a debugee we can set the process context to a `cmd.exe` instance that was started:
+
+```
+1: kd> !process 0 0 cmd.exe
+PROCESS ffff82862f1240c0
+    SessionId: 1  Cid: 1bf8    Peb: fe5bc63000  ParentCid: 11d4
+    DirBase: 1e6040002  ObjectTable: ffffe1052fb17000  HandleCount:  70.
+    Image: cmd.exe
+```
+
+Next, we can examine the `ActiveProcessLinks` field which contains the `_LIST_ENTRY` for the next and previous `_PROCESS` structures:
+
+```
+1: kd> dt _EPROCESS ffff82862f1240c0 ActiveProcessLinks
+nt!_EPROCESS
+   +0x448 ActiveProcessLinks : _LIST_ENTRY [ 0xffff8286`2f068508 - 0xffff8286`317dc508 ]
+```
+
+Using `0xffff82862f068508` we can follow the `Flink` and examine the next `_EPROCESS` by subtracting the `ActiveProcessLinks` field offset:
+
+```
+1: kd> dt _EPROCESS (0xffff82862f068508-0x448) UniqueProcessId, ActiveProcessLinks, ImageFileName
+nt!_EPROCESS
+   +0x440 UniqueProcessId     : 0x00000000`00000890 Void
+   +0x448 ActiveProcessLinks  : _LIST_ENTRY [ 0xfffff800`116263a0 - 0xffff8286`2f124508 ]
+   +0x5a8 ImageFileName       : [15]  "conhost.exe"
+```
+
+Continue walking the `ActiveProcessLinks` doubly-linked list and we will arrive at the `System` process:
+
+```
+1: kd> dt _EPROCESS (0xfffff800116263a0-0x448) UniqueProcessId, ActiveProcessLinks, ImageFileName
+nt!_EPROCESS
+   +0x440 UniqueProcessId     : (null) 
+   +0x448 ActiveProcessLinks  : _LIST_ENTRY [ 0xffff8286`2c274488 - 0xffff8286`2f068508 ]
+   +0x5a8 ImageFileName       : [15]  ""
+1: kd> dt _EPROCESS (0xffff82862c274488-0x448) UniqueProcessId, ActiveProcessLinks, ImageFileName
+nt!_EPROCESS
+   +0x440 UniqueProcessId     : 0x00000000`00000004 Void
+   +0x448 ActiveProcessLinks  : _LIST_ENTRY [ 0xffff8286`2c35d4c8 - 0xfffff800`116263a0 ]
+   +0x5a8 ImageFileName       : [15]  "System"
+```
+
+Just for completion we can also examine the `Blink` in the `conhost.exe` process and confirm that we arrive back at the `cmd.exe` process where we started:
+
+```
+1: kd> dt _EPROCESS (0xffff8286`2f124508-0x448) UniqueProcessId, ActiveProcessLinks, ImageFileName
+nt!_EPROCESS
+   +0x440 UniqueProcessId     : 0x00000000`00001bf8 Void
+   +0x448 ActiveProcessLinks  : _LIST_ENTRY [ 0xffff8286`2f068508 - 0xffff8286`317dc508 ]
+   +0x5a8 ImageFileName       : [15]  "cmd.exe"
+```
+
+That is all, go away!
+
