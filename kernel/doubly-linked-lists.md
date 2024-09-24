@@ -1,3 +1,5 @@
+[Home](https://plackyhacker.github.io)
+
 # Doubly-Linked Lists in the Windows Kernel
 
 Recently I have been studying different Kernel structures and it suddenly occurred to me that there is a pattern used by Microsoft to implement doubly-linked lists within their structures. I'm pretty sure this is common knowledge to a lot of people, but I thought I would put a brief post together explaining them... just in case, like me you need it.
@@ -123,3 +125,4 @@ I have only commented the bits discussed in this post.
 
 That is all, go away!
 
+[Home](https://plackyhacker.github.io)
