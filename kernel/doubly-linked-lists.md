@@ -1,12 +1,12 @@
 # Doubly-Linked Lists in the Windows Kernel
 
-Recently I have been studying different Kernel structures and it suddenly occurred to me that there is a pattern used by Microsoft to impleemnt doubly-linked lists within their structures. I'm pretty sure this is common knowledge to a lot of people, but I thought I would put a brief post together explaining them... just in case, like me you need it.
+Recently I have been studying different Kernel structures and it suddenly occurred to me that there is a pattern used by Microsoft to implement doubly-linked lists within their structures. I'm pretty sure this is common knowledge to a lot of people, but I thought I would put a brief post together explaining them... just in case, like me you need it.
 
 ## Why Should We Care?
 
-If you have ever studied Kernel driver exploitation or even done a lab where a custom driver is used to get privilege escalation then you are probably familiar with token stealing shellcode. Now, you may have just copied and pasted the shellcode into your exploit but if you understand how the `System` process is enumerated then doesn't that feel a bit better?
+If you have ever studied Kernel driver exploitation or even done a lab where a custom driver is used to get privilege escalation then you are probably familiar with token stealing shellcode. Now, you may have just copied and pasted the shellcode into your exploit (tut tut) but if you understand how the `System` process is enumerated then doesn't that feel a bit better?
 
-If you didn't just copy and paste the sheelcode and you tried to understand it then you will have noticed that there is a doubly-linked list that you need to traverse until you find the `System` process. This is the `ActiveProcessLinks` field in the `_EPROCESS` structure.
+If you didn't just copy and paste the shellcode and you tried to understand it then you will have noticed that there is a doubly-linked list that you need to traverse until you find the `System` process. This is the `ActiveProcessLinks` field in the `_EPROCESS` structure.
 
 ## Doubly-Linked Lists
 
@@ -20,7 +20,7 @@ Now the confusion (at least for me). If the doubly-linked list is inside an `_EP
 
 ## Doubly-Linked Lists in Structures
 
-It turns out it isn't confusing at all, it's actually really easy to understand, I just didn't know until after observing a few of these lists it just occurde to me. **_Yeah I know!_** That's what happens when you do an IT degree instead of a computer science degree!
+It turns out it isn't confusing at all, although there isn't a pointer to the `_EPROCESS` structure, it's actually really easy to understand, I just didn't know until after observing a few of these lists it just occurde to me. **_Yeah I know!_** That's what happens when you do an IT degree instead of a computer science degree!
 
 <img width="1333" alt="Screenshot 2024-09-23 at 20 31 53" src="https://github.com/user-attachments/assets/2095981f-9818-4d23-9ead-0e62360a230c">
 
