@@ -15,7 +15,7 @@ August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https:/
 
 ### CVE Studies
 
-August 2024 - [CVE-2017-4905 ESXi, Workstation, and Fusion have Uninitialized memory usage](https://plackyhacker.github.io/cve/2017-4905)
+August 2024 - [CVE-2017-4905, ESXi, Workstation, and Fusion have Uninitialized memory usage](https://plackyhacker.github.io/cve/2017-4905)
 
 ### Lab Walkthroughs
 
