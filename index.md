@@ -13,6 +13,10 @@ September 2024 - [Doubly-Linked Lists in the Windows Kernel](https://plackyhacke
 
 August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd), [Part 2](https://plackyhacker.github.io/kernel/hevd-2), [Part 3](https://plackyhacker.github.io/kernel/hevd-3)
 
+### CVE Studies
+
+August 2024 - [CVE-2017-4905 ESXi, Workstation, and Fusion have Uninitialized memory usage](https://plackyhacker.github.io/cve/2017-4905)
+
 ### Lab Walkthroughs
 
 August 2024 - [VulnLab Reaper 2 Walkthrough](https://plackyhacker.github.io/walkthrough/reaper2)
@@ -23,22 +27,18 @@ July 2024 - [VulnLab Reaper Walkthrough](https://plackyhacker.github.io/walkthro
 
 September 2024 - [Exploring x64 Calling Conventions](https://plackyhacker.github.io/shellcodez/x64-calling-conventions)
 
+## Older Posts
+
 February 2023 - [Introduction](https://plackyhacker.github.io/shellcodez/intro)
 
 February 2023 - [x86 32-Bit Architecture](https://plackyhacker.github.io/shellcodez/arch)
 
 February 2023 - [A Little Bit of Assembly Code](https://plackyhacker.github.io/shellcodez/assembly)
 
-### Binary Exploitation
-
 December 2022 - [Finding Windows APIs for ROP Chaining](https://plackyhacker.github.io/binary/findingapis)
-
-### Web Application Hacking
 
 June 2022 - [Deserialization - Object Instantiation for Remote Code Execution](https://plackyhacker.github.io/webtesting/deserialization)
 
 August 2022 - [Javulna Auth Bypass and RCE Walkthrough](https://plackyhacker.github.io/webtesting/javulna-sqli)
-
-### Reverse Engineering
 
 January 2022 - [Syn Breeze Revisited Part 1](https://plackyhacker.github.io/reversing/sync-breeze-reversed), [Part 2](https://plackyhacker.github.io/reversing/sync-breeze-reversing-2), [Part 3](https://plackyhacker.github.io/reversing/sync-breeze-reversing-3)
