@@ -148,7 +148,7 @@ __int64 __fastcall sub_8681C(const void **InputBuffer)
   const void *SizeOfBuffer; // r9
 
   // creating a kernel buffer on the stack (not sure why the type is __m128i)  
-  __m128i KernelBuffer[128]; // [rsp+20h] [rbp-808h] BYREF
+  __m128i KernelBuffer[128]; // [rsp+20h] [rbp-808h] BYREF  <-- eagle eyes will notice that a buffer of size 0x808 will overwrite the return address
 
   // not 100% but this looks like a call to memset (zeroing out 0x800 bytes)?
   maybe_memset((__m128 *)KernelBuffer, 0, 0x800uLL);
