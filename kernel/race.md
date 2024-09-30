@@ -36,7 +36,7 @@ Unable to load image \??\C:\Users\Administrator\Desktop\HEVD\HEVD.sys, Win32 err
 ...
 ```
 
-To find the the symlink we can use **IDA** and start by looking in the `DriverEntry` function (I renamed the call to `HEVDDriverSetup`:
+To find the the symlink we can use **IDA** and start by looking in the `DriverEntry` function (I renamed the call to `HEVDDriverSetup`):
 
 ```
 000000000008A134 public DriverEntry
