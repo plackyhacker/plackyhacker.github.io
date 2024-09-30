@@ -308,7 +308,7 @@ char* userBuffer;
 HANDLE hDriver;
 ```
 
-I done a little bit of research around race conditions and I read some different texts areound changing the threads priority and setting the processor affinity for each thread. I did this, but was curious to see if the race could be one without doing this, and it turns out it can. Here's the main snippets of my code:
+I done a little bit of research around race conditions and I read some different texts around changing the threads priority and setting the processor affinity for each thread. I did this, but was curious to see if the race could be one without doing this, and it turns out it can. Here's the main snippets of my code:
 
 ```c
 int main() {
@@ -337,7 +337,7 @@ int main() {
 }
 ```
 
-Notice that my loop will run forever, this isn't going to be a good strategy when it comes to escalating privielegs, I will need some way to detect that the race had been won, I decided to think about that later. My focus for now was to win the race and overwrite the return address on the kernel stack.
+Notice that my loop will run forever, this isn't going to be a good strategy when it comes to escalating privileges, I will need some way to detect that the race had been won, I decided to think about that later. My focus for now was to win the race and overwrite the return address on the kernel stack.
 
 I ran the code on the target whilst my kernel debugger was attached, and after a few minutes I got a crash:
 
@@ -355,7 +355,7 @@ fffff800`15fb6952 c3              ret
 04 fffff68f`df25a7a8 41414141`41414141     0x41414141`41414141
 ```
 
-Boom! I had triggered the bug and forced a buffer overflow on the stack. My next step was to control `rip` with a ROP gadget.
+Boom! I had triggered the bug and forced a buffer overflow on the stack. My next goal was to control `rip` with a ROP gadget.
 
 ## Controlling RIP
 
@@ -423,6 +423,6 @@ fffff800`15fb6952 c3              ret
 04 fffff68f`ded8e7a8 41414141`41414141     0x41414141`41414141
 ```
 
-There we have it, control of the return address at a buffer offset of `0x808`, directly after the intended buffer size. In [Part 2](https://plackyhacker.github.io/kernel-race-2) I will attempt to get privilege escalation and restore the thread gracefully.
+There we have it, control of the return address at a buffer offset of `0x808`, directly after the intended buffer size. In [Part 2](https://plackyhacker.github.io/kernel/race-2) I will attempt to get privilege escalation and restore the thread gracefully.
 
 [Home](https://plackyhacker.github.io) | [Part 2](https://plackyhacker.github.io/kernel/race-2)
