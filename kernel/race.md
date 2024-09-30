@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) | [Part 2](https://plackyhacker.github.io/kernel/race-2)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/race-2)
 
 ## HEVD Double-fetch Walkthrough on Windows 2022
 
@@ -425,4 +425,4 @@ fffff800`15fb6952 c3              ret
 
 There we have it, control of the return address at a buffer offset of `0x808`, directly after the intended buffer size. In [Part 2](https://plackyhacker.github.io/kernel/race-2) I will attempt to get privilege escalation and restore the thread gracefully.
 
-[Home](https://plackyhacker.github.io) | [Part 2](https://plackyhacker.github.io/kernel/race-2)
+[Home](https://plackyhacker.github.io) : [Part 2](https://plackyhacker.github.io/kernel/race-2)
