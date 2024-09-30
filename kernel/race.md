@@ -308,7 +308,7 @@ char* userBuffer;
 HANDLE hDriver;
 ```
 
-I done a little bit of research around race conditions and I read some different texts around changing the threads priority and setting the processor affinity for each thread. I did this, but was curious to see if the race could be one without doing this, and it turns out it can. Here's the main snippets of my code:
+I done a little bit of research around race conditions and I read some different texts around changing the threads priority and setting the processor affinity for each thread. I did this, but was curious to see if the race could be won without doing this, and it turns out it can. Here's the main snippets of my code:
 
 ```c
 int main() {
