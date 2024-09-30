@@ -9,6 +9,8 @@ Here I will write about things I find interesting, and hopefully about things th
 
 ### Kernel Driver Exploitation
 
+October 2024 - [HEVD Double-fetch Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/race-1), [Part 2](https://plackyhacker.github.io/kernel/race-2)
+
 September 2024 - [Doubly-Linked Lists in the Windows Kernel](https://plackyhacker.github.io/kernel/doubly-linked-lists)
 
 August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd), [Part 2](https://plackyhacker.github.io/kernel/hevd-2), [Part 3](https://plackyhacker.github.io/kernel/hevd-3)
