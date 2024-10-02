@@ -172,7 +172,7 @@ __int64 __fastcall sub_8681C(const void **InputBuffer)
 }
 ```
 
-It looks like we can try to win a race between the `if` statement and the `RtlMoveMemory` statement:
+It looks like we can try to win a race between the `if` statement and the `RtlCopyMemory` statement:
 
 <img alt="Screenshot 2024-10-02 at 16 38 41" src="https://github.com/user-attachments/assets/6527d4d9-fd11-47f3-9de8-2676c91679f4">
 
