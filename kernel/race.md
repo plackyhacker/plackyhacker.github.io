@@ -172,7 +172,11 @@ __int64 __fastcall sub_8681C(const void **InputBuffer)
 }
 ```
 
-It looks like we can try to win a race between the `if` statement and the `RtlMoveMemory` statement. The plan is to create a user space buffer of say `0xc00` bytes, send the a pointer to this `InputBuffer[0]` and a size of `0x800` in `InputBuffer[1]`, then somehow change the buffer size in the struct to `0xc00`. We will set up a basic PoC with what we know first.
+It looks like we can try to win a race between the `if` statement and the `RtlMoveMemory` statement:
+
+<img alt="Screenshot 2024-10-02 at 16 38 41" src="https://github.com/user-attachments/assets/6527d4d9-fd11-47f3-9de8-2676c91679f4">
+
+The plan is to create a user space buffer of say `0xc00` bytes, send the a pointer to this `InputBuffer[0]` and a size of `0x800` in `InputBuffer[1]`, then somehow change the buffer size in the struct to `0xc00`. We will set up a basic PoC with what we know first.
 
 ## Proof of Concept
 
