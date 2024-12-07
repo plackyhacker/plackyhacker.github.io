@@ -16,9 +16,11 @@ To understand vftables we first need to understand why they exist. Polymorphism 
 
 <img width="716" alt="Screenshot 2024-12-07 at 09 24 24" src="https://github.com/user-attachments/assets/0ebdb844-40da-4074-ad0d-c0640b81be4a">
 
-In C++, polymorphism is primarily achieved through inheritance and virtual functions. At runtime, the appropriate function for an object is dynamically selected based on its actual type, enabling behavior specific to derived classes. For example, a base class `Shape` may have a virtual `draw()` function, and derived classes like `Circle` or `Square` override it, providing their unique implementations. This flexibility simplifies code reuse and extensibility.
+One of the advantages of polymorphism is code reuse, where the base class may implement a common function inherited by all sub-classes. However, sub-classes can also override these functions with their own implementation, with the option to call the super-class function.
 
-A **vftable** (virtual function table) is a lookup table used in C++ to support polymorphism. It stores pointers to virtual functions of a class, allowing objects to dynamically resolve function calls at runtime based on their actual type.
+In C++, polymorphism is primarily achieved through inheritance and virtual functions. At runtime, the appropriate function for an object is dynamically selected based on its actual type, enabling behavior specific to derived classes. For example, a base class `Animal` may have a virtual `speak()` function (yeah I know animals can't speak), and derived classes like `Cat` or `Dog` override it, providing their unique implementations. This flexibility simplifies code reuse and extensibility.
+
+A vftable is a lookup table used in C++ to support polymorphism. It stores pointers to virtual functions of a class, allowing objects to dynamically resolve function calls at runtime based on their actual type.
 
 Each class with virtual functions has a vftable, and objects of that class store a pointer to it. When a virtual function is called, the vftable is used to find and execute the correct implementation for the object's type. This mechanism enables dynamic dispatch, a key feature of object-oriented programming.
 
