@@ -49,6 +49,19 @@ So what has all this got to do with code execution on a UaF bug in VMWare, let's
 
 # The Use After Silence Bug
 
+The term "Use After Silence" refers to a UaF vulnerability in VMware that was quietly patched without public disclosure. VMware backdoor commands are undocumented instructions allowing a guest OS to communicate with the host through a virtual machine. These commands enable features like clipboard sharing, drag-and-drop, and time synchronisation within VMware environments. This particular bug was triggered by issuing the following backdoor commands in sequence:
+
+```
+tools.capability.dnd_version
+vmx.capability.dnd_version
+tools.capability.dnd_version
+vmx.capability.dnd_version
+dnd.setGuestFileRoot AAAAA
+```
+
+The first four commands free a representation of a "dnd.setGuestFileRoot" object, along with it's vptr to a vftable. The fifth command tries to reference this object after it has been freed and attempts to execute a function pointed to in the objects vftable. Because the object has been freed an exception is triggered and VMWare crashes.
+
+To exploit the bug an attacker can brute force the low fragmentation heap (LFH) after the free (first four commands) but before the fifth command (which triggers the UaF). Brute forcing the LFH can reallocate an address pointing to a fake vftable and take control of code execution by hijacking the freed object with a fake vftable.
 
 # Useful References
 
