@@ -1,6 +1,6 @@
 [Home](https://plackyhacker.github.io)
 
-# Use After Free (UaF) Bugs
+# Use After Free (UaF) Bugs and Virtual Function Tables
 
 After some time away from study I have started going over the [OffSec Advanced Windows Exploitation](https://www.offsec.com/courses/exp-401/) courseware again. As I was going over the VMWare Escape chapter it wasn't initially clear **why** code execution was acheived by exploiting a known Use after Free (UaF) bug. The course does a great job explaining **how** to get code execution (and way beyond taking control of RIP) but I thought I would expand on the **why**. The bug used in the example was discovered in 2017 but is a good case study of how code execution can be acheived from exploiting a UaF bug.
 
@@ -20,11 +20,13 @@ In C++, polymorphism is primarily achieved through inheritance and virtual funct
 
 # Virtual Function Tables (vftables)
 
-A vftable is a lookup table used in C++ to support polymorphism. It stores pointers to virtual functions of a class, allowing objects to dynamically resolve function calls at runtime based on their actual type.
+A vftable is a lookup table used in C++ to support polymorphism and is created whenever a class implements virtual functions. It stores pointers to virtual functions of a class, allowing objects to dynamically resolve function calls at runtime based on their actual type.
 
 Each class with virtual functions has a vftable, and objects of that class store a pointer to it. When a virtual function is called, the vftable is used to find and execute the correct implementation for the object's type. This mechanism enables dynamic dispatch, a key feature of object-oriented programming.
 
 # Virtual Pointers (vpointers)
+
+So what has all this got to do with code execution on a UaF bug in VMWare, let's look at that next.
 
 # The Use After Silence Bug
 
@@ -33,6 +35,6 @@ Each class with virtual functions has a vftable, and objects of that class store
 
 - [C++ Polymorphism, W3Schools](https://www.w3schools.com/cpp/cpp_polymorphism.asp)
 - [Understandig Virtual Tables in C++, Pablo Arias](https://pabloariasal.github.io/2017/06/10/understanding-virtual-tables/)
-- [USE-AFTER-SILENCE: EXPLOITING A QUIETLY PATCHED UAF IN VMWARE, ZeroDay Initiative](https://www.zerodayinitiative.com/blog/2017/6/26/use-after-silence-exploiting-a-quietly-patched-uaf-in-vmware)
+- [USE-AFTER-SILENCE: EXPLOITING A QUIETLY PATCHED UAF IN VMWARE, Zero Day Initiative]([https://www.zerodayinitiative.com/blog/2017/6/26/use-after-silence-exploiting-a-quietly-patched-uaf-in-vmware](https://www.zerodayinitiative.com/blog/2017/6/26/use-after-silence-exploiting-a-quietly-patched-uaf-in-vmware))
 
 [Home](https://plackyhacker.github.io)
