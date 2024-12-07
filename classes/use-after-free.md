@@ -10,7 +10,7 @@ After some time away from study I have started going over the [OffSec Advanced W
 
 To understand Virtual Function Tables (vftables) we first need to understand why they exist. Polymorphism in programming allows objects of different classes to be treated as objects of a common base class, this is supported in object-oriented languages such as `C++`, `C#`, and `Java`. For example:
 
-<img width="636" alt="Screenshot 2024-12-07 at 17 50 36" src="https://github.com/user-attachments/assets/f65cb032-156e-4755-8da7-be33b219e1ea">
+<img width="636" alt="Screenshot 2024-12-07 at 17 50 36" src="https://github.com/user-attachments/assets/f65cb032-156e-4755-8da7-be33b219e1ea" style="border: 1px solid black;">
 
 In the image **A** is the base class and **B** and **C** are the sub classes.
 
