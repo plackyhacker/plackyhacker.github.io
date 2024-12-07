@@ -28,4 +28,10 @@ Each class with virtual functions has a vftable, and objects of that class store
 # The Use After Silence Bug
 
 
+# Useful References
+
+[C++ Polymorphism, W3Schools](https://www.w3schools.com/cpp/cpp_polymorphism.asp)
+
+[Understandig Virtual Tables in C++, Pablo Arias](https://pabloariasal.github.io/2017/06/10/understanding-virtual-tables/)
+
 [Home](https://plackyhacker.github.io)
