@@ -35,6 +35,6 @@ So what has all this got to do with code execution on a UaF bug in VMWare, let's
 
 - [C++ Polymorphism, W3Schools](https://www.w3schools.com/cpp/cpp_polymorphism.asp)
 - [Understandig Virtual Tables in C++, Pablo Arias](https://pabloariasal.github.io/2017/06/10/understanding-virtual-tables/)
-- [USE-AFTER-SILENCE: EXPLOITING A QUIETLY PATCHED UAF IN VMWARE, Zero Day Initiative](https://www.zerodayinitiative.com/blog/2017/6/26/use-after-silence-exploiting-a-quietly-patched-uaf-in-vmware](https://www.zerodayinitiative.com/blog/2017/6/26/use-after-silence-exploiting-a-quietly-patched-uaf-in-vmware)
+- [USE-AFTER-SILENCE: EXPLOITING A QUIETLY PATCHED UAF IN VMWARE, Zero Day Initiative](https://www.zerodayinitiative.com/blog/2017/6/26/use-after-silence-exploiting-a-quietly-patched-uaf-in-vmware)
 
 [Home](https://plackyhacker.github.io)
