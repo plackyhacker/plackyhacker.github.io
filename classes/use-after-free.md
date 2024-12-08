@@ -61,7 +61,7 @@ vmx.capability.dnd_version
 dnd.setGuestFileRoot AAAAA
 ```
 
-The first four commands free a representation of a "dnd.setGuestFileRoot" object, along with it's vptr to a vftable. The fifth command tries to reference this object after it has been freed and attempts to execute a function pointed to in the objects vftable. Because the object has been freed an exception is triggered and VMWare crashes.
+The first four commands free a representation of a "dnd.setGuestFileRoot" object, along with it's vptr to a vftable. The fifth command tries to reference this object after it has been freed and attempts to execute a function pointed in the objects vftable. Because the object has been freed an exception is triggered and VMWare crashes.
 
 To exploit the bug an attacker can brute force the low fragmentation heap (LFH) after the free (first four commands) but before the fifth command (which triggers the UaF). Brute forcing the LFH can reallocate an address pointing to a fake vftable and take control of code execution by hijacking the freed object with a fake vftable.
 
