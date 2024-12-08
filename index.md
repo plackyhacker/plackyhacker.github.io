@@ -7,6 +7,10 @@ Here I will write about things I find interesting, and hopefully about things th
 
 ## Posts
 
+### Bug Studies
+
+December 2024 - [Use After Free (UaF) Bugs and Virtual Function Tables](https://plackyhacker.github.io/classes/use-after-free)
+
 ### Kernel Exploitation
 
 October 2024 - [HEVD Double-fetch Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/race), [Part 2](https://plackyhacker.github.io/kernel/race-2)
