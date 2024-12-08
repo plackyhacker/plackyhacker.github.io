@@ -51,7 +51,7 @@ So what has all this got to do with code execution on a UaF bug in VMWare, let's
 
 # The Use After Silence Bug
 
-The term "Use After Silence" refers to a UaF vulnerability in VMware that was quietly patched without public disclosure. VMware backdoor commands are undocumented instructions allowing a guest OS to communicate with the host through a virtual machine. These commands enable features like clipboard sharing, drag-and-drop, and time synchronisation within VMware environments. This particular bug was triggered by issuing the following backdoor commands in sequence:
+The term "Use After Silence" refers to a [UaF vulnerability](https://www.zerodayinitiative.com/blog/2017/6/26/use-after-silence-exploiting-a-quietly-patched-uaf-in-vmware) in VMware that was quietly patched without public disclosure. VMware backdoor commands are undocumented instructions allowing a guest OS to communicate with the host through a virtual machine. These commands enable features like clipboard sharing, drag-and-drop, and time synchronisation within VMware environments. This particular bug was triggered by issuing the following backdoor commands in sequence:
 
 ```
 tools.capability.dnd_version
