@@ -2,9 +2,11 @@
 
 # Use After Free (UaF) Bugs and Virtual Function Tables
 
-After some time away from study I have started going over the [OffSec Advanced Windows Exploitation](https://www.offsec.com/courses/exp-401/) courseware again. As I was going over the VMWare Escape chapter it wasn't initially clear **why** code execution was acheived by exploiting a known Use after Free (UaF) bug. The course does a great job explaining **how** to get code execution (and way beyond taking control of RIP) but I thought I would expand on the **why**. The bug used in the example was discovered in 2017 but is a good case study of how code execution can be acheived from exploiting a UaF bug.
+After some time away from study I have started going over the [OffSec Advanced Windows Exploitation](https://www.offsec.com/courses/exp-401/) courseware again. As I was going over the VMWare Escape chapter it wasn't initially clear **why** code execution was acheived by exploiting a known Use after Free (UaF) bug, well not to me anyway! The course does a great job explaining **how** to get code execution (and way beyond taking control of RIP) but I thought I would explore **why**. The bug used in the example was discovered in 2017, so it is an oldie, but it is a good case study of how code execution can be acheived from exploiting a UaF bug.
 
 ## What are UaF Bugs?
+
+A UaF bug occurs when a program continues to access memory after it has been freed, leading to undefined behavior, crashes, or security vulnerabilities. The code within a program allocates memory on the heap, and at some point the program code will free that memory on the heap to avoid memory leaks. A UaF bug is when that freed memory location is accessed unintentionally through errors in the code. It is the job of a security researcher to find these UaF bugs before they can be exploited by the malicious actors.
 
 # Polymorphism
 
@@ -62,6 +64,12 @@ dnd.setGuestFileRoot AAAAA
 The first four commands free a representation of a "dnd.setGuestFileRoot" object, along with it's vptr to a vftable. The fifth command tries to reference this object after it has been freed and attempts to execute a function pointed to in the objects vftable. Because the object has been freed an exception is triggered and VMWare crashes.
 
 To exploit the bug an attacker can brute force the low fragmentation heap (LFH) after the free (first four commands) but before the fifth command (which triggers the UaF). Brute forcing the LFH can reallocate an address pointing to a fake vftable and take control of code execution by hijacking the freed object with a fake vftable.
+
+<img width="1373" alt="Screenshot 2024-12-08 at 11 15 12" src="https://github.com/user-attachments/assets/d8cb3a03-4e10-4ac1-b95d-9643ad00f471" style="border: 1px solid black;">
+
+I enjoyed taking a deeper look at the use after silence use case and it has helped me to understand the AWE course use-case.
+
+That is all, goodbye!
 
 # Useful References
 
