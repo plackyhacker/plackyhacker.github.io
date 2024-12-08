@@ -67,7 +67,7 @@ To exploit the bug an attacker can brute force the low fragmentation heap (LFH) 
 
 <img width="1373" alt="Screenshot 2024-12-08 at 11 15 12" src="https://github.com/user-attachments/assets/d8cb3a03-4e10-4ac1-b95d-9643ad00f471" style="border: 1px solid black;">
 
-I enjoyed taking a deeper look at the use after silence use case and it has helped me to understand the exploit in question.
+This doesn't explain **how** to exploit this bug (as in actual code), that is what the AWE course does a great job of doing. I enjoyed taking a deeper look at the use after silence use case and it has helped me to understand the exploit in question.
 
 That is all, goodbye!
 
