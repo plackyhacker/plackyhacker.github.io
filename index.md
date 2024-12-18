@@ -7,6 +7,10 @@ Here I will write about things I find interesting, and hopefully about things th
 
 ## Posts
 
+### Binary Exploitation
+
+December 2024 - [Mixing it up: ROP and COP](https://plackyhacker.github.io/binary/ropandcop)
+
 ### Bug Studies
 
 December 2024 - [Use After Free (UaF) Bugs and Virtual Function Tables](https://plackyhacker.github.io/classes/use-after-free)
