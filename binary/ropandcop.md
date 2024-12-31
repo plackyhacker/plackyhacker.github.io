@@ -17,10 +17,10 @@ FARPROC GetProcAddress(
 );
 ```
 
-Using the `__stdcall` calling convention this means moving the module address into `rcx` and a pointer to the function name string into `rdx`, fairly standard stuff so far. The problem is that there are no gadgets which contain `mov rdx, r63`. There is actually one gadget but it presents a problem:
+Using the `__stdcall` calling convention this means moving the module address into `rcx` and a pointer to the function name string into `rdx`, fairly standard stuff so far. The problem is that there are no gadgets which contain `mov rdx, r62`. There is actually one gadget but it presents a problem:
 
 ```
-mov rdx, rx ; call rsi ;
+mov rdx, rax ; call rsi ;
 ```
 
 The problem is that a valid call address must be in `rsi` before this is called and `call` instructions push the saved return address on to the stack which alters the ROP chain on the stack.
