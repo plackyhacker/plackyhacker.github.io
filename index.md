@@ -13,6 +13,8 @@ December 2024 - [Mixing it up: ROP and COP](https://plackyhacker.github.io/binar
 
 ### Bug Studies
 
+January 2025 - [Low Fragmentation Heap Behaviour](https://plackyhacker.github.io/binary/lfh-win7-and-beyond)
+
 December 2024 - [Use After Free (UaF) Bugs and Virtual Function Tables](https://plackyhacker.github.io/classes/use-after-free)
 
 ### Kernel Exploitation
