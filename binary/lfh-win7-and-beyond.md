@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
 The code is trying to print the string from the freed memory, this prints random data (as the memory allocation has been freed):
 
-<img width="1110" alt="Screenshot 2025-01-16 at 08 39 41" src="https://github.com/user-attachments/assets/e6fdc0d5-44ea-451b-bdff-6d7d0d8306f4" style="border: 1px solid black;"/>
+<img width="731" alt="Screenshot 2025-01-16 at 08 39 41" src="https://github.com/user-attachments/assets/e6fdc0d5-44ea-451b-bdff-6d7d0d8306f4" style="border: 1px solid black;"/>
 
 Yes this is trivial, in a real-world example this might crash if it is dereferencing a function pointer (such as **vptr**) and present us with a code execution opportunity. I am looking to see if I can reallocate to the freed memory address, and if the technique differs between Windows 7 and Windows 10.
 
