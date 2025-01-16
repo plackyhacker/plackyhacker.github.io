@@ -138,7 +138,7 @@ Let's take a look at a real world example.
 
 On 14/05/2013 Microsoft issued a security bulletin for [MS13-038](https://learn.microsoft.com/en-us/security-updates/securitybulletins/2013/ms13-038). The ‘vulnerability could allow remote code execution if a user views a specially crafted webpage using Internet Explorer’. Yes, this is a very old bug, but it demonstrates UaF without any complex mitigations that Microsoft have implemented since.
 
-Here is the `html` code that triggered the UaF (this was taken directly from the [Off by One Security Browser Exploitation Introduction live stream](https://www.youtube.com/watch?v=bcnV1dbfKcE) by Stephen Sims):
+Here is the `javascript` code that triggered the UaF (this was taken directly from the Off by One Security Browser [Exploitation Introduction live stream](https://www.youtube.com/watch?v=bcnV1dbfKcE) by Stephen Sims):
 
 ```javascript
 <script>
