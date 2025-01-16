@@ -1,6 +1,6 @@
 [Home](https://plackyhacker.github.io)
 
-# Low Fragmentation Heap Windows 7 and Beyond
+# Low Fragmentation Heap
 
 It's a new year (2025) and I am still studying Use-after-free (UaF) bugs and the Low Fragmentation Heap. When I was preparing for the Advanced Windows Exploitation course I could not find a great deal of **basic** material explaining the heap in Windows. So... here are some basics!
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
   }
 
   // allocate a chunk on the LFH and set it to all A characters
-  char *alloc1 = (char *)HeapAlloc(GetProcessHeap(), 0, 0x18); 
+  char *alloc1 = (char *)HeapAlloc(GetProcessHeap(), 0, 0xb0); 
   memset(alloc1, 0x41, 0xaf);
 
   // print the memory location and the string
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
   // free the allocation
   printf("Freeing allocation 1\n\n");
-  free(alloc1);
+  HeapFree(GetProcessHeap(), 0, alloc1);
 
   // this is a trivial Uaf bug
   printf("Allocation 1 string: %s\n\n", alloc1);
@@ -79,26 +79,58 @@ The code is trying to print the string from the freed memory, this prints random
 
 Yes this is trivial, in a real-world example this might crash if it is dereferencing a function pointer (such as **vptr**) and present us with a code execution opportunity. I am looking to see if I can reallocate to the freed memory address, and if the technique differs between Windows 7 and Windows 10.
 
-## Use After Free
-
-Explain
-
-
-Include examples (such as IE8).
-
-Why allocating to a freed allocation wins.
-
 ## Windows 7 Allocation
 
-Some Code
+To test how we might be able to reallocate to freed memory I added the following code to my test code:
 
-Some Testing
+```c
+  HeapFree(GetProcessHeap(), 0, alloc1);
 
-LIFO explain why
+  // changes ----------------------------------------------------------
+  char *alloc2 = (char *)HeapAlloc(GetProcessHeap(), 0, 0xb0); 
+  printf("Allocation 2 0x%p\n", alloc2);
+  printf("Allocation 2 string: %s\n\n", alloc2);
+  // ------------------------------------------------------------------
+
+  printf("Allocation 1 string: %s\n\n", alloc1);
+```
+
+Notice that I have 'asked' the heap manager to allocate some memory the same size as the freed memory. Will it have the same address? Is it that predictable?
+
+<img width="731" alt="Screenshot 2025-01-16 at 11 41 11" src="https://github.com/user-attachments/assets/85f4c6ef-c212-4066-97ce-b6b3d81659a7" style="border: 1px solid black;" />
+
+It turns out it is! Windows 7 allocates memory from the last chunk that was released in the associated bucket. This is fast, but it is also very predictable. In the real-world example I show later we will see why this is a problem.
+
+Let's try the same experiment on Windows 10.
 
 ## Windows 10 Allocation
 
-Test same code, crash!
+Running the exact same code on Windows 10 produces a different result:
+
+<img width="723" alt="Screenshot 2025-01-16 at 11 43 36" src="https://github.com/user-attachments/assets/39497016-057b-420a-95fd-c6cbf6ea6bdd" style="border: 1px solid black;" />
+
+Notice that the application doesn't finish execution but also that the allocations are not at the same address. And strangely there is some unexpected behaviour; for example it doesn't print the "Freeing allocation 1" string! The important part is that the memory allocation is no longer predictable.
+
+It turns out that from Windows 8 onwards the heap manager randomises LFH allocations. What does this mean for exploit developers. It means we need to brute-force the allocation:
+
+```c
+  HeapFree(GetProcessHeap(), 0, alloc1);
+
+  // changes ----------------------------------------------------------
+  printf("Brute force...\n\n");
+    for(int i = 0; i < 0x100; i++)
+    {
+      char *alloc2 = (char *)HeapAlloc(GetProcessHeap(), 0, 0xb0); 
+      memset(alloc2, 0x42, 0xaf);
+    }
+  // ------------------------------------------------------------------
+
+  printf("Allocation 1 string: %s\n\n", alloc1);
+```
+
+When we run this code we once again allocate to the memory that was freed, we can see this when we print `alloc1` but it displays the string we brute forced:
+
+<img width="721" alt="Screenshot 2025-01-16 at 11 49 10" src="https://github.com/user-attachments/assets/1a9ae2a0-b666-442f-a4f7-a2ec4668cf45" style="border: 1px solid black;" />
 
 Explain randomised allocations
 
