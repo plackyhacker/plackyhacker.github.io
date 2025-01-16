@@ -118,11 +118,11 @@ It turns out that from Windows 8 onwards the heap manager randomises LFH allocat
 
   // changes ----------------------------------------------------------
   printf("Brute force...\n\n");
-    for(int i = 0; i < 0x100; i++)
-    {
-      char *alloc2 = (char *)HeapAlloc(GetProcessHeap(), 0, 0xb0); 
-      memset(alloc2, 0x42, 0xaf);
-    }
+  for(int i = 0; i < 0x100; i++)
+  {
+    char *alloc2 = (char *)HeapAlloc(GetProcessHeap(), 0, 0xb0); 
+    memset(alloc2, 0x42, 0xaf);
+  }
   // ------------------------------------------------------------------
 
   printf("Allocation 1 string: %s\n\n", alloc1);
