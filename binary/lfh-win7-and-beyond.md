@@ -1,6 +1,6 @@
 [Home](https://plackyhacker.github.io)
 
-# Low Fragmentation Heap
+# Low Fragmentation Heap Behaviour
 
 It's a new year (2025) and I am still studying Use-after-free (UaF) bugs and the Low Fragmentation Heap. When I was preparing for the Advanced Windows Exploitation course I could not find a great deal of **basic** material explaining the heap in Windows. So... here are some basics!
 
