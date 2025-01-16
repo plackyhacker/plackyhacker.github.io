@@ -6,23 +6,23 @@ It's a new year (2025) and I am still studying Use-after-free (UaF) bugs and the
 
 ## Introduction to the Windows Heap
 
-We've all heard of the **stack** and the **heap** right? The **stack** is a memory region used to store local variables and function call data, such as the saved return address. The variables stored on the **stack** are known at compile-time; the size of them, their usage, location etc. This is very useful, but it does not cater for variables and memory allocations that are dynamic and required at runtime. Memory is allocated and freed dynamically at runtime in a memory region referred to as the **heap**.
+We've all heard of the stack and the heap right? The stack is a memory region used to store local variables and function call data, such as the saved return address. The variables stored on the **stack** are known at compile-time; the size of them, their usage, location etc. This is very useful, but it does not cater for variables and memory allocations that are dynamic and required at runtime. Memory is allocated and freed dynamically at runtime in a memory region referred to as the heap.
 
-In Windows, the **heap manager** is a software layer that resides on top of the virtual memory interfaces provided by the Windows kernel. This allows applications running in Windows to dynamically allocate and release memory via the Windows APIs such as `HeapAlloc` and `HeapFree`.
+In Windows, the heap manager is a software layer that resides on top of the virtual memory interfaces provided by the Windows kernel. This allows applications running in Windows to dynamically allocate and release memory via the Windows APIs such as `HeapAlloc` and `HeapFree`.
 
 If you have written code in `C` or `C++`, you may have used functions such as `malloc` and `free` or keywords (in `C++`) such as `new` and `delete` to allocate and free virtual memory. In Windows these are higher-level abstractions that ultimately rely on the Windows APIs (depending upon how the runtime implements memory allocations).
 
-Windows 10 introduced something called the **segment heap** but I'm not going to write about that, not today anyway!
+Windows 10 introduced something called the segment heap but I'm not going to write about that, not today anyway!
 
 ### Front End Allocator
 
-The **front end allocator** is used to serve small allocation requests and is built to optimise performance. 
+The front end allocator is used to serve small allocation requests and is built to optimise performance. 
 
-The **Low Fragmentation Heap (LFH)** was introduced in Windows XP and **minimises fragmentation** by organising memory into **fixed-size blocks** and efficiently reusing them. These replaced **lookaside lists** which were much simpler, and stored freed memory blocks for quick reuse but they lacked the fragmentation management features of LFH.
+The Low Fragmentation Heap (LFH) was introduced in Windows XP and minimises fragmentation by organising memory into **fixed-size blocks** and efficiently reusing them. These replaced lookaside lists which were much simpler, and stored freed memory blocks for quick reuse but they lacked the fragmentation management features of LFH.
 
 ### Back End Allocator
 
-The **back end allocator** serves memory allocations when the front end allocator cannot; such as an exhaustion of chunks in the front end, the size of the request, or that LFH is not active.
+The back end allocator serves memory allocations when the front end allocator cannot; such as an exhaustion of chunks in the front end, the size of the request, or that LFH is not active.
 
 ## What is the LFH?
 
