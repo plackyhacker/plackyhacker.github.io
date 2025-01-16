@@ -6,7 +6,7 @@ It's a new year (2025) and I am still studying Use-after-free (UaF) bugs and the
 
 ## Introduction to the Windows Heap
 
-We've all heard of the stack and the heap right? The stack is a memory region used to store local variables and function call data, such as the saved return address. The variables stored on the **stack** are known at compile-time; the size of them, their usage, location etc. This is very useful, but it does not cater for variables and memory allocations that are dynamic and required at runtime. Memory is allocated and freed dynamically at runtime in a memory region referred to as the heap.
+We've all heard of the stack and the heap right? The stack is a memory region used to store local variables and function call data, such as the saved return address. The variables stored on the stack are known at compile-time; the size of them, their usage, location etc. This is very useful, but it does not cater for variables and memory allocations that are dynamic and required at runtime. Memory is allocated and freed dynamically at runtime in a memory region referred to as the heap.
 
 In Windows, the heap manager is a software layer that resides on top of the virtual memory interfaces provided by the Windows kernel. This allows applications running in Windows to dynamically allocate and release memory via the Windows APIs such as `HeapAlloc` and `HeapFree`.
 
