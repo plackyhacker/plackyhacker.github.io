@@ -18,7 +18,7 @@ Windows 10 introduced something called the segment heap but I'm not going to wri
 
 The front end allocator is used to serve small allocation requests and is built to optimise performance. 
 
-The Low Fragmentation Heap (LFH) was introduced in Windows XP and minimises fragmentation by organising memory into **fixed-size blocks** and efficiently reusing them. These replaced lookaside lists which were much simpler, and stored freed memory blocks for quick reuse but they lacked the fragmentation management features of LFH.
+The Low Fragmentation Heap (LFH) was introduced in Windows XP and minimises fragmentation by organising memory into fixed-size blocks and efficiently reusing them. These replaced lookaside lists which were much simpler, and stored freed memory blocks for quick reuse but they lacked the fragmentation management features of LFH.
 
 ### Back End Allocator
 
@@ -26,7 +26,7 @@ The back end allocator serves memory allocations when the front end allocator ca
 
 ## What is the LFH?
 
-The LFH organises allocations into **chunks**, that are stored in **buckets**:
+The LFH organises allocations into chunks, that are stored in buckets:
 
 - **LFH Buckets**: The LFH organises memory allocations into predefined buckets, each corresponding to a specific allocation size.
 - **Allocation Sizes**: Each bucket manages allocations of a particular size.
