@@ -3,7 +3,7 @@
 # All the Leaks
 
 I am still studying towards OSEE. Here's another post exploring some basics: Leaking module base addresses.
-
+ 
 ## Introduction
 
 Modern exploitation generally requires the attacker to chain multiple vulnerabilites together to reach a specific goal (most likely code execution). To help me understand different exploitation techniques and mitigations in Windows (perhaps a little later) I have decided to create an application that focuses on exploitation techniques rather than finding bugs. So I am interested in how I can use those bugs to chain together exploitation code.
