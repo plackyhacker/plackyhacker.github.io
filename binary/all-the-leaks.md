@@ -99,19 +99,19 @@ This is very simple. It imports the vulnerable DLL and it creates pointers to th
 
 ## Information Disclosures
 
-An information disclosure vulnerability is a vulnerability that leaks the base address, or an address that allows us to calculate the base address, of a loaded module in memory. It is an important bug because it can be chained with other vulnerabilities. There are many uses for information disclosure bugs, but the two that most people will know about are defeating ASRL and DEP/NX.
+An information disclosure vulnerability is a vulnerability that leaks the base address, or an address that allows us to calculate the base address, of a loaded module in memory. It is an important bug because it can be chained with other vulnerabilities. There are many uses for information disclosure bugs, but the two that most people will know about are defeating ASLR and DEP/NX.
 
 **Defeating Address Space Layout Randomisation (ASLR)**
 
 ASLR randomises the base address of the stack, the heap, and modules. This makes it harder for attackers to predict the location of code and data allocations in memory. Leaking memory addresses (e.g., module base, stack address, or heap pointers) helps attackers to bypass ASLR by using Return-oriented Programming (ROP).
 
-It is also worth noting that if we have an arbitrary write primitive and we know where certain pointers are (think global pointer to a heap allocation) then we can write data into the target process at predictive locations.
+It is also worth noting that if we have an arbitrary write primitive and we know where certain pointers are (think global pointer to a heap allocation) then we can write data into the target process at predictable locations.
 
 **Locating Gadgets for ROP**
 
 ROP is a common technique used to bypass non-executable memory (DEP/NX) by chaining small code fragments (gadgets) already present in memory. If we can leak module addresses then we can locate ROP gadgets and develop a ROP chain.
 
-Our task is to leak the DLL base address, this is the easy bit as it's just a function call. This DLL is tiny, and has a very small code base, if we were looking to build a ROP chain using this DLL alone, we would fail in spectacular fashion. What we need is the base address of other modules that we can use. We will leak `kernel32.dll` and `NTDLL.dll` by chaining the information disclousre bug with the arbitrary read bug.
+Our task is to leak the DLL base address, this is the easy bit as it's just a function call. This DLL is tiny, and has a very small code base, if we were looking to build a ROP chain using this DLL alone, we would fail in spectacular fashion. What we need is the base address of other modules that we can use. We will leak `kernel32.dll` and `NTDLL.dll` by chaining the information disclosure bug with the arbitrary read bug.
 
 ## Leaking the DLL Base
 
@@ -152,7 +152,7 @@ If we test this again in `WinDbg` we see that the address that we have leaked fr
 
 <img width="1119" alt="Screenshot 2025-01-21 at 18 18 42" src="https://github.com/user-attachments/assets/e4c3e31e-cedf-4053-ba16-d7dc57fb3c57" style="border: 1px solid black;" />
 
-We are making progress. We have leaked the address of a function in `kernel32.dll` from the IAT. How can we use this to leak the base address of `kernel32.dll`. The code that makes up this function is ALWAYS at the same offset from the base of the module, ASLR rebasing randomises alot of things, such as the actual base address of the module but it does not randomise the offsets of the code from the base address. To get the base address we simply need to find the offset of the function from the `kernel32.dll` base address:
+We are making progress. We have leaked the address of a function in `kernel32.dll` from the IAT. How can we use this to leak the base address of `kernel32.dll`. The code that makes up this function is ALWAYS at the same offset from the base of the module, ASLR rebasing randomises alot of things, such as the actual base address of the module, but it does not randomise the offsets of the code from the base address. To get the base address we simply need to find the offset of the function from the `kernel32.dll` base address:
 
 <img width="1113" alt="Screenshot 2025-01-21 at 18 22 30" src="https://github.com/user-attachments/assets/41f06941-4df8-4a05-a1ca-71241ce2ddba" style="border: 1px solid black;" />
 
@@ -194,7 +194,7 @@ Lovely!
 
 ## What's Next?
 
-Next up, I am oing to introduce some sort bug in the DLL where we can overwrite `rip`, not sure what yet, probably some form of UaF or overwriting a function pointer. That isn't important, as long as we can disclose a heap allocation and use our arbitrary write we will attempt to do a bit of ROPping.
+Next up, I am going to introduce some sort of bug in the DLL where we can overwrite `rip`, not sure what yet, probably some form of UaF or overwriting of a function pointer. That isn't important, as long as we can disclose a heap allocation and use our arbitrary write we will attempt to do a bit of ROPping.
 
 You still here?
 
