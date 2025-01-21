@@ -168,7 +168,7 @@ Running this once again gives us the leaked address:
 
 <img width="1112" alt="Screenshot 2025-01-21 at 18 26 26" src="https://github.com/user-attachments/assets/744f9fbf-f3f2-49ed-acde-398f47c213eb" style="border: 1px solid black;" />
 
-We now have lots of code to search for ROP adgets in, but the original brief I set myself was to also leak `NTDLL.dll`. How doo we do that? YES! We read the IAT for `kernel32.dll` which references functions in `NTDLL.dll`.
+We now have lots of code to search for ROP adgets in, but the original brief I set myself was to also leak `NTDLL.dll`. How do we do that? YES! We read the IAT for `kernel32.dll` which references functions in `NTDLL.dll`.
 
 ## Leaking NTDLL.dll
 
