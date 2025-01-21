@@ -8,7 +8,13 @@ Modern exploitation generally requires the attacker to chain multiple vulnerabil
 
 I am starting quite small. My application will contain three primitives/bugs, an information disclosure bug, an arbitrary read primitive, and an arbitrary write primitive.
 
+<img width="618" alt="Screenshot 2025-01-21 at 16 24 25" src="https://github.com/user-attachments/assets/2507bc12-1b79-47ac-bbb5-2d5465f88068" style="border: 1px solid black;" />
 
+I am writing the vulnerable functions in a DLL so I don't need to write code that wraps the vulnerable functions in a TCP server, although it could be done at a later date:
+
+<img width="959" alt="Screenshot 2025-01-21 at 16 25 57" src="https://github.com/user-attachments/assets/78ac6057-6697-4e73-863d-49edefbfeb9f" style="border: 1px solid black;" />
+
+Again, this is so I can focus on the parts I need to learn more. I want to be able to easily write exploits without first having to reverse engineer the applications and find the bugs. This is an important discipline but I want to concentrate on exploitation at this moment in time.
 
 ## Vulnerable DLL Code
 
