@@ -130,7 +130,11 @@ Running the compiled application in `WinDbg` helps us to test if the exploit sim
 
 <img width="1112" alt="Screenshot 2025-01-21 at 18 10 00" src="https://github.com/user-attachments/assets/593dafdd-cde1-4d39-8aa3-c84c30015cf4" style="border: 1px solid black;" />
 
-Nothing really compilcated here, but how do we leak `kernel32.dll` from this leak.
+Nothing really compilcated here, this allows us to use `VulnDLL` to build a ROP chain, but how many gadgets are available?
+
+<img width="1119" alt="Screenshot 2025-01-22 at 07 16 26" src="https://github.com/user-attachments/assets/431bd753-d7d1-4ae7-b27e-3b5aa2206946" style="border: 1px solid black;" />
+
+Not many of course, 425 gadgets. So how do we leak `kernel32.dll` from this leak.
 
 ## Leaking Kernel32.dll
 
@@ -170,7 +174,11 @@ Running this once again gives us the leaked address:
 
 <img width="1112" alt="Screenshot 2025-01-21 at 18 26 26" src="https://github.com/user-attachments/assets/744f9fbf-f3f2-49ed-acde-398f47c213eb" style="border: 1px solid black;" />
 
-We now have lots of code to search for ROP adgets in, but the original brief I set myself was to also leak `NTDLL.dll`. How do we do that? YES! We read the IAT for `kernel32.dll` which references functions in `NTDLL.dll`.
+We now have lots of code to search for ROP gadgets in:
+
+<img width="1115" alt="Screenshot 2025-01-22 at 07 17 24" src="https://github.com/user-attachments/assets/331c4306-e8d9-4a71-b168-46e77ed49efb" style="border: 1px solid black;" />
+
+The original brief I set myself was to also leak `NTDLL.dll`. How do we do that? YES! We read the IAT for `kernel32.dll` which references functions in `NTDLL.dll`.
 
 ## Leaking NTDLL.dll
 
