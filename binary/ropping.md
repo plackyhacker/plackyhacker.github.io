@@ -19,7 +19,7 @@ I am starting with only basic mitigations, such as ASLR and DEP/NX.
 
 ## Use After Free Simulation
 
-The code I have created does not use C++ classes so does not generate a real UaF, instead the initial allocation points to the `GetLastError` Win32 API. If the `FreeAllocation` function is not called then a call to the `TriggerUaF` function will not crash the application. Let's free the allocation and run it in `WinDbg` using the following code:
+The code I have created does not use C++ classes so does not generate a real UaF (you can learn about those [here](https://plackyhacker.github.io/classes/use-after-free)), instead the initial allocation points to the `GetLastError` Win32 API. If the `FreeAllocation` function is not called then a call to the `TriggerUaF` function will not crash the application. Let's free the allocation and run it in `WinDbg` using the following code:
 
 ```c
 FreeAllocation();
