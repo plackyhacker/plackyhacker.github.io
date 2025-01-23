@@ -69,7 +69,11 @@ Setting a breakpoint at the same memory location and running the application we 
 
 <img width="1120" alt="Screenshot 2025-01-23 at 19 02 45" src="https://github.com/user-attachments/assets/08429b24-d983-4e5e-9217-27831eb9e6f3" style="border: 1px solid black;" />
 
-This is, of course, invalid memory and will still crash. What we need is a stack pivot, but first we need somewhere to store a ROP chain to pivot to.
+This is, of course, invalid memory and will still crash. We can also view the LFH allocation that contains the fake function pointer:
+
+<img width="1115" alt="Screenshot 2025-01-23 at 19 10 48" src="https://github.com/user-attachments/assets/824bba5b-53e2-459e-8849-89cc54081ac9" style="border: 1px solid black;" />
+
+What we need next is a stack pivot gaget that begins execution of a ROP chain. First we need somewhere to store a ROP chain to pivot to.
 
 ## ROP Chain
 
