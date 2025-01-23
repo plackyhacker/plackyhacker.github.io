@@ -75,8 +75,52 @@ This is, of course, invalid memory and will still crash. We can also view the LF
 
 What we need next is a stack pivot gaget that begins execution of a ROP chain. First we need somewhere to store a ROP chain to pivot to.
 
-## ROP Chain
+## ROP Chain Location
 
+We know there is a `GlobalAllocate` function in the vulnerable DLL, but what does it allow us to do. Some more gentle reverse engineering:
 
+<img width="482" alt="Screenshot 2025-01-23 at 19 15 35" src="https://github.com/user-attachments/assets/f6829a52-00dc-48e9-ab05-56e07820d00d" style="border: 1px solid black;" />
+
+The last block in the `GlobalAllocate` function calls `HeapAlloc` using the arguments we send and we also see that the return value (in `rax`) which is the address of the allocation is stored in a global variable called `g_general_buffer`. We can easily locate this buffer using IDA:
+
+<img width="1121" alt="Screenshot 2025-01-23 at 19 18 50" src="https://github.com/user-attachments/assets/00fc7409-8fe8-4d04-b4f1-e11ba6d5515b"  style="border: 1px solid black;" />
+
+Global variables are located in the `.data` section and the addresses of these are at a static offset from the base address of the module. In the last post I demonstrated that we can get the DLL base aaddress so we can dynamically calculate the address of the global variable that points to the buffer that we can allocate using the vulnerable `GlobalAllocate` function.
+
+We can also use the arbitrary read to dereference this global variable and 'leak' the allocated address for the general buffer. If we can pivot the stack to this address it will make a perfect location for a fake stack with which to execute a ROP chain, and becasue we have an arbitrary read/write primitive we can write temporary values to it.
+
+Let's see if we can allocate some memory, run the application in the debugger, and see if we can locate it using the global variable address:
+
+```c
+FreeAllocation();
+
+// ...
+
+// allocate to the general buffer
+LPVOID globalAlloc = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, 0x1000);
+if (globalAlloc != NULL)
+{
+    memset(globalAlloc, 0x42, 0x1000);
+    GlobalAllocate(globalAlloc, 0x1000);
+}
+
+DebugBreak();
+
+TriggerUaF();
+```
+
+I simply created a buffer of `0x1000` bytes and written `0x42` to every byte. When the debugger breaks we can see if the global variable points to the allocated buffer:
+
+<img width="1065" alt="Screenshot 2025-01-23 at 19 29 05" src="https://github.com/user-attachments/assets/83ccc4e3-03b1-4a3e-8a81-656dc77b697c" style="border: 1px solid black;" />
+
+It does! And interestingly when we get to the `jmp` instruction which jumps to our reallocated pointer, `rbx` also points to our buffer:
+
+<img width="1139" alt="Screenshot 2025-01-23 at 19 32 46" src="https://github.com/user-attachments/assets/db12b083-7c9b-4a97-b867-609571a52472" style="border: 1px solid black;" />
+
+If we could find a `mov rsp, rbx` gadget then we could pivot the stack to this general buffer, and you know that is going to be possible - this is a simulation after all!
+
+## Stack Pivoting
+
+## Code Execution
 
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/binary/all-the-leaks) : Part 2
