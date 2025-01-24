@@ -2,13 +2,13 @@
 
 # Ropping
 
-In the previous part I buit a vulnerable DLL to demonstrate how an information disclosure bug and a read primitive can be used to leak multiple module base addresses. I have developed the vulnerable DLL a bit more and added some more dodgy functionalitiy with which to explore exploitation without having to worry about great deal about bug discovery:
+In the previous part I buit a vulnerable DLL to demonstrate how an information disclosure bug and a read primitive can be used to leak multiple module base addresses. I have developed the vulnerable DLL a bit more and added some more dodgy functionality with which to explore exploitation without having to worry about a great deal about bug discovery:
 
 <img width="1381" alt="Screenshot 2025-01-23 at 18 35 42" src="https://github.com/user-attachments/assets/bed35364-45c3-44d1-9722-06c84c7a87f6" style="border: 1px solid black;" />
 
 - **Allocate**: this allocates memory of an arbitrary size on the LFH and copies an arbitrary buffer to it.
 - **ArbitraryRead**: this was demonstrated in the previous post and simulates and arbitrary read bug.
-- **ArbitraryWrite**: this demonstrates and arbitrary write bug.
+- **ArbitraryWrite**: this demonstrates an arbitrary write bug.
 - **FreeAllocation**: this is used to simulate a Use After Free by freeing a very specific LFH allocation.
 - **GlobalAllocate**: this function allocates memory (general buffer) on the default process heap of arbitrary size and copies a buffer to it.
 - **LeakModuleAddress**: this was demonstrated in the last post and leaks the DLL base address.
@@ -73,7 +73,7 @@ This is, of course, invalid memory and will still crash. We can also view the LF
 
 <img width="1115" alt="Screenshot 2025-01-23 at 19 10 48" src="https://github.com/user-attachments/assets/824bba5b-53e2-459e-8849-89cc54081ac9" style="border: 1px solid black;" />
 
-What we need next is a stack pivot gaget that begins execution of a ROP chain. First we need somewhere to store a ROP chain to pivot to.
+What we need next is a stack pivot gadget that begins execution of a ROP chain. But, first we need somewhere to store a ROP chain to pivot to.
 
 ## ROP Chain Location
 
@@ -81,15 +81,15 @@ We know there is a `GlobalAllocate` function in the vulnerable DLL, but what doe
 
 <img width="482" alt="Screenshot 2025-01-23 at 19 15 35" src="https://github.com/user-attachments/assets/f6829a52-00dc-48e9-ab05-56e07820d00d" style="border: 1px solid black;" />
 
-The last block in the `GlobalAllocate` function calls `HeapAlloc` using the arguments we send and we also see that the return value (in `rax`) which is the address of the allocation is stored in a global variable called `g_general_buffer`. We can easily locate this buffer using IDA:
+The last block in the `GlobalAllocate` function calls `HeapAlloc` using the arguments we send, and we also see that the return value (in `rax`), which is the address of the allocation, is stored in a global variable called `g_general_buffer`. We can easily locate this buffer using IDA:
 
 <img width="1121" alt="Screenshot 2025-01-23 at 19 18 50" src="https://github.com/user-attachments/assets/00fc7409-8fe8-4d04-b4f1-e11ba6d5515b"  style="border: 1px solid black;" />
 
 Global variables are located in the `.data` section and the addresses of these are at a static offset from the base address of the module. In the last post I demonstrated that we can get the DLL base aaddress so we can dynamically calculate the address of the global variable that points to the buffer that we can allocate using the vulnerable `GlobalAllocate` function.
 
-We can also use the arbitrary read to dereference this global variable and 'leak' the allocated address for the general buffer. If we can pivot the stack to this address it will make a perfect location for a fake stack with which to execute a ROP chain, and becasue we have an arbitrary read/write primitive we can write temporary values to it.
+We can also use the arbitrary read to dereference this global variable and 'leak' the allocated address for the general buffer. If we can pivot the stack to this address it will make a perfect location for a fake stack with which to execute a ROP chain, and becasue we have an arbitrary read/write primitive we can read and write temporary values to it at offsets of our choosing.
 
-Let's see if we can allocate some memory, run the application in the debugger, and see if we can locate it using the global variable address:
+Let's see if we can allocate some memory, run the application in the debugger, and locate it using the global variable address:
 
 ```c
 FreeAllocation();
@@ -109,7 +109,7 @@ DebugBreak();
 TriggerUaF();
 ```
 
-I simply created a buffer of `0x1000` bytes and written `0x42` to every byte. When the debugger breaks we can see if the global variable points to the allocated buffer:
+I simply created a buffer of `0x1000` bytes and wrote `0x42` to every byte. When the debugger breaks we can see if the global variable points to the allocated buffer:
 
 <img width="1065" alt="Screenshot 2025-01-23 at 19 29 05" src="https://github.com/user-attachments/assets/83ccc4e3-03b1-4a3e-8a81-656dc77b697c" style="border: 1px solid black;" />
 
@@ -121,7 +121,6 @@ If we could find a `mov rsp, rbx` gadget then we could pivot the stack to this g
 
 ## Stack Pivoting
 
-
 We an use `rp-win.exe` to look for ROP gadgets that might help us pivot the stack:
 
 <img width="866" alt="Screenshot 2025-01-24 at 08 00 48" src="https://github.com/user-attachments/assets/3b466861-a8fc-459c-90ae-025746a1d8fc" style="border: 1px solid black;" />
@@ -130,7 +129,7 @@ And I find the correct gadget in `VulnDLL.dll`:
 
 <img width="897" alt="Screenshot 2025-01-24 at 08 02 35" src="https://github.com/user-attachments/assets/1c074fb5-2efd-4d6c-b437-7b14ac1de8e0" style="border: 1px solid black;" />
 
-This should come as no surpirse. I am exploring exploit development techniques, so I simply planted this rop chain in my code (in a more realistic scenario this is going to be a bit more difficult to find a ROP gadget that will achieve our objective). I added an `asm` function to the vulnerable DLL:
+This should come as no surprise. I am exploring exploit development techniques, so I simply planted this rop chain in my code (in a more realistic scenario it is going to be a bit more difficult to find a ROP gadget that will achieve our objective). I added an `asm` function to the vulnerable DLL:
 
 ```asm
 .CODE
@@ -171,7 +170,7 @@ When we run the application we hit our breakpoint. We can step through `mov rsp,
 
 ## Test ROP Chain
 
-In the final part of this blog I will write to the general buffer with a test ROP chain; basically some ROP NOPs and an `int3` instruction. Just to prove that it works as intended.:
+In the final part of this blog I will write to the general buffer with a test ROP chain; basically some ROP NOPs and an `int3` instruction. Just to prove that it works as intended:
 
 ```c
 // allocate to the general buffer
@@ -206,6 +205,6 @@ Hopefully this helps illustrate what has happened so far:
 
 ## What Next?
 
-In the next part things will start to get interesting. If all goes to plan, I will write about how I will execute shellcode in the general buffer, repair the registers and the stack (so the app doesn't crash), and start switching on mitigations! This is the main reason I am writing all of this. It is good to solidify my understanding of the exploitation techniques so far, but I need to understand the mitigations in Windows and how I might be able to work around them.
+In the next part things will start to get a bit more interesting. If all goes to plan, I will write about how I will execute shellcode in the general buffer (after making it executable), repair the registers and the stack (so the app doesn't crash), and start switching on mitigations! This is the main reason I am writing all of this. It is good to solidify my understanding of the exploitation techniques so far, but I need to understand the mitigations in Windows and how I might be able to work around them.
 
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/binary/all-the-leaks) : Part 2
