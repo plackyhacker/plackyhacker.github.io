@@ -2,7 +2,7 @@
 
 # All the Leaks
 
-I am still studying towards OSEE. Here's another post exploring some basics: Leaking module base addresses.
+I am still studying towards OSEE. Here's another post exploring some basics: Leaking module base addresses. My intention is that this becomes a multi-part series exploring advanced binary exploitation techniques in Windows and bypassing mitigations.
  
 ## Introduction
 
