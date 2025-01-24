@@ -39,16 +39,29 @@
       <section>
 
       {{ content }}
-
+       
       </section>
 
-      <script src="https://utteranc.es/client.js"
-        repo="[ENTER REPO HERE]"
-        issue-term="pathname"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-    </script>
+<script>
+  'use strict';
+
+  (function() {
+    var commentContainer = document.querySelector('#utterances-comments');
+
+    if (!commentContainer) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('repo', 'plackyhacker/plackyhacker.github.io');
+    script.setAttribute('issue-term', 'url');
+    script.setAttribute('label', 'website_comments');
+    script.setAttribute('theme', 'github-light');
+    script.setAttribute('crossorigin', 'anonymous');
+    commentContainer.appendChild(script);
+  })();
+</script>
       
     </div>
     <footer>
