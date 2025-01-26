@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) : Part 1 : [Part 2](https://plackyhacker.github.io/binary/ropping)
+[Home](https://plackyhacker.github.io) : Part 1 : [Part 2](https://plackyhacker.github.io/binary/controlling-the-stack)
 
 # All the Leaks
 
@@ -206,4 +206,4 @@ Next up, I am going to introduce some sort of bug in the DLL where we can overwr
 
 You still here?
 
-[Home](https://plackyhacker.github.io) : Part 1 : [Part 2](https://plackyhacker.github.io/binary/ropping)
+[Home](https://plackyhacker.github.io) : Part 1 : [Part 2](https://plackyhacker.github.io/binary/controlling-the-stack)
