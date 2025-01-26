@@ -1,6 +1,6 @@
 [Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/binary/all-the-leaks) : Part 2
 
-# Ropping
+# Controlling the Stack
 
 In the previous part I buit a vulnerable DLL to demonstrate how an information disclosure bug and a read primitive can be used to leak multiple module base addresses. I have developed the vulnerable DLL a bit more and added some more dodgy functionality with which to explore exploitation without having to worry about a great deal about bug discovery:
 
