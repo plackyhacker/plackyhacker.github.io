@@ -1,4 +1,4 @@
-[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/binary/all-the-leaks) : Part 2
+[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/binary/all-the-leaks) : Part 2 : [Part 3](https://plackyhacker.github.io/binary/shellcode-execution)
 
 # Controlling the Stack
 
@@ -207,4 +207,4 @@ Hopefully this helps illustrate what has happened so far:
 
 In the next part things will start to get a bit more interesting. If all goes to plan, I will write about how I will execute shellcode in the general buffer (after making it executable), repair the registers and the stack (so the app doesn't crash), and start switching on mitigations! This is the main reason I am writing all of this. It is good to solidify my understanding of the exploitation techniques so far, but I need to understand the mitigations in Windows and how I might be able to work around them.
 
-[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/binary/all-the-leaks) : Part 2
+[Home](https://plackyhacker.github.io) : [Part 1](https://plackyhacker.github.io/binary/all-the-leaks) : Part 2 : [Part 3](https://plackyhacker.github.io/binary/shellcode-execution)
