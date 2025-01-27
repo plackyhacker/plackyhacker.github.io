@@ -52,13 +52,11 @@ Testing this in `WinDbg` shows the shellcode allocated to the address leaked usi
 
 We have a shellcode buffer, and a reference to it.
 
-**Note:** I could have looked for a code cave within the binary or another module and wrte the shellcode to it using the arbitrary write, I might look at that another time and examine what mitigations might prevent this.
+**Note:** I could have looked for a code cave within the binary or another module and write the shellcode to it using the arbitrary write, I might look at that another time and examine what mitigations might prevent this.
 
 ## Arbitrarily Writing a ROP Chain
 
-I am using a different approach to that I used in the last post to write the ROP chain, I am going to use the arbitrary write. Not only is this a technique that we sometimes rely upon but I also have a valid reason for doing this.
-
-I would like to know the address of the allocated buffer. I am going to write a string to it for use in the `GetProcAddress` call:
+I am using a different approach to what I used in the last post to write the ROP chain, I am going to use the arbitrary write. Not only is this a technique that we sometimes rely upon but I also have a valid reason for doing this: I would like to know the address of the allocated buffer as I am going to write a string to it for use in the `GetProcAddress` call:
 
 ```c
 // allocate to the general buffer for our rop chian ----------------------------------------------
