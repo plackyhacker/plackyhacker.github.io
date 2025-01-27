@@ -4,7 +4,9 @@
 
 ## Introduction
 
-Intro to WDEG...
+Windows Defender Exploit Guard (WDEG) is a security feature designed to mitigate common exploitation techniques in Windows environments. One notable mitigation is **StackPivot**, which protects against stack pivoting attacks often used in Return-Oriented Programming (ROP) exploits. By monitoring for suspicious changes to the stack pointer (`rsp`) during execution, StackPivot ensures the stack remains within legitimate boundaries, preventing attackers from redirecting control flow to malicious code. This strengthens the overall resilience against memory-based exploits.
+
+As my exploit in [previous post](https://plackyhacker.github.io/binary/controlling-the-stack) uses stack pivoting this seems like a good place to start at at attempting to bypass mitigations.
 
 ## Enabling StackPivot
 
@@ -29,4 +31,24 @@ We can also observe that the binary has imported the `PayloadRestrictions` modul
 
 <img width="1109" alt="Screenshot 2025-01-27 at 15 28 33" src="https://github.com/user-attachments/assets/164eb393-74bb-4166-8825-27d6433321dc" style="border: 1px solid black" />
 
+## How WDEG is Implemented
 
+### Global Switch
+
+Find it, based on previous OffSec research. Find a ref to new one... if possible... otherwise reverse engineer it!
+
+### Function Hooking
+
+
+
+### API Calls
+
+App > Win32 > NDTLL > Kernel
+
+### NtProtectVirtualMemory
+
+Cut out the middle function. Offset the call...
+
+### Switch WDEG Off
+
+ROP chain...
