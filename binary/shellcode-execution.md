@@ -44,7 +44,7 @@ printf("shellcodeBufferAddr: 0x%p\n", (void*)shellcodeBufferAddr);
 
 This is fairly straightforward. We create a buffer, fill it with nops (`0x90`), then use the DLL function to allocate it, and finally read the address of the buffer.
 
-Why not just allocate memory on the heap and use the returned address in our exploit. Remember, we are simulating a remote exploit, the DLL is loaded in to the process for convenience but the techniquese used are similar to those against a remote binary. If we allocate a buffer in our exploit process then a remote binary will not be able to access it.
+Why not just allocate memory on the heap and use the returned address in our exploit? Remember, we are simulating a remote exploit, the DLL is loaded in to the process for convenience but the techniquese used are similar to those against a remote binary. If we allocate a buffer in our exploit process then a remote binary will not be able to access it.
 
 Testing this in WinDbg shows the shellcode allocated to the address leaked using the arbitrary read:
 
