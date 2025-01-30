@@ -12,7 +12,7 @@ Now I didn't have to wait for the bug to trigger! I could concentrate on the exp
 
 ## Flipping the U/S Bit
 
-I have used this technique before and you can read about it [hear](https://plackyhacker.github.io/kernel/hevd-2). Essentially, I am flipping the U/S bit in the physical page to make the owner of it become the kernel rather than user space. This plays by SMEP rules and allows the execution of the shellcode there. I used the following ROP chain:
+I have used this technique before and you can read about it [here](https://plackyhacker.github.io/kernel/hevd-2). Essentially, I am flipping the U/S bit in the physical page to make the owner of it become the kernel rather than user space. This plays by SMEP rules and allows the execution of the shellcode there. I used the following ROP chain:
 
 ```c
 // rop chain
