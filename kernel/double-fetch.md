@@ -104,7 +104,7 @@ This dramatically reduced the amount of time I needed to wait for a race conditi
 
 In my [first attempt](https://plackyhacker.github.io/kernel/race-2) I used a U/S bit-flipping technique to defeat SMEP. Essentially marking the shellcode page as a kernel owned page. The ROP chain to do this is quite long and overwrites a substantial amount of stack space. This makes recovering the stack more difficult as it overwrites alot of the save return addresses on the stack.
 
-I decided to use the easier technique, which involves disabling the SMEP flag in the CPU register. I prefer the U/S bit-flipping technique because it feels more reliable because changing the `cr4` value to disable SMEP requires you to zero out a single byte, meaning you need to know what the value previously was (which is easy in a debugger, but not really portable). **I might revisit this exploit again to see if I can recover from the former technique!**
+I decided to use the easier technique, which involves disabling the SMEP flag in the CPU register. I prefer the U/S bit-flipping technique because it feels more reliable because changing the `cr4` value to disable SMEP requires you to zero out a single bit, meaning you need to know what the value previously was (which is easy in a debugger, but not really portable). **I might revisit this exploit again to see if I can recover from the former technique!**
 
 ```c
 userBuffer = (char*)malloc(sizeof(char*) * BUFFER_SIZE);
