@@ -21,6 +21,8 @@ December 2024 - [Use After Free (UaF) Bugs and Virtual Function Tables](https://
 
 ### Kernel Exploitation
 
+February 2025 - [HEVD Double-fetch Walkthrough on Windows 2022 - Revisited](https://plackyhacker.github.io/kernel/double-fetch)
+
 October 2024 - [HEVD Double-fetch Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/race), [Part 2](https://plackyhacker.github.io/kernel/race-2)
 
 September 2024 - [Doubly-Linked Lists in the Windows Kernel](https://plackyhacker.github.io/kernel/doubly-linked-lists)
