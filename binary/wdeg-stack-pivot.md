@@ -25,7 +25,7 @@ Process 'Z:\AWE Projects\VulnAsF\VulnAsF\x64\Release\VulnAsF.exe'
 (PID 7516) was blocked from calling the API 'VirtualProtect' due to return-oriented programming (ROP) exploit indications.
 ```
 
-That's definitely my process and it is definitely not happy that `VirtualProtect` is being called from a pivoted stack oon the heap. It looks like the **StackPivot** mitigation in **WDEG** is doing it's job!
+That's definitely my process and it is definitely not happy that `VirtualProtect` is being called from a pivoted stack on the heap. It looks like the **StackPivot** mitigation in **WDEG** is doing it's job!
 
 We can also observe that the binary has imported the `PayloadRestrictions` module which is injected into the process to implement WDEG mitigations:
 
