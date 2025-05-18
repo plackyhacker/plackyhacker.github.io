@@ -50,7 +50,7 @@ Interestingly there is no change to `GetProcAddressStub`, but `VirtualProtectStu
 Two things of note:
 
 - WDEG is implemented in user space using the `PayloadRestrictions` module.
-- Not all Win32 APIs, such as `GetProcAddress`, are not protected.
+- Not all Win32 APIs, such as `GetProcAddress`, are protected.
 
 Can it be abused? Read on!
 
