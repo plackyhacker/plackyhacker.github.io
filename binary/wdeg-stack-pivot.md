@@ -33,8 +33,6 @@ We can also observe that the binary has imported the `PayloadRestrictions` modul
 
 ## How WDEG is Implemented
 
-Talk about certain function calls.
-
 ### g_MitLibState
 
 Using Binary Ninja and searching the data sections of the `PayloadRestrictions` module we find:
