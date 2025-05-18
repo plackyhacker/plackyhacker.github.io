@@ -142,6 +142,10 @@ Cut out the middle function. Offset the call...
 
 ROP chain...
 
+## Restrictions
+
+When we make a `syscall` we must know the number that identifies the `syscall`. In this version of Windows the `syscall` for `NtProtectVirtualMemory` is `0x50` but this is not the case in all versions of Windows, in fact Microsoft change the `syscall` numbers VERY often. This bypass is only valid for this version of WIndows and is not very portable. To make the bypass portable we would have to resolve the `syscall` number first, I might look at that in future, but for now this will do!
+
 ## Conclusion
 
 
