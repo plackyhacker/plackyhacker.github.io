@@ -144,9 +144,13 @@ From a really high level, there are two `jmp` instructions that take us to a fun
 
 There is an easier way, which is less portable. We can set up the registers, move `0x50` into `rax`, and make ths `sycall`. This completely bypasses the WDEG hook.
 
+### Making the Syscall
+
+...
+
 ### Switch WDEG Off
 
-ROP chain...
+...
 
 ## Portability
 
