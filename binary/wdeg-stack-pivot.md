@@ -8,6 +8,13 @@ Windows Defender Exploit Guard (WDEG) is a security feature designed to mitigate
 
 As my exploit in [previous post](https://plackyhacker.github.io/binary/controlling-the-stack) uses stack pivoting this seems like a good place to start at at attempting to bypass mitigations.
 
+The version of Windows I am working on is:
+
+```
+OS Name:                   Microsoft Windows 10 Pro
+OS Version:                10.0.17763 N/A Build 17763
+```
+
 **Note:** I should be clear that this post is more study notes than research. Allthough the final bypass technique used is my own, research leading up to this was carried out by much cleverer people than me.
 
 ## Enabling StackPivot
@@ -60,6 +67,12 @@ Can it be abused? Read on!
 
 ### g_MitLibState
 
+Enhanced Mitigation Experience Toolit (EMET) was the predecessor to WDEG and OffSec documented some research on [how to bypass it](https://web.archive.org/web/20221026145648/https://www.offensive-security.com/vulndev/disarming-enhanced-mitigation-experience-toolkit-emet/) by NULLing out a global variable.
+
+The research states "we noticed that the ROP mitigations provided are controlled by two global variables in the .data section, which are located at static offsets. Of these two variables, the first one is probably the most interesting as it acts as a switch to enable or disable the entire set of ROP protections at runtime. To make things even easier, this global variable is located on a memory page marked with read/write permissions".
+
+Is this still the case for WDEG? Well, yes it is but slightly more protected.
+
 Using Binary Ninja and searching the data sections of the `PayloadRestrictions` module we find:
 
 ```
@@ -80,7 +93,7 @@ db PayloadRestrictions+0xe4000 L6
 00007ffb`e7984000  01 00 01 00 01 00
 ```
 
-This appears to be some sort of global flag(s) that switches on mitigations for WDEG in the `PayloadRestrictions` module.
+This appears to be some sort of global flag(s) that switches on mitigations for WDEG in the `PayloadRestrictions` module, similar to the EMET implementation.
 
 It is difficult to confirm this from open sources, however there is a code snippet on GitHub by [spiralBLOCK](https://github.com/SpiralBL0CK/Bypass-PayloadRestrictions.dll-wdeg-rop-mitigation-/blob/main/main.c) that seems to attempt null out this memory location (although it looks like incomplete/erroneous code):
 
@@ -94,7 +107,7 @@ memcpy(image, "\x00\x00\x00\x00\x00\x00\x00\x00\x00", 8);
 // ...
 ```
 
-It turns out that if we overwrite these flags to `0x00` we can switch off WDEG. There is a problem, as expected the protect level on this memory location is `PAGE_READONLY`:
+Long story, short... It turns out that if we overwrite these flags to `0x00` we can switch off WDEG. There is a problem, as expected the protect level on this memory location is `PAGE_READONLY` so we can't simply overwrite the values using a write primitive:
 
 ```
 !vprot PayloadRestrictions+0xe4000
