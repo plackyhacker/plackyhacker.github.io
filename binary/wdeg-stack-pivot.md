@@ -8,6 +8,8 @@ Windows Defender Exploit Guard (WDEG) is a security feature designed to mitigate
 
 As my exploit in [previous post](https://plackyhacker.github.io/binary/controlling-the-stack) uses stack pivoting this seems like a good place to start at at attempting to bypass mitigations.
 
+**Note:** I should be clear that this post is more study notes than research. Allthough the final bypass technique used is my own, research leading up to this was carried out by much cleverer people than me.
+
 ## Enabling StackPivot
 
 I am running the vulnerable lab in Windows 10. We can override system settings in WDEG. The first mitigation I am going to apply to the binary is StackPivot:
