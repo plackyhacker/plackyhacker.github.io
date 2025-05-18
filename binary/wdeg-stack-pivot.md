@@ -136,13 +136,19 @@ There may be more calls (such as `kernel32` code calling `kernelbase`) but the d
 
 ### NtProtectVirtualMemory
 
-Cut out the middle function. Offset the call...
+Using WinDbg we can look at the function hook to see what is going on:
+
+<img width="1109" alt="Screenshot 2025-01-27 at 15 28 33" src="https://github.com/user-attachments/assets/d1c446fb-12b4-456b-aa1a-d3446f90f589" style="border: 1px solid black" />
+
+From a really high level, there are two `jmp` instructions that take us to a function that carries out the WDEG 'stuff', moves the `syscall` number (`0x50`) into `eax`, makes a further `jmp`, then makes the `syscall`. We have two choices, we could use our arbitrary read primitive to follow the `jmp` flow, set up our arguments in the registers and make a call to the `mov eax, 50h` instruction bypassing the WDEG implementation/hook.
+
+There is an easier way, which is less portable. We can set up the registers, move `0x50` into `rax`, and make ths `sycall`. This completely bypasses the WDEG hook.
 
 ### Switch WDEG Off
 
 ROP chain...
 
-## Restrictions
+## Portability
 
 When we make a `syscall` we must know the number that identifies the `syscall`. In this version of Windows the `syscall` for `NtProtectVirtualMemory` is `0x50` but this is not the case in all versions of Windows, in fact Microsoft change the `syscall` numbers VERY often. This bypass is only valid for this version of WIndows and is not very portable. To make the bypass portable we would have to resolve the `syscall` number first, I might look at that in future, but for now this will do!
 
