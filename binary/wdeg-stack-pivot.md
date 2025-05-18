@@ -67,7 +67,7 @@ Can it be abused? Read on!
 
 ### g_MitLibState
 
-Enhanced Mitigation Experience Toolit (EMET) was the predecessor to WDEG and [https://www.offsec.com](OffSec) documented some research on [how to bypass it](https://web.archive.org/web/20221026145648/https://www.offensive-security.com/vulndev/disarming-enhanced-mitigation-experience-toolkit-emet/) by NULLing out a global variable.
+Enhanced Mitigation Experience Toolit (EMET) was the predecessor to WDEG and [OffSec](https://www.offsec.com) documented some research on [how to bypass it](https://web.archive.org/web/20221026145648/https://www.offensive-security.com/vulndev/disarming-enhanced-mitigation-experience-toolkit-emet/) by NULLing out a global variable.
 
 The research states "we noticed that the ROP mitigations provided are controlled by two global variables in the .data section, which are located at static offsets. Of these two variables, the first one is probably the most interesting as it acts as a switch to enable or disable the entire set of ROP protections at runtime. To make things even easier, this global variable is located on a memory page marked with read/write permissions".
 
