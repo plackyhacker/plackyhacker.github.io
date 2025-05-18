@@ -129,6 +129,7 @@ ROP chain...
 ## References
 
 - [EMET 4.1 Uncovered](https://web.archive.org/web/20221026145909/http://0xdabbad00.com/wp-content/uploads/2013/11/emet_4_1_uncovered.pdf)
+- [Bypassing EMET 4.1](https://web.archive.org/web/20220710085735/https://bromiumlabs.files.wordpress.com/2014/02/bypassing-emet-4-1.pdf)
 - [Disarming and bypassing EMET 5.1](https://web.archive.org/web/20221017011819/https://www.offensive-security.com/vulndev/disarming-and-bypassing-emet-5-1/)
 - [Bypass-PayloadRestrictions.dll-wdeg-rop-mitigation](https://github.com/SpiralBL0CK/Bypass-PayloadRestrictions.dll-wdeg-rop-mitigation-/blob/main/main.c)
 
