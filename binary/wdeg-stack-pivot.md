@@ -124,9 +124,15 @@ We need a way to change the memory protections on the memory and zero out the fl
 
 ## Bypassing WDEG
 
+To bypass WDEG we need to change the protect level on the flags at `PayloadRestrictions+0xe4000` without triggering WDEG! This sounds impossible, but it isn't. First we need to remind ourselves of how the Win32 API calls work.
+
 ### API Calls
 
-App > Win32 > NDTLL > Kernel
+When an application makes a Win32 API call the high-level flow looks something like:
+
+<img width="1109" alt="Screenshot 2025-01-27 at 15 28 33" src="https://github.com/user-attachments/assets/e002b5f7-5846-4b3c-a584-d91e1a6e40bc" style="border: 1px solid black" />
+
+There may be more calls (such as `kernel32` code calling `kernelbase`) but the diagram will do for us. The intention is to show that although `VirtualProtect` and `NtVirtualProtectMemory` are 'critical functions' we may be able to cut them out, set up the registers and make the syscall without hitting the hooked function code.
 
 ### NtProtectVirtualMemory
 
