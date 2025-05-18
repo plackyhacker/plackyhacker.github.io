@@ -55,7 +55,7 @@ db PayloadRestrictions+0xe4000 L6
 00007ffb`e7984000  01 00 01 00 01 00
 ```
 
-This appears to be some sort of global flag that switches on mitigations for WDEG in the `PayloadRestrictions` module. It turns out that if we overwrite these flags to `0x00` we can switch off WDEG. There is a problem, as expected the protect level on this memory location is `PAGE_READONLY`:
+This appears to be some sort of global flag(s) that switches on mitigations for WDEG in the `PayloadRestrictions` module. It turns out that if we overwrite these flags to `0x00` we can switch off WDEG. There is a problem, as expected the protect level on this memory location is `PAGE_READONLY`:
 
 ```
 !vprot PayloadRestrictions+0xe4000
