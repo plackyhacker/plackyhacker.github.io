@@ -31,7 +31,28 @@ We can also observe that the binary has imported the `PayloadRestrictions` modul
 
 <img width="1109" alt="Screenshot 2025-01-27 at 15 28 33" src="https://github.com/user-attachments/assets/164eb393-74bb-4166-8825-27d6433321dc" style="border: 1px solid black" />
 
+The `PayloadRestrictions` module is not loaded into processes where WDEG is not being used for mitigation.
+
 ## How WDEG is Implemented
+
+### Function Hooking
+
+To understand how WDEG is implemented we should look at functions that might be protected when stack pivoting. If we look at `GetProcAddresStub` and `VirtualProtectStub` when WDEG is not enabled we see the following:
+
+<img width="1109" alt="Screenshot 2025-01-27 at 15 28 33" src="https://github.com/user-attachments/assets/a90a65cf-aed5-4409-9c1e-4c324efc5539" style="border: 1px solid black" />
+
+This is pretty normal, but look what we observe when WDEG Stack Pivot is enabled:
+
+<img width="1109" alt="Screenshot 2025-01-27 at 15 28 33" src="https://github.com/user-attachments/assets/e7468d3e-5678-42ef-9d79-b3bf93a5e942" style="border: 1px solid black" />
+
+Interestingly there is no change to `GetProcAddressStub`, but `VirtualProtectStub` has been hooked. Function hooking is a technique used to intercept calls to specific functions by redirecting execution to custom code (in this case WDEG) before, after, or instead of the original function. WDEG is pacthing functions at runtime (specifically those that can be used for malicious purposes) to mitigate against Stack Pivoting.
+
+Two things of note:
+
+- WDEG is implemented in user space using the `PayloadRestrictions` module.
+- Not all Win32 APIs, such as `GetProcAddress`, are not protected.
+
+Can it be abused? Read on!
 
 ### g_MitLibState
 
@@ -55,7 +76,21 @@ db PayloadRestrictions+0xe4000 L6
 00007ffb`e7984000  01 00 01 00 01 00
 ```
 
-This appears to be some sort of global flag(s) that switches on mitigations for WDEG in the `PayloadRestrictions` module. It turns out that if we overwrite these flags to `0x00` we can switch off WDEG. There is a problem, as expected the protect level on this memory location is `PAGE_READONLY`:
+This appears to be some sort of global flag(s) that switches on mitigations for WDEG in the `PayloadRestrictions` module.
+
+It is difficult to confirm this from open sources, however there is a code snippet on GitHub by [spiralBLOCK](https://github.com/SpiralBL0CK/Bypass-PayloadRestrictions.dll-wdeg-rop-mitigation-/blob/main/main.c) that seems to attempt null out this memory location (although it looks like incomplete/erroneous code):
+
+```c
+HMODULE payload = GetModuleHandleA("Payloadrestrictions.dll");
+// ...
+UINT_PTR adr = (UINT_PTR)payload+0xe4004;
+// ...
+image = VirtualAlloc(NULL, 0x10, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+memcpy(image, "\x00\x00\x00\x00\x00\x00\x00\x00\x00", 8);
+// ...
+```
+
+It turns out that if we overwrite these flags to `0x00` we can switch off WDEG. There is a problem, as expected the protect level on this memory location is `PAGE_READONLY`:
 
 ```
 !vprot PayloadRestrictions+0xe4000
@@ -70,9 +105,7 @@ Type:              01000000  MEM_IMAGE
 
 We need a way to change the memory protections on the memory and zero out the flag(s).
 
-### Function Hooking
-
-
+## Bypassing WDEG
 
 ### API Calls
 
@@ -85,3 +118,7 @@ Cut out the middle function. Offset the call...
 ### Switch WDEG Off
 
 ROP chain...
+
+## Conclusion
+
+
