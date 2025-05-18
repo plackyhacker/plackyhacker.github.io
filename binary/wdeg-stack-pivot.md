@@ -54,9 +54,9 @@ This is pretty normal, but look what we observe when WDEG Stack Pivot is enabled
 
 <img width="1109" alt="Screenshot 2025-01-27 at 15 28 33" src="https://github.com/user-attachments/assets/e7468d3e-5678-42ef-9d79-b3bf93a5e942" style="border: 1px solid black" />
 
-Interestingly there is no change to `GetProcAddressStub`, but `VirtualProtectStub` has been hooked. Function hooking is a technique used to intercept calls to specific functions by redirecting execution to custom code (in this case WDEG) before, after, or instead of the original function. WDEG is pacthing functions at runtime (specifically those that can be used for malicious purposes) to mitigate against Stack Pivoting.
+Interestingly there is no change to `GetProcAddressStub`, but `VirtualProtectStub` has been hooked. Function hooking is a technique used to intercept calls to specific functions by redirecting execution to custom code (in this case WDEG) before, after, or instead of the original function. WDEG is patching functions at runtime (specifically those that can be used for malicious purposes) to mitigate against Stack Pivoting.
 
-WDEG calls these functions 'critical functions'. These are listed in [EMET 4.1 Uncovered](https://web.archive.org/web/20221026145909/http://0xdabbad00.com/wp-content/uploads/2013/11/emet_4_1_uncovered.pdf) p.16, and I suspect that the list is pretty similar in WDEG.
+WDEG calls these functions 'critical functions'. These are listed in [EMET 4.1 Uncovered](https://web.archive.org/web/20221026145909/http://0xdabbad00.com/wp-content/uploads/2013/11/emet_4_1_uncovered.pdf) p.16, and I suspect that the list is pretty similar in WDEG, if not the same.
 
 Two things of note:
 
