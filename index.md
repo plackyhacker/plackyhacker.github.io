@@ -9,7 +9,7 @@ Here I will write about things I find interesting, and hopefully about things th
 
 ### Binary Exploitation
 
-May 2025 - [WDEG Stack Pivot Bypass](https://plackyhacker.github.io/binary/wdeg-stack-pivot)
+May 2025 - [WDEG StackPivot Bypass](https://plackyhacker.github.io/binary/wdeg-stack-pivot)
 
 January 2025 - [All the Leaks](https://plackyhacker.github.io/binary/all-the-leaks)
 
