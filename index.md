@@ -9,7 +9,13 @@ Here I will write about things I find interesting, and hopefully about things th
 
 ### Binary Exploitation
 
-January 2025 - **Exploit Development Series:** [All the Leaks](https://plackyhacker.github.io/binary/all-the-leaks), [Controlling the Stack](https://plackyhacker.github.io/binary/controlling-the-stack), [Shellcode Execution](https://plackyhacker.github.io/binary/shellcode-execution)
+May 2025 - [WDEG Stack Pivot Bypass](https://plackyhacker.github.io/binary/wdeg-stack-pivot)
+
+January 2025 - [All the Leaks](https://plackyhacker.github.io/binary/all-the-leaks)
+
+January 2025 - [Controlling the Stack](https://plackyhacker.github.io/binary/controlling-the-stack)
+
+January 2025 - [Shellcode Execution](https://plackyhacker.github.io/binary/shellcode-execution)
 
 December 2024 - [Mixing it up: ROP and COP](https://plackyhacker.github.io/binary/ropandcop)
 
