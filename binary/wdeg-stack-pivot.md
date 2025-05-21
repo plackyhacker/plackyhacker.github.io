@@ -15,7 +15,7 @@ OS Name:                   Microsoft Windows 10 Pro
 OS Version:                10.0.17763 N/A Build 17763
 ```
 
-**Note:** I should be clear that this post is more study notes than research. Allthough the final bypass technique used is my own, research leading up to this was carried out by much cleverer people than me.
+**Note:** I should be clear that this post is more study notes than research. although the final bypass technique used is my own, research leading up to this was carried out by much cleverer people than me.
 
 ## Enabling StackPivot
 
