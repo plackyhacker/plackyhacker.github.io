@@ -7,18 +7,31 @@ Here I will write about things I find interesting, and hopefully about things th
 
 ## Posts
 
-<table style="width:100%;">
-  <tr>
-    <th>
-      <img src="https://github.com/user-attachments/assets/ce467aae-3f87-41d2-add9-6ab040742d51" style="width: 120px;"/>
-    </th>
-    <th>
-      2
-    </th>
-    <th>
-      3
-    </th>
-  </tr>
+<table>
+<tr>
+<td style="align:center;">
+<img src="https://github.com/user-attachments/assets/ce467aae-3f87-41d2-add9-6ab040742d51" style="width: 120px;"/>
+
+[HEVD Double-fetch Walkthrough on Windows 2022 - Revisited](https://plackyhacker.github.io/kernel/double-fetch)
+
+[HEVD Double-fetch Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/race), [Part 2](https://plackyhacker.github.io/kernel/race-2)
+
+[Doubly-Linked Lists in the Windows Kernel](https://plackyhacker.github.io/kernel/doubly-linked-lists)
+
+[HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd), [Part 2](https://plackyhacker.github.io/kernel/hevd-2), [Part 3](https://plackyhacker.github.io/kernel/hevd-3)
+</td>
+<td>
+  <img src="https://github.com/user-attachments/assets/ce467aae-3f87-41d2-add9-6ab040742d51" style="width: 120px;"/>
+
+February 2025 - [HEVD Double-fetch Walkthrough on Windows 2022 - Revisited](https://plackyhacker.github.io/kernel/double-fetch)
+
+October 2024 - [HEVD Double-fetch Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/race), [Part 2](https://plackyhacker.github.io/kernel/race-2)
+
+September 2024 - [Doubly-Linked Lists in the Windows Kernel](https://plackyhacker.github.io/kernel/doubly-linked-lists)
+
+August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd), [Part 2](https://plackyhacker.github.io/kernel/hevd-2), [Part 3](https://plackyhacker.github.io/kernel/hevd-3)
+</td>
+</tr>
 </table>
 
 ### Binary Exploitation
