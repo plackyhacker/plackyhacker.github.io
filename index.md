@@ -9,7 +9,7 @@ Here I will write about things I find interesting, and hopefully about things th
 
 <table>
 <tr>
-<td style="align:center;">
+<td>
 <img src="https://github.com/user-attachments/assets/ce467aae-3f87-41d2-add9-6ab040742d51" style="width: 120px;"/>
 
 [HEVD Double-fetch Walkthrough on Windows 2022 - Revisited](https://plackyhacker.github.io/kernel/double-fetch)
