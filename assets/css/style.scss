@@ -14,9 +14,12 @@
 }
 
 table {
-  width: 100%;
-  border: 0px;
+  width: 100% solid #03101F;
+  border: 1px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
   background-color: #03101F;
+  border-collapse: collapse;
 }
 
 th {
@@ -37,5 +40,5 @@ td {
   width: 50%;
   border: 0px;
   text-align: center;
-  background-color: none;
+  background-color: white;
 }
