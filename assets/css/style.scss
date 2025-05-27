@@ -16,9 +16,7 @@
 table {
   width: 100%;
   border: 0px;
-  border: 1px solid #03101F;
-  border-radius: 12px;
-  border-collapse: collapse;
+  background-color: #03101F;
 }
 
 th {
@@ -39,4 +37,5 @@ td {
   width: 50%;
   border: 0px;
   text-align: center;
+  background-color: white;
 }
