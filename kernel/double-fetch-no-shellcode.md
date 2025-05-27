@@ -4,7 +4,7 @@
        
 ## Introduction
 
-Why am I revisiting the double-fetch in HEVD again?! The [first time](https://plackyhacker.github.io/kernel/race) I completed the challeneg the end resullt was so dissatisfying, even though I got a privileged shell. The [second time](https://plackyhacker.github.io/kernel/double-fetch) was much better but I still wasn't 100% satisfied!
+Why am I revisiting the double-fetch in HEVD again?! The [first time](https://plackyhacker.github.io/kernel/race) I completed the challenge the end resullt was so dissatisfying, even though I got a privileged shell. The [second time](https://plackyhacker.github.io/kernel/double-fetch) was much better but I still wasn't 100% satisfied!
 
 I amended the `cr4` register to bypass SMEP but that doesn't feel like a win. I don't know how reliable it is without knowing the `cr4` value in advance. Anyway I wanted to have another go, this time avoiding the execution of custom shellcode! WHAT? Without a read and write primitive? Yes, with the power of ROP! 
 
@@ -102,7 +102,7 @@ printf("[+] aBuffer address: 0x%p\n", &aBuffer);
 *(rop + index++) = kernelBase + 0x233314;			        // mov qword [rax], rcx ; ret ;
 ```
 
-It looks complicated, but it isn't. The value of the return address is stored in a local variable (`aBuffer`) for later. Also notice that I am using call oriented programming (COP) due to a lack of gadgets (ref: ` mov r8, rbp ; mov rcx, rdi ; call rax ;`).
+It looks complicated, but it isn't. The value of the return address is stored in a local variable (`aBuffer`) for later. Also notice that I am using call-oriented programming (COP) due to a lack of gadgets (ref: ` mov r8, rbp ; mov rcx, rdi ; call rax ;`).
 
 ## Resolving the EPROCESS Address
 
@@ -150,7 +150,7 @@ for (DWORD i = 0; i < 5; i++)
 *(rop + index++) = kernelBase + 0x689130;                   // call PsLookupProcessByProcessId
 ```
 
-Lastly we move the actual `EPROCESS` address referenced in `rdi` into `r10` for later by derferencing it using `rax`:
+Lastly we move the actual `EPROCESS` address referenced in `rdi` into `r10` for later, by derferencing it using `rax`:
 
 ```c
 // rdi contains a pointer to the address of the current EPROCESS
@@ -274,7 +274,7 @@ Fingers crossed... does it work? Of course it does, or why would I be writing ab
 
 ## The End
 
-This post has been heavy on ROP. If you don't understand a lot of what's going on then please read the previous posts on this topic; this is the fifth and I can't keep repeating myself. If you understand how the race condition is triggered and you understand ROP chains in general then you should be able to work through what's going on.
+This post has been heavy on ROP. If you don't understand a lot of what's going on then please read the previous posts on this topic; this is the fifth or fourth (I've lost count) and I can't keep repeating myself. If you understand how the race condition is triggered and you understand ROP chains in general then you should be able to work through what's going on.
 
 Yes, that is the end... no more double-fetch... in HEVD at least. Until next time... go away!
 
