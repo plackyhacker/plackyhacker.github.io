@@ -10,7 +10,7 @@ Here I will write about things I find interesting, and hopefully about things th
 <table>
 <tr>
 <td>
-<img src="https://github.com/user-attachments/assets/ce467aae-3f87-41d2-add9-6ab040742d51" style="width: 120px;"/>
+
 
 [HEVD Double-fetch Walkthrough on Windows 2022 - Revisited](https://plackyhacker.github.io/kernel/double-fetch)
 
@@ -53,6 +53,8 @@ January 2025 - [Low Fragmentation Heap Behaviour](https://plackyhacker.github.io
 December 2024 - [Use After Free (UaF) Bugs and Virtual Function Tables](https://plackyhacker.github.io/classes/use-after-free)
 
 ### Kernel Exploitation
+
+<img src="https://github.com/user-attachments/assets/ce467aae-3f87-41d2-add9-6ab040742d51" style="width: 120px;"/>
 
 February 2025 - [HEVD Double-fetch Walkthrough on Windows 2022 - Revisited](https://plackyhacker.github.io/kernel/double-fetch)
 
