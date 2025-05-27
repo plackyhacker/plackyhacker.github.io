@@ -16,6 +16,9 @@
 table {
   width: 100%;
   border: 0px;
+  border: 1px solid #03101F;
+  border-radius: 12px;
+  border-collapse: collapse;
 }
 
 th {
@@ -26,6 +29,7 @@ th {
 
 tr {
   border: 0px;
+  background-color: #03101F;
 }
 
 td {
