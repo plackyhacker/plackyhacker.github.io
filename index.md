@@ -7,8 +7,8 @@ Here I will write about things I find interesting, and hopefully about things th
 
 ## Posts
 
-<table><tr><td><img src="https://github.com/user-attachments/assets/ce467aae-3f87-41d2-add9-6ab040742d51" style="width: 120px;"/></td>
-<td>
+<div class="box"><img src="https://github.com/user-attachments/assets/ce467aae-3f87-41d2-add9-6ab040742d51" style="width: 120px;"/></div>
+<div class="box">
 February 2025 - [HEVD Double-fetch Walkthrough on Windows 2022 - Revisited](https://plackyhacker.github.io/kernel/double-fetch)
 
 October 2024 - [HEVD Double-fetch Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/race), [Part 2](https://plackyhacker.github.io/kernel/race-2)
@@ -16,9 +16,10 @@ October 2024 - [HEVD Double-fetch Walkthrough on Windows 2022 - Part 1](https://
 September 2024 - [Doubly-Linked Lists in the Windows Kernel](https://plackyhacker.github.io/kernel/doubly-linked-lists)
 
 August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd), [Part 2](https://plackyhacker.github.io/kernel/hevd-2), [Part 3](https://plackyhacker.github.io/kernel/hevd-3)
-</td></tr></table>
+</div>
 
-### Binary Exploitation
+<div class="box"><img src="https://github.com/user-attachments/assets/7b18bf81-bf1c-41e0-8983-596da196e775" style="width: 120px;"/></div>
+<div class="box">
 
 May 2025 - [WDEG StackPivot Bypass](https://plackyhacker.github.io/binary/wdeg-stack-pivot)
 
@@ -29,6 +30,9 @@ January 2025 - [Controlling the Stack](https://plackyhacker.github.io/binary/con
 January 2025 - [Shellcode Execution](https://plackyhacker.github.io/binary/shellcode-execution)
 
 December 2024 - [Mixing it up: ROP and COP](https://plackyhacker.github.io/binary/ropandcop)
+</div>
+
+
 
 ### Bug Studies
 
