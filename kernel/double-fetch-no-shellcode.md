@@ -274,6 +274,8 @@ Fingers crossed... does it work? Of course it does, or why would I be writing ab
 
 ## The End
 
+[Here is the full code](https://github.com/plackyhacker/HEVD/blob/main/hevd_double_fetch_rop_only.cpp)
+
 This post has been heavy on ROP. If you don't understand a lot of what's going on then please read the previous posts on this topic; this is the fifth or fourth (I've lost count) and I can't keep repeating myself. If you understand how the race condition is triggered and you understand ROP chains in general then you should be able to work through what's going on.
 
 Yes, that is the end... no more double-fetch... in HEVD at least. Until next time... go away!
