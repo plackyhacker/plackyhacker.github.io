@@ -12,7 +12,7 @@ The CVE isn't really what I am interested in, any CVE with a physical read/write
 
 If you are reading this then I assume you know how a driver works and how we can connect to it from user-mode. If not, feel free to read some of my other posts. The symbolic name for the driver is `\\.\EneIo` and the vulnerable IOCTL I decided to target is `0x80102040`. Short story: this IOCTL maps the physical memory in kernel-space to a virtual address space in user-space.
 
-The code snippet below shows how we can map the physical memory space to a virtual allocations:
+The code snippet below shows how we can map the physical memory space to a virtual allocation:
 
 ```c
 // user-mode data structure
