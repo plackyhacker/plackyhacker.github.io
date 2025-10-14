@@ -54,7 +54,7 @@ Within the same page is a value that is to be loaded in to the `SYSTEM` `cr3` re
 
 To make things easier the two values are at predictable locations within the page. The `HalpLMStub` pointer is at offset `+0x70` and the `cr3` value is at offset `+0xa0`.
 
-ONce we have a mapping of physical memory we can search the pages between `0x10000` and `0x20000` and do pattern matching at these offsets to find the page which the stub pointer exists and the base address of the PML4 table.
+Once we have a mapping of physical memory we can search the pages between `0x10000` and `0x20000` and do pattern matching at these offsets to find the page which the stub pointer exists and the base address of the PML4 table.
 
 ```c
 DWORD FindCR3Value(ULONGLONG VirtualAddressBase, DWORD* cr3Page) {
