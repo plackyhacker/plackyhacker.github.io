@@ -80,7 +80,7 @@ DWORD FindCR3Value(ULONGLONG VirtualAddressBase, DWORD* cr3Page) {
 }
 ```
 
-Now we have a reference to the `SYSTEM` page tables it would make sens to go for the `ntoskrnl` base address. We have a reference to the `HalpLMStub` function which is at an offset to the base of §ntoskrnl§. In normal circumstances we might use WinDbg to find that offset but I want to explore how I could make it version independant.
+Now we have a reference to the `SYSTEM` page tables it would make sense to go for the `ntoskrnl` base address. We have a reference to the `HalpLMStub` function which is at an offset to the base of §ntoskrnl§. In normal circumstances we might use WinDbg to find that offset but I want to explore how I could make it version independant.
 
 ## Discovering NTOSKRNL Base
 
@@ -108,7 +108,7 @@ ULONGLONG GetNtBaseFromCR3Page(ULONGLONG VirtualAddressBase, DWORD cr3Page, DWOR
 }
 ```
 
-I'm sure somebody could make this more efficient but it works. Another thought was that I could trnaslate the `HalpLMStub` to a physical address using the `GetPhysicalAddress` function and do a more targetted search for the signature.
+I'm sure somebody could make this more efficient... but it works. Another thought was that I could translate the `HalpLMStub` to a physical address using the `GetPhysicalAddress` function and do a more targetted search for the signature.
 
 The helper functions are shown below (if you are using the code don't forget the struct I haven't included):
 
@@ -147,6 +147,10 @@ ULONGLONG GetPhysicalAddress(ULONGLONG PmlBase, ULONGLONG VirtualAddressToResolv
     }
 }
 ```
+
+Running the PoC in Windows 2022 Datacenter (for licensing reasons) shows that we are successful:
+
+<img width="805" alt="Screenshot 2025-02-12 at 20 06 05" src="https://github.com/user-attachments/assets/261da7e4-f34a-46eb-949f-3fd7ca0cf16e" style="border: 1px solid black;" />
 
 ## Discovering Processes
 
