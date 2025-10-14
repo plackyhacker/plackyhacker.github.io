@@ -40,7 +40,7 @@ ULONGLONG MapMemory(HANDLE hDevice, ULONGLONG* SizeOfMapping) {
 }
 ```
 
-The struct contains five `ULONGLONG` fields but only two of them are used: `Size` is the size of the mapping, and `MappingAddress` the virtual allocation that has been assigned by the kernel. Notice that the `map` variable is passed in as the user input and the user output. Once the `DeviceIOControl` is completed the `map` variable is popoulated with the two revelant variables.
+The struct contains five `ULONGLONG` fields but only two of them are used: `Size` is the size of the mapping, and `MappingAddress` the virtual allocation that has been assigned by the kernel. Notice that the `map` variable is passed in as the user input and the user output. Once the `DeviceIOControl` is completed the `map` variable is populated with the two relevant variables.
 
 ## Virtual Address to Physical Memory Mapping
 
@@ -151,6 +151,8 @@ ULONGLONG GetPhysicalAddress(ULONGLONG PmlBase, ULONGLONG VirtualAddressToResolv
 Running the PoC in Windows 2022 Datacenter (for licensing reasons) shows that we are successful:
 
 <img width="805" alt="Screenshot 2025-02-12 at 20 06 05" src="https://github.com/user-attachments/assets/261da7e4-f34a-46eb-949f-3fd7ca0cf16e" style="border: 1px solid black;" />
+
+
 
 ## Discovering Processes
 
