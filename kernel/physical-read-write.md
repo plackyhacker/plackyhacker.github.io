@@ -64,11 +64,13 @@ Now we have all the pieces the following code snippet shows how the translation 
 
 ```c
 // ...
+
 PAGE_TABLE_INDICES indices;
 ExtractPageTableIndices(VirtualAddressToResolve, &indices);
 
 ULONGLONG pml4e = *((ULONGLONG*)(UserModeAddress + PmlBase + (8 * indices.pml4Index)));
 ULONGLONG pdpt = pml4e & 0xFFFFFFFF000;
+
 // ..
 ```
 
@@ -89,14 +91,14 @@ DWORD FindCR3Value(ULONGLONG VirtualAddressBase, DWORD* cr3Page) {
     // the final stub reference is always between 0x10000 and 0x20000
     for (DWORD page = 0x10000; pageIndex <= 0x20000; pageIndex += 0x1000) {
         // CR3 value is at an offset of 0xA0
-        DWORD64 potential_cr3 = *((DWORD64*)((BYTE*)VirtualAddressBase + page + 0xA0));
+        ULONGLONG potential_cr3 = *((ULONGLONG*)((BYTE*)VirtualAddressBase + page + 0xA0));
 
         if ((potential_cr3 & 0xFFF) == 0 &&
             ((potential_cr3 >> 12) & 0xF) != 0 && ((potential_cr3 >> 16) & 0xF) != 0 && ((potential_cr3 >> 20) & 0xF) != 0 &&
             (potential_cr3 >> 24) == 0) {
 
             // halpLMStub reference is at an offset of 0x70
-            DWORD64 checkHalpLMStub = *((DWORD64*)(BYTE*)VirtualAddressBase + page + 0x70));
+            ULONGLONG checkHalpLMStub = *((ULONGLONG*)(BYTE*)VirtualAddressBase + page + 0x70));
             if ((checkHalpLMStub & 0xfffff80000000000) == 0xfffff80000000000) {
                 *cr3Page = page;
                 return ((DWORD)potential_cr3 & 0xFFFFFFFF);
@@ -117,14 +119,14 @@ What I decided to try out was to take the mapped memory (`VirtualAddressBase`) a
 ```c
 ULONGLONG GetNtBaseFromCR3Page(ULONGLONG VirtualAddressBase, DWORD cr3Page, DWORD cr3) {
     // read the function address
-    DWORD64 halpLMStub = *((DWORD64*)(VirtualAddressBase + (ULONGLONG)cr3Page) + 0xe);
+    ULONGLONG halpLMStub = *((ULONGLONG*)(VirtualAddressBase + (ULONGLONG)cr3Page) + 0xe);
 
     // try to find MZ
     for (ULONGLONG i = 0x100000; i > 0x0; i--) {
         ULONGLONG read = (halpLMStub & 0xfffffffffff00000) - (i * 0x1000);
 
         ULONGLONG physAddr = GetPhysicalAddress(cr3, read, VirtualAddressBase);
-        ULONGLONG possibleBase = *((DWORD64*)(VirtualAddressBase + physAddr));
+        ULONGLONG possibleBase = *((ULONGLONG*)(VirtualAddressBase + physAddr));
 
         if ((possibleBase & 0xffff) == 0x5a4d) {
             return read;
@@ -141,7 +143,7 @@ I'm sure somebody could make this more efficient... but it works. Another though
 The helper functions are shown below (if you are using the code don't forget the struct I haven't included):
 
 ```c
-void ExtractPageTableIndices(DWORD64 virtualAddress, PAGE_TABLE_INDICES* indices)
+void ExtractPageTableIndices(ULONGLONG virtualAddress, PAGE_TABLE_INDICES* indices)
 {
     indices->pml4Index = (virtualAddress >> 39) & 0x1FF;     // Bits 39-47
     indices->pdpIndex = (virtualAddress >> 30) & 0x1FF;      // Bits 30-38
@@ -157,10 +159,10 @@ ULONGLONG GetPhysicalAddress(ULONGLONG PmlBase, ULONGLONG VirtualAddressToResolv
     ULONGLONG pml4e = *((ULONGLONG*)(UserModeAddress + PmlBase + (8 * indices.pml4Index)));
     ULONGLONG pdpt = pml4e & 0xFFFFFFFF000;
 
-    ULONGLONG pdpte = *((DWORD64*)(UserModeAddress + pdpt + (8 * indices.pdpIndex)));
+    ULONGLONG pdpte = *((ULONGLONG*)(UserModeAddress + pdpt + (8 * indices.pdpIndex)));
     ULONGLONG pdt = pdpte & 0xFFFFFFFF000;
 
-    ULONGLONG pde = *((DWORD64*)(UserModeAddress + pdt + (8 * indices.pdIndex)));
+    ULONGLONG pde = *((ULONGLONG*)(UserModeAddress + pdt + (8 * indices.pdIndex)));
 
     // is the 'large-page' flag set
     if (pde & (1ULL << 7)) {
