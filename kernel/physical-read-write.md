@@ -148,7 +148,7 @@ ULONGLONG GetPhysicalAddress(ULONGLONG PmlBase, ULONGLONG VirtualAddressToResolv
 }
 ```
 
-Running the PoC in Windows 2022 Datacenter (for licensing reasons) shows that we are successful:
+Running the PoC in Windows 2022 Datacenter (for Azure cloud licensing reasons) shows that we are successful:
 
 <img width="805" alt="Screenshot 2025-02-12 at 20 06 05" src="https://github.com/user-attachments/assets/261da7e4-f34a-46eb-949f-3fd7ca0cf16e" style="border: 1px solid black;" />
 
