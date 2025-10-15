@@ -80,7 +80,7 @@ DWORD FindCR3Value(ULONGLONG VirtualAddressBase, DWORD* cr3Page) {
 }
 ```
 
-Now we have a reference to the `SYSTEM` page tables it would make sense to go for the `ntoskrnl` base address. We have a reference to the `HalpLMStub` function which is at an offset to the base of §ntoskrnl§. In normal circumstances we might use WinDbg to find that offset but I want to explore how I could make it version independant.
+Now we have a reference to the `SYSTEM` page tables it would make sense to go for the `ntoskrnl` base address. We have a reference to the `HalpLMStub` function which is at an offset to the base of `ntoskrnl`. In normal circumstances we might use WinDbg to find that offset but I want to explore how I could make it version independant.
 
 ## Discovering NTOSKRNL Base
 
