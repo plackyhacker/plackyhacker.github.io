@@ -1,6 +1,6 @@
 [Home](https://plackyhacker.github.io)
 
-# Version Independent Physical Memory Read/Write Privilege Escalation
+# Version Independent Physical Memory Read/Write Primitive
 
 This is my first post since passing the [Offensive Security Exploitation Expert](https://www.offsec.com/courses/exp-401/) exam. I suppose it is now time to start practicing my chosen tradecraft. I am currently studying a vulnerability that was discovered in early 2025, was being used in ransomware attacks, but doesn't have a public exploit (that I am aware of). I will be posting something about that shortly.
 
@@ -182,14 +182,14 @@ Running the PoC in Windows 2022 Datacenter (for Azure cloud licensing reasons) s
 
 <img width="805" alt="Screenshot 2025-02-12 at 20 06 05" src="https://github.com/user-attachments/assets/261da7e4-f34a-46eb-949f-3fd7ca0cf16e" style="border: 1px solid black;" />
 
+What could we do with this?
 
+There's loads of options at this point, here's just a few:
 
-## Discovering Processes
+- Discover processes in physical memory and steal a privileged token.
+- Discover EDRs in physical memory and null out it's callback functions.
+- Change critical structures/pointers in the Kernel.
 
-## Discovering Privileged Processes
-
-## Token Stealing
-
-## Conclusion
+In a future post I will take alook at some of these options. TTFN!
 
 [Home](https://plackyhacker.github.io)
