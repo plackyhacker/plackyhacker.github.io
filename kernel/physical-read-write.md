@@ -6,7 +6,7 @@ This is my first post since passing the [Offensive Security Exploitation Expert]
 
 This got me thinking about how I might write a privilege escalation exploit that is operating system version independent. I decided to look at [CVE-2020-12446](https://nvd.nist.gov/vuln/detail/CVE-2020-12446) which has multiple vulnerabilities leading to privilege escalation.
 
-The CVE isn't really what I am interested in, any CVE with a physical read/write primitive would do.
+The CVE isn't really what I am interested in, any CVE with a physical read/write primitive (exposing `ZwMapViewOfSection` and not `MmMapIoSpace`) would do.
 
 ## The Basics
 
