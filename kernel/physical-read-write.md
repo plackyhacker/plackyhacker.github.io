@@ -98,7 +98,7 @@ DWORD FindCR3Value(ULONGLONG VirtualAddressBase, DWORD* cr3Page) {
             (potential_cr3 >> 24) == 0) {
 
             // halpLMStub reference is at an offset of 0x70
-            ULONGLONG checkHalpLMStub = *((ULONGLONG*)(BYTE*)VirtualAddressBase + page + 0x70);
+            ULONGLONG checkHalpLMStub = *((ULONGLONG*)(BYTE*)(VirtualAddressBase + page + 0x70));
             if ((checkHalpLMStub & 0xfffff80000000000) == 0xfffff80000000000) {
                 *cr3Page = page;
                 return ((DWORD)potential_cr3 & 0xFFFFFFFF);
