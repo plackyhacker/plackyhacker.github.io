@@ -1,10 +1,10 @@
 [Home](https://plackyhacker.github.io)
 
-# Version Independent Physical Memory Read/Write Primitive
+# Physical Memory Read/Write Primitive
 
 This is my first post since passing the [Offensive Security Exploitation Expert](https://www.offsec.com/courses/exp-401/) exam. I suppose it is now time to start practicing my chosen tradecraft. I am currently studying a vulnerability that was discovered in early 2025, was being used in ransomware attacks, but doesn't have a public exploit (that I am aware of). I will be posting something about that shortly.
 
-This got me thinking about how I might write a privilege escalation exploit that is operating system version independent. I decided to look at [CVE-2020-12446](https://nvd.nist.gov/vuln/detail/CVE-2020-12446) which has multiple vulnerabilities leading to privilege escalation and has at least [one public exploit](https://xacone.github.io/eneio-driver.html) already.
+This got me thinking about how I might write an exploit that is operating system version independent. I decided to look at [CVE-2020-12446](https://nvd.nist.gov/vuln/detail/CVE-2020-12446) which has multiple vulnerabilities leading to privilege escalation and has at least [one public exploit](https://xacone.github.io/eneio-driver.html) already.
 
 **Note:** The CVE isn't really what I am interested in, any CVE with a physical read/write primitive (exposing `ZwMapViewOfSection` and not `MmMapIoSpace`) would do.
 
@@ -190,7 +190,7 @@ There's loads of options at this point, here's just a few:
 - Discover EDRs in physical memory and null out it's callback functions.
 - Change critical structures/pointers in the Kernel.
 
-In a future post I will take a look at some of these options. 
+In a future post I will take a look at some of these options. This is just the beginning of my (can I call it research yet) adventure!
 
 The full code is [here](https://github.com/plackyhacker/plackyhacker.github.io/blob/master/code/physical-read-write-cpp).
 
