@@ -56,7 +56,7 @@ Also notice that each process stores the base address of the PML4 table (essenti
 
 A page table entry is shown below:
 
-<img width="1089" height="199" alt="Screenshot 2025-10-15 at 07 39 20" src="https://github.com/user-attachments/assets/b29bfc38-acaf-474b-807d-c90b222091b8" style="border: 1px solid black;" />
+<img alt="Screenshot 2025-10-15 at 07 39 20" src="https://github.com/user-attachments/assets/b29bfc38-acaf-474b-807d-c90b222091b8" style="border: 1px solid black;" />
 
 The PFN is located in bits 12 to 51 so it needs to be extracted using an `AND` operation: `PTE & 0x0000FFFFFFFFF000`.
 
