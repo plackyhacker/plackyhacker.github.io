@@ -11,12 +11,13 @@ I have a [Public PGP key](https://raw.githubusercontent.com/plackyhacker/plackyh
 
 | <img src="https://github.com/user-attachments/assets/ce467aae-3f87-41d2-add9-6ab040742d51" style="width: 120px;"/> | <img src="https://github.com/user-attachments/assets/7b18bf81-bf1c-41e0-8983-596da196e775" style="width: 120px;"/>|
 | --- | --- |
-|May 2025 - [HEVD Double-fetch Privilege Escalation without Shellcode](https://plackyhacker.github.io/kernel/double-fetch-no-shellcode)|May 2025 - [Faking Remote Procedure Calls](https://plackyhacker.github.io/binary/faking-rpcs)|
-|February 2025 - [HEVD Double-fetch Walkthrough on Windows 2022 - Revisited](https://plackyhacker.github.io/kernel/double-fetch)|May 2025 - [WDEG StackPivot Bypass](https://plackyhacker.github.io/binary/wdeg-stack-pivot)|
-|October 2024 - [HEVD Double-fetch Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/race), [Part 2](https://plackyhacker.github.io/kernel/race-2)|January 2025 - [All the Leaks](https://plackyhacker.github.io/binary/all-the-leaks)|
-|September 2024 - [Doubly-Linked Lists in the Windows Kernel](https://plackyhacker.github.io/kernel/doubly-linked-lists)|January 2025 - [Controlling the Stack](https://plackyhacker.github.io/binary/controlling-the-stack)|
-|August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd), [Part 2](https://plackyhacker.github.io/kernel/hevd-2), [Part 3](https://plackyhacker.github.io/kernel/hevd-3)|January 2025 - [Shellcode Execution](https://plackyhacker.github.io/binary/shellcode-execution)|
-| |December 2024 - [Mixing it up: ROP and COP](https://plackyhacker.github.io/binary/ropandcop)||
+|October 2025 - [Physical Memory Read/Write Primitive](https://plackyhacker.github.io/kernel/physical-read-write)|May 2025 - [Faking Remote Procedure Calls](https://plackyhacker.github.io/binary/faking-rpcs)|
+|May 2025 - [HEVD Double-fetch Privilege Escalation without Shellcode](https://plackyhacker.github.io/kernel/double-fetch-no-shellcode)|May 2025 - [WDEG StackPivot Bypass](https://plackyhacker.github.io/binary/wdeg-stack-pivot)|
+|February 2025 - [HEVD Double-fetch Walkthrough on Windows 2022 - Revisited](https://plackyhacker.github.io/kernel/double-fetch)|January 2025 - [Controlling the Stack](https://plackyhacker.github.io/binary/controlling-the-stack)|
+|October 2024 - [HEVD Double-fetch Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/race), [Part 2](https://plackyhacker.github.io/kernel/race-2)|January 2025 - [All the Leaks](https://plackyhacker.github.io/binary/all-the-leaks)|January 2025 - [Shellcode Execution](https://plackyhacker.github.io/binary/shellcode-execution)|
+|September 2024 - [Doubly-Linked Lists in the Windows Kernel](https://plackyhacker.github.io/kernel/doubly-linked-lists)|December 2024 - [Mixing it up: ROP and COP](https://plackyhacker.github.io/binary/ropandcop)||
+|August 2024 - [HEVD Type Confusion Walkthrough on Windows 2022 - Part 1](https://plackyhacker.github.io/kernel/hevd), [Part 2](https://plackyhacker.github.io/kernel/hevd-2), [Part 3](https://plackyhacker.github.io/kernel/hevd-3)|
+| |
 
 | <img src="https://github.com/user-attachments/assets/b96bbc2d-166c-4d96-8cfd-b87c36826030" style="width: 120px;"/> | <img src="https://github.com/user-attachments/assets/02a866d9-2c64-4e51-ad7c-7d25eb8cf264" style="width: 120px;"/>|
 | --- | --- |
