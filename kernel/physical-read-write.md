@@ -6,7 +6,7 @@ This is my first post since passing the [Offensive Security Exploitation Expert]
 
 This got me thinking about how I might write a privilege escalation exploit that is operating system version independent. I decided to look at [CVE-2020-12446](https://nvd.nist.gov/vuln/detail/CVE-2020-12446) which has multiple vulnerabilities leading to privilege escalation and has at least [one public exploit](https://xacone.github.io/eneio-driver.html) already.
 
-**The CVE isn't really what I am interested in, any CVE with a physical read/write primitive (exposing `ZwMapViewOfSection` and not `MmMapIoSpace`) would do**.
+**Note:** The CVE isn't really what I am interested in, any CVE with a physical read/write primitive (exposing `ZwMapViewOfSection` and not `MmMapIoSpace`) would do.
 
 ## The Basics
 
@@ -44,7 +44,27 @@ The struct contains five `ULONGLONG` fields but only two of them are used: `Size
 
 ## Virtual Address to Physical Memory Mapping
 
+There are several explanations on how virtual to physical memory mapping works on x64 architecture so I won't go into a great amount of detail here, my absolute favourite is [Demistifying Physical Memory Primitive Exploitation on Windows](https://0dr3f.github.io/Demystifying_Physical_Memory_Primitive_Exploitation_on_Windows). Here you will get the short version!
 
+<img width="778" height="550" alt="Screenshot 2025-10-15 at 07 34 13" src="https://github.com/user-attachments/assets/96f43b89-b79f-4bf3-8d8d-a2c4c98aa0d3" style="border: 1px solid black;" />
+
+The diagram above is taken directly from the Intel software developers manual. Each process has a series of page tables, and each virtual address in that process maps to physical memory using them. This is why multiple processes can have the same virtual address space; because they don't conflict in physical address space. Also notice that this processing scheme only actually permit 48-bits of address space, not the 64-bits as might be expected.
+
+Each field in the virtual address is an offset to the next entry in a page table, bits 39 - 47 are the offset of the PML4E in the PML4 table. The PML4E contains a Page Frame Number. The Page Frame Number points to the base of the next table, and so forth until the offset is reached for the final physical address.
+
+Also notice that each process stores the base address of the PML4 table (essentially the starting point for page translation).
+
+A page table entry is shown below:
+
+<img width="1089" height="199" alt="Screenshot 2025-10-15 at 07 39 20" src="https://github.com/user-attachments/assets/b29bfc38-acaf-474b-807d-c90b222091b8" style="border: 1px solid black;" />
+
+The PFN is located in bits 12 to 51 so it needs to be extracted using an `AND` operation: `PTE & 0x0000FFFFFFFFF000`.
+
+Now we have all the pieces the following code can make the translations:
+
+```c
+
+```
 
 ## Dicovering the CR3 Value
 
