@@ -60,11 +60,19 @@ A page table entry is shown below:
 
 The PFN is located in bits 12 to 51 so it needs to be extracted using an `AND` operation: `PTE & 0x0000FFFFFFFFF000`.
 
-Now we have all the pieces the following code can make the translations:
+Now we have all the pieces the following code snippet shows how the translation might be made (more on this later):
 
 ```c
+// ...
+PAGE_TABLE_INDICES indices;
+ExtractPageTableIndices(VirtualAddressToResolve, &indices);
 
+ULONGLONG pml4e = *((ULONGLONG*)(UserModeAddress + PmlBase + (8 * indices.pml4Index)));
+ULONGLONG pdpt = pml4e & 0xFFFFFFFF000;
+// ..
 ```
+
+The `cr3` register value is crucial; without it page table translations cannot be made.
 
 ## Discovering the CR3 Value
 
