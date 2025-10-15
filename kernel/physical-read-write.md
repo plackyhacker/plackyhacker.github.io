@@ -66,7 +66,7 @@ Now we have all the pieces the following code can make the translations:
 
 ```
 
-## Dicovering the CR3 Value
+## Discovering the CR3 Value
 
 In the Windows OS the `HalpLMStub` function is the final stub call, in a series of stubs, that applies page tables and performs various initialisation before jumping to the main kernel. A reference to this function is written to physical memory between addresses `0x10000` and `0x20000` and is randomised. 
 
