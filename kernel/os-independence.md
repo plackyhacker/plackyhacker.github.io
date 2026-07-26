@@ -1,6 +1,6 @@
 [Home](https://plackyhacker.github.io)
 
-# OS Independent Kernel Read/Writes
+# OS Version Independent Kernel Read/Writes
 
 In this post I am going to explore how a kernel memory disclosure bug (along with a kernel read/write bug) can be weaponised to write OS version independent code in Windows. The post assumes x64 architecture.
 
