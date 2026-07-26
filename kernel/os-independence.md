@@ -65,6 +65,8 @@ There is a much better way which I will discuss next.
 
 ## Program Database Files (PDB)
 
+I am going to talk about the technique, more than the code, my sloppy (_I am attempting to transition from C to C++_), but working, code can be found [pdblocator](https://github.com/plackyhacker/plackyhacker.github.io/blob/master/codeEDR-Research/pdblocator.h) and [pdbreader](https://github.com/plackyhacker/plackyhacker.github.io/blob/master/codeEDR-Research/pdpreader.h). 
+
 ### Locating the PDB
 
 ### Reading the PDB
