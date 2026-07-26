@@ -51,18 +51,22 @@ The idea is we search the binary for the following byte pattern:
 
 When we locate it we can calculate where it is in the binary which gives us the base address of the `nt` module loaded in memory.
 
-This technique has its limitations, many functions in the `nt` moduole are likely to have similar patterns to satisfy the x64 calling convention.
+This technique has its limitations, many functions in the `nt` module are likely to have similar patterns to satisfy the x64 calling convention and will be unreliable.
 
 It is also usefull to find common ROP gadgets (where you can still execute them) independent of the OS version.
 
 ## Assembly Decoding
 
-Similar to pattern finding but it takes a lot of effort, also has limitations, code finder functions for each symbol...
+Similar to pattern finding, but a bit more sophisticated. This technique uses a third party library, such as ``, to decode the code sections of a PE binary. Instead of pattern matching we look for specific assembly patterns, such as `jmp`, or `call` instructions. This is more useful for finding functions that are called indirectly via registers, or via relative jumps.
+
+For example yu might be looking to disable an EDR callback and you want to find the callback array (`PsSetCreateProcessNotifyRoutine`) . You cannot use the previous two techniques to find this as it `PsSetCreateProcessNotifyRoutine` isn't published in the EAT. One technique is to find a function that is in the EAT, decode the assembly and follow the calls and jumps until a know reference to `PsSetCreateProcessNotifyRoutine` is found. This technique is fun at first, but soon get's tedious, takes a lot of effort, and the code isn't generally portable.
+
+There is a much better way which I will discuss next.
 
 ## Program Database Files (PDB)
 
 ### Locating the PDB
 
-### 
+### Reading the PDB
 
 [Home](https://plackyhacker.github.io)
