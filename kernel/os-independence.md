@@ -2,7 +2,7 @@
 
 # OS Independent Kernel Read/Writes
 
-In this post I am going to explore how a kernel memory disclosure bug (along with a kernel read/write bug) can be weaponised to write OS version independent code in Windows.
+In this post I am going to explore how a kernel memory disclosure bug (along with a kernel read/write bug) can be weaponised to write OS version independent code in Windows. The post assumes x64 architecture.
 
 ## Introduction
 
@@ -18,7 +18,9 @@ There are projects out there that have already solved this problem but I wanted 
 
 ## Loading ntoskrnl.exe Locally
 
-By far the easiest...
+By far the easiest method of finding function address offsets in the `nt` module is to load the `ntoskrnl.exe` binary using the `LoadLibrary` Win32 API then locate the function using `GetProcAddress`. `GetProcAddress` finds the function address using the export address table (EAT).
+
+However, this technique cannot be used to calculate the base address of the `nt` module, unless the kernel memory dislocsure discloses a function address that is in the EAT.
 
 ## Pattern Finding
 
@@ -28,13 +30,30 @@ Weaponising a ReadMSR bug is straight-forward, you send the MSR (Model Specific 
 
 There is an interesting MSR (the `IA32_LSTAR`) at address `0xc0000082` which returns the address of the `KiSystemCall64` (or a variation of) back to the caller. If we know the offset of `KiSystemCall64` then we can calculate the base address of the `nt` module. The problem is we cannot simply load the `ntoskrnl.exe` locally and locate the `KiSystemCall64` address using `GetProcAddress`. The symbol is not in the export address table (EAT) and cannot be resolved in this way.
 
-Useful in finding 
+To combat this we can search the `.text` section inside the `ntoskrnl.exe` binary (looaded from disk) looking for a common byte pattern used by `KiSystemCall64` across different versions of Windows:
 
-Need to load the local ntoskrnl from disk, find the pattern offset, calculate the actual base address of NT.
+```asm
+0F 01 F8                        swapgs
+65 48 89 24 25 10 00 00 00      mov   qword ptr gs:[10h], rsp
+65 48 8B 24 25 A8 01 00 00      mov   rsp, qword ptr gs:[1A8h]
+6A 2B                           push  2Bh
+65 FF 34 25 10 00 00 00         push  qword ptr gs:[10h]
+41 53                           push  r11
+6A 33                           push  33h
+51                              push  rcx
+```
 
-Has limitations, especially when finding functions such as psp...
+The idea is we search the binary for the following byte pattern:
 
-Usefull to find ROP gadgets, where you can still execute them...
+```
+0F 01 F8  65 48 89 24 25 10 00 00 00  65 48 8B 24 25
+```
+
+When we locate it we can calculate where it is in the binary which gives us the base address of the `nt` module loaded in memory.
+
+This technique has its limitations, many functions in the `nt` moduole are likely to have similar patterns to satisfy the x64 calling convention.
+
+It is also usefull to find common ROP gadgets (where you can still execute them) independent of the OS version.
 
 ## Assembly Decoding
 
