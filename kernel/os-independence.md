@@ -69,6 +69,25 @@ I am going to talk about the technique, more than the code, my sloppy (_I am att
 
 ### Locating the PDB
 
+The PDB Locator identifies the correct symbol file by parsing the in-memory PE image of the loaded kernel. It walks the PE headers to locate the debug directory, extracts the CodeView (RSDS) record, and retrieves the PDB GUID, age and filename. These values are then used to construct the Microsoft Symbol Server URL and download the matching PDB. Although this implementation reads the live kernel image in memory, the same information can just as easily be obtained by parsing `ntoskrnl.exe` directly from disk, as the PE debug information is identical. I just chose to use the read/write primitive.
+
+```mermaid
+flowchart TD
+    A[Kernel Base Address<br/>ntoskrnl.exe] --> B[Read DOS Header]
+    B --> C[Read e_lfanew]
+    C --> D[Locate NT Headers]
+    D --> E[Locate Debug Directory]
+    E --> F[Enumerate IMAGE_DEBUG_DIRECTORY Entries]
+    F --> G{CodeView<br/>RSDS Entry?}
+
+    G -->|Yes| H[Read RSDS Record]
+    H --> I[Extract GUID, Age and PDB Name]
+    I --> J[Construct Microsoft Symbol Server URL]
+    J --> K[Download Matching PDB]
+
+    G -->|No| L[No PDB Information Found]
+```
+
 ### Reading the PDB
 
 [Home](https://plackyhacker.github.io)
