@@ -11,6 +11,7 @@ I have a [Public PGP key](https://raw.githubusercontent.com/plackyhacker/plackyh
 
 | <img src="https://github.com/user-attachments/assets/ce467aae-3f87-41d2-add9-6ab040742d51" style="width: 120px;"/> | <img src="https://github.com/user-attachments/assets/7b18bf81-bf1c-41e0-8983-596da196e775" style="width: 120px;"/>|
 | --- | --- |
+|August 2026 - [OS Version Independent Kernel Read/Writes](https://plackyhacker.github.io/kernel/os-independence)| |
 |October 2025 - [Physical Memory Read/Write Primitive](https://plackyhacker.github.io/kernel/physical-read-write)|May 2025 - [Faking Remote Procedure Calls](https://plackyhacker.github.io/binary/faking-rpcs)|
 |May 2025 - [HEVD Double-fetch Privilege Escalation without Shellcode](https://plackyhacker.github.io/kernel/double-fetch-no-shellcode)|May 2025 - [WDEG StackPivot Bypass](https://plackyhacker.github.io/binary/wdeg-stack-pivot)|
 |February 2025 - [HEVD Double-fetch Walkthrough on Windows 2022 - Revisited](https://plackyhacker.github.io/kernel/double-fetch)|January 2025 - [Controlling the Stack](https://plackyhacker.github.io/binary/controlling-the-stack)|
