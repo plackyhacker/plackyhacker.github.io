@@ -32,7 +32,7 @@ Weaponising a ReadMSR bug is straight-forward, you send the MSR (Model Specific 
 
 There is an interesting MSR (the `IA32_LSTAR`) at address `0xc0000082` which returns the address of the `KiSystemCall64` (or a variation of) back to the caller. If we know the offset of `KiSystemCall64` then we can calculate the base address of the `nt` module. The problem is we cannot simply load the `ntoskrnl.exe` locally and locate the `KiSystemCall64` address using `GetProcAddress`. The symbol is not in the export address table (EAT) and cannot be resolved in this way.
 
-To combat this we can search the `.text` section inside the `ntoskrnl.exe` binary (looaded from disk) looking for a common byte pattern used by `KiSystemCall64` across different versions of Windows:
+To combat this we can search the `.text` section inside the `ntoskrnl.exe` binary (loaded from disk) looking for a common byte pattern used by `KiSystemCall64` across different versions of Windows:
 
 ```asm
 0F 01 F8                        swapgs
@@ -55,11 +55,11 @@ When we locate it we can calculate where it is in the binary which gives us the 
 
 This technique has its limitations, many functions in the `nt` module are likely to have similar patterns to satisfy the x64 calling convention and will be unreliable.
 
-It is also usefull to find common ROP gadgets (where you can still execute them) independent of the OS version.
+It is also useful to find common ROP gadgets (where you can still execute them) independent of the OS version.
 
 ## Assembly Decoding
 
-Similar to pattern finding, but a bit more sophisticated. This technique uses a third party library, such as ``, to decode the code sections of a PE binary. Instead of pattern matching we look for specific assembly patterns, such as `jmp`, or `call` instructions. This is more useful for finding functions that are called indirectly via registers, or via relative jumps.
+Similar to pattern finding, but a bit more sophisticated. This technique uses a third party library, such as `zydis`, to decode the code sections of a PE binary. Instead of pattern matching we look for specific assembly patterns, such as `jmp`, or `call` instructions. This is more useful for finding functions that are called indirectly via registers, or via relative jumps.
 
 For example you might be looking to disable an EDR callback and you want to find the callback array (`PsSetCreateProcessNotifyRoutine`) . You cannot use the previous two techniques to find this as it `PsSetCreateProcessNotifyRoutine` isn't published in the EAT. One technique is to find a function that is in the EAT, decode the assembly and follow the calls and jumps until a know reference to `PsSetCreateProcessNotifyRoutine` is found. This technique is fun at first, but soon get's tedious, takes a lot of effort, and the code isn't generally portable.
 
