@@ -73,13 +73,13 @@ I am going to talk about the technique, more than the code, my sloppy (_I am att
 
 The PDB Locator identifies the correct symbol file by parsing the in-memory PE image of the loaded kernel. It walks the PE headers to locate the debug directory, extracts the CodeView (RSDS) record, and retrieves the PDB GUID, age and filename. These values are then used to construct the Microsoft Symbol Server URL and download the matching PDB. Although this implementation reads the live kernel image in memory, the same information can just as easily be obtained by parsing `ntoskrnl.exe` directly from disk, as the PE debug information is identical. I just chose to use the read/write primitive.
 
-<img alt="PdbLocator" src="https://github.com/user-attachments/assets/79c6267f-ee89-4561-8da2-56a9f8360a33" />
+<img width="50%" height="50%" alt="PdbLocator" src="https://github.com/user-attachments/assets/79c6267f-ee89-4561-8da2-56a9f8360a33" />
 
 ### Reading the PDB
 
 Once the correct PDB has been obtained, the PDB Reader parses the Microsoft container to locate the symbol and section streams. It reads the DBI stream to identify the public symbol stream and section header stream, then searches the public symbols for a matching name. When a symbol is found, its section and offset are combined to calculate the symbol's Relative Virtual Address (RVA), allowing it to be located within the loaded kernel image.
 
-<img alt="PdbReader" src="https://github.com/user-attachments/assets/dcfa23b1-a4a6-4cab-8773-a9df32595a74" />
+<img width="50%" height="50%" alt="PdbReader" src="https://github.com/user-attachments/assets/dcfa23b1-a4a6-4cab-8773-a9df32595a74" />
 
 By reading the PDB we can find the RVAs of public and private symbols, such as `PsSetCreateProcessNotifyRoutine`. We no longer need to put hardcoded offsets in our code.
 
