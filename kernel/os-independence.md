@@ -4,6 +4,8 @@
 
 In this post I am going to explore how a kernel memory disclosure bug (along with a kernel read/write bug) can be weaponised to write OS version independent code in Windows. The post assumes x64 architecture.
 
+This is for my own learning and hopefully it will help others interested in this topic.
+
 ## Introduction
 
 Kernel read/write primitives heavily depend on memory disclosure bugs, and depending on what address is disclosed from kernel space will depend upon how an adversary might weaponise the read/write primitives.
@@ -59,7 +61,7 @@ It is also usefull to find common ROP gadgets (where you can still execute them)
 
 Similar to pattern finding, but a bit more sophisticated. This technique uses a third party library, such as ``, to decode the code sections of a PE binary. Instead of pattern matching we look for specific assembly patterns, such as `jmp`, or `call` instructions. This is more useful for finding functions that are called indirectly via registers, or via relative jumps.
 
-For example yu might be looking to disable an EDR callback and you want to find the callback array (`PsSetCreateProcessNotifyRoutine`) . You cannot use the previous two techniques to find this as it `PsSetCreateProcessNotifyRoutine` isn't published in the EAT. One technique is to find a function that is in the EAT, decode the assembly and follow the calls and jumps until a know reference to `PsSetCreateProcessNotifyRoutine` is found. This technique is fun at first, but soon get's tedious, takes a lot of effort, and the code isn't generally portable.
+For example you might be looking to disable an EDR callback and you want to find the callback array (`PsSetCreateProcessNotifyRoutine`) . You cannot use the previous two techniques to find this as it `PsSetCreateProcessNotifyRoutine` isn't published in the EAT. One technique is to find a function that is in the EAT, decode the assembly and follow the calls and jumps until a know reference to `PsSetCreateProcessNotifyRoutine` is found. This technique is fun at first, but soon get's tedious, takes a lot of effort, and the code isn't generally portable.
 
 There is a much better way which I will discuss next.
 
@@ -79,6 +81,6 @@ Once the correct PDB has been obtained, the PDB Reader parses the Microsoft cont
 
 <img width="1160" height="2736" alt="PdbReader" src="https://github.com/user-attachments/assets/dcfa23b1-a4a6-4cab-8773-a9df32595a74" />
 
-
+By reading the PDB we can find the RVAs of public and private symbols, such as `PsSetCreateProcessNotifyRoutine`. We no longer need to put hardcoded offsets in our code.
 
 [Home](https://plackyhacker.github.io)
